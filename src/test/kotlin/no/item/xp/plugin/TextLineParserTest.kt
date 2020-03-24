@@ -83,7 +83,7 @@ class TextLineParserTest {
       "<input type=\"TextLine\" name=\"thirdTextLine\">" +
         "<occurrences minimum=\"1\" maximum=\"1\"/>" +
         "<label>The Third Text Line</label>" +
-        "whatever"+
+        "whatever" +
         "</input>"
     val node: Node = getNodeFromString(nodeString)
     val generatedField: Option<GeneratedField> = parseTextLine(node)

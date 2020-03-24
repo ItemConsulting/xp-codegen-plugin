@@ -27,10 +27,10 @@ fun parseTextLine(node: Node): Option<GeneratedField> { //
 
 fun getTypeForGeneratedField(node: Node): Option<InputType> =
   node.getAttributeAsOption("type")
-    .map{
+    .map {
       InputType.valueOf(it.toUpperCase())
     }
 
-fun getCommentForGeneratedField(node: Node): Option<String>
-  = node.getChildNodeAtXPath(getXpathExpressionFromString("label"))
+fun getCommentForGeneratedField(node: Node): Option<String> =
+  node.getChildNodeAtXPath(getXpathExpressionFromString("label"))
     .flatMap(Node::getTextContentAsOption)

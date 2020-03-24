@@ -45,8 +45,8 @@ open class GenerateTypeScriptTask @Inject constructor(private val extension: Gen
         val interfaceName: String? = generateFilePathForInterface(File(filePath))
         val xml: Either<Throwable, Sequence<Option<GeneratedField>>> = parse(document)
         xml.fold(
-          {throwable: Throwable -> handleError(throwable) },
-          {sequence: Sequence<Option<GeneratedField>> -> handleSuccess(sequence)}
+          { throwable: Throwable -> handleError(throwable) },
+          { sequence: Sequence<Option<GeneratedField>> -> handleSuccess(sequence) }
         )
       }
   }
