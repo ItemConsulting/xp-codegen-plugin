@@ -1,27 +1,85 @@
 package no.item.xp.plugin
 
+import arrow.core.Either
+import arrow.core.extensions.list.foldable.find
 import java.io.File
+import java.lang.Exception
+import java.nio.file.Path
+import java.nio.file.Paths
 import javax.inject.Inject
+import javax.xml.parsers.DocumentBuilder
+import javax.xml.parsers.DocumentBuilderFactory
+import no.item.xp.plugin.models.GeneratedField
+import no.item.xp.plugin.models.XmlFile
+import no.item.xp.plugin.models.XmlType
+import no.item.xp.plugin.parser.parse
+import no.item.xp.plugin.util.GenerateInterfaceName
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
+import org.w3c.dom.Document
 
 open class GenerateTypeScriptTask @Inject constructor(private val extension: GenerateTypeScriptExtension) : DefaultTask() {
 
-    @TaskAction
-    fun generateTypeScript() {
-      val files = findXmlFiles()
-      println("Found XML files: ")
-      println("--------------------")
-      files.forEach { println(it) }
-      // 2.send dem til en parser
-      // 3.send resultatet til en writer
-      // 4.exit
-    }
+  private val docBuilder: DocumentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder()
 
+  @TaskAction
+    fun generateTypeScript() {
+      val files: Sequence<String> = findXmlFiles()
+      files.forEach { parseFile(it) }
+  }
   private fun findXmlFiles(): Sequence<String> {
     return File(extension.fileDir)
       .walk()
-      .filter { it.isFile && it.extension == "xml" }
+      .filter { it.isFile }
       .map { it.absolutePath }
+  }
+
+  @Suppress("UNUSED_VARIABLE")
+  private fun parseFile(filePath: String) {
+    getXmlType(filePath)
+      .map {
+        val xmlFile: XmlFile = generateXmlFile(filePath, it)
+        val document: Document = getXmlDocumentByFile(xmlFile)
+        parse(document)
+        val interfaceName: String? = GenerateInterfaceName(File(filePath))
+        val xml: Either<Throwable, Sequence<GeneratedField>> = parse(document)
+      }
+  }
+
+  private fun getXmlType(filePath: String): Either<Throwable, XmlType> {
+    val child: Path = Paths.get(filePath).toAbsolutePath()
+    return returnIsChild(child)
+  }
+
+  private fun returnIsChild(child: Path): Either<Throwable, XmlType> =
+    DIRECTORIES_AND_XMLTYPE
+      .find { isChild(child, it.first) }
+      .map { it.second }
+      .toEither { Exception("could not find XmlType for $child") }
+
+  private fun isChild(child: Path, parentText: String): Boolean {
+    val parent: Path = Paths.get(parentText).toAbsolutePath()
+    return child.startsWith(parent)
+  }
+
+  private fun generateXmlFile(filePath: String, xmlType: XmlType): XmlFile {
+    return XmlFile(filePath, xmlType)
+  }
+
+  private fun getXmlDocumentByFile(xmlFile: XmlFile): Document =
+    docBuilder.parse(File(xmlFile.path))
+
+  @Suppress("SpellCheckingInspection")
+  companion object {
+    private val DIRECTORIES_AND_XMLTYPE: List<Pair<String, XmlType>> = listOf(
+      Pair("../site/content-types", XmlType.CONTENT_TYPE),
+      Pair("../site/layouts/", XmlType.LAYOUT),
+      Pair("../site/mixins/", XmlType.MIXIN),
+      Pair("../site/parts/", XmlType.PART),
+      Pair("../site/pages/", XmlType.PAGE),
+      Pair("../site/macros/", XmlType.MACRO),
+      Pair("../idprovider/", XmlType.ID_PROVIDER),
+      Pair("../site/", XmlType.SITE)
+    )
   }
 }
