@@ -27,6 +27,9 @@ dependencies {
   kapt("io.arrow-kt:arrow-meta:$arrowVersion")
   testImplementation("org.jetbrains.kotlin:kotlin-test")
   testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
+  implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.8.11.1")
+  implementation("com.fasterxml.jackson.core:jackson-databind:2.8.9")
+  implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.10.1")
 }
 
 gradlePlugin {
