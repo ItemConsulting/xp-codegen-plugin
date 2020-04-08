@@ -1,6 +1,7 @@
 package no.item.xp.plugin
 
 import arrow.core.Either
+import arrow.core.Option
 import arrow.core.extensions.list.foldable.find
 import java.io.File
 import java.lang.Exception
@@ -13,7 +14,7 @@ import no.item.xp.plugin.models.GeneratedField
 import no.item.xp.plugin.models.XmlFile
 import no.item.xp.plugin.models.XmlType
 import no.item.xp.plugin.parser.parse
-import no.item.xp.plugin.util.GenerateInterfaceName
+import no.item.xp.plugin.util.generateFilePathForInterface
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 import org.w3c.dom.Document
@@ -41,8 +42,12 @@ open class GenerateTypeScriptTask @Inject constructor(private val extension: Gen
         val xmlFile: XmlFile = generateXmlFile(filePath, it)
         val document: Document = getXmlDocumentByFile(xmlFile)
         parse(document)
-        val interfaceName: String? = GenerateInterfaceName(File(filePath))
-        val xml: Either<Throwable, Sequence<GeneratedField>> = parse(document)
+        val interfaceName: String? = generateFilePathForInterface(File(filePath))
+        val xml: Either<Throwable, Sequence<Option<GeneratedField>>> = parse(document)
+        xml.fold(
+          {throwable: Throwable -> handleError(throwable) },
+          {sequence: Sequence<Option<GeneratedField>> -> handleSuccess(sequence)}
+        )
       }
   }
 
@@ -81,5 +86,12 @@ open class GenerateTypeScriptTask @Inject constructor(private val extension: Gen
       Pair("../idprovider/", XmlType.ID_PROVIDER),
       Pair("../site/", XmlType.SITE)
     )
+  }
+
+  private fun handleSuccess(sequence: Sequence<Option<GeneratedField>>) {
+    TODO("Not yet implemented")
+  }
+  private fun handleError(throwable: Throwable) {
+    TODO("Not yet implemented")
   }
 }

@@ -1,4 +1,4 @@
-package no.item.xp.plugin.util
+package no.item.xp.plugin.extensions
 
 import arrow.core.*
 import arrow.core.Either

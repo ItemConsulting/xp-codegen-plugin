@@ -1,6 +1,7 @@
 package no.item.xp.plugin.util
 
 import arrow.core.*
+import no.item.xp.plugin.extensions.getChildNodeAtXPath
 import javax.xml.xpath.XPathConstants
 import javax.xml.xpath.XPathExpression
 import javax.xml.xpath.XPathFactory
@@ -12,9 +13,11 @@ val XPATH_FACTORY: XPathFactory = XPathFactory.newInstance()
 val XPATH_FORM_ELEMENT: XPathExpression = XPATH_FACTORY.newXPath().compile("//form/*[type]")
 val XPATH_MINIMUM_ELEMENT: XPathExpression = XPATH_FACTORY.newXPath().compile("//input/occurrences/@minimum")
 
-fun getFormElementChildren(doc: Document) = getNodesByXpath(doc, XPATH_FORM_ELEMENT)
+fun getFormElementChildren(doc: Document): Either<Throwable, Sequence<Node>> =
+  getNodesByXpath(doc, XPATH_FORM_ELEMENT)
 
-fun getMinimumOccurrences(node: Node) = getNodeByXpathAndNode(node, XPATH_MINIMUM_ELEMENT)
+fun getXpathExpressionFromString(xpath: String): XPathExpression =
+  XPATH_FACTORY.newXPath().compile(xpath)
 
 fun getNodesByXpath(doc: Document, xpath: XPathExpression): Either<Throwable, Sequence<Node>> =
   try {
@@ -23,19 +26,11 @@ fun getNodesByXpath(doc: Document, xpath: XPathExpression): Either<Throwable, Se
     Either.left(e)
   }
 
-fun getNodeByXpathAndNode(node: Node, xpath: XPathExpression): Option<Node> {
-  return if (xpath.evaluate(node, XPathConstants.NODE) == null) {
-    none()
-  } else {
-    Some(xpath.evaluate(node, XPathConstants.NODE) as Node)
-  }
-}
-
-fun isOptional(node: Node): Option<Boolean> =
-  getMinimumOccurrences(node)
+fun isOptional(node: Node): Boolean =
+  node.getChildNodeAtXPath(XPATH_MINIMUM_ELEMENT)
     .fold(
-      { none() },
-      { Some(isNotZero(it)) }
+      { true },
+      { isNotZero(it) }
     )
 
 fun isNotZero(node: Node): Boolean = Integer.parseInt(node.nodeValue) < 1

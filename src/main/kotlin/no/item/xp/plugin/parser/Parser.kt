@@ -1,25 +1,26 @@
 package no.item.xp.plugin.parser
 
-import arrow.core.Either
-import arrow.core.Option
-import arrow.core.flatMap
+import arrow.core.*
+import arrow.core.extensions.either.monad.flatMap
 import no.item.xp.plugin.models.GeneratedField
-import no.item.xp.plugin.util.applySequence
+import no.item.xp.plugin.extensions.applySequence
 import no.item.xp.plugin.util.getFormElementChildren
 import org.w3c.dom.Document
 import org.w3c.dom.Node
 
-fun parse(doc: Document): Either<Throwable, Sequence<GeneratedField>> =
+fun parse(doc: Document): Either<Throwable, Sequence<Option<GeneratedField>>> =
   getFormElementChildren(doc)
     .flatMap { parseNodes(it) }
 
-private fun parseNodes(nodes: Sequence<Node>): Either<Throwable, Sequence<GeneratedField>> =
+private fun parseNodes(nodes: Sequence<Node>): Either<Throwable, Sequence<Option<GeneratedField>>> =
   applySequence(
     nodes
-      .map { createGeneratedField(it) }
+      .map {
+        createGeneratedField(it)
+      }
   )
 
-private fun createGeneratedField(node: Node): Either<Throwable, GeneratedField> =
+private fun createGeneratedField(node: Node): Either<Throwable, Option<GeneratedField>> =
   getInputType(node)
     .flatMap {
       when (it) {

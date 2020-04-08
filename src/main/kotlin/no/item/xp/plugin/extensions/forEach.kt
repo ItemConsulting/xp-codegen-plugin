@@ -1,4 +1,4 @@
-package no.item.xp.plugin.util
+package no.item.xp.plugin.extensions
 
 import org.w3c.dom.NamedNodeMap
 import org.w3c.dom.Node

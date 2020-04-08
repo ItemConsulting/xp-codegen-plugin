@@ -1,6 +1,7 @@
 package no.item.xp.plugin
 
 import arrow.core.Option
+import arrow.core.right
 import java.io.ByteArrayInputStream
 import javax.xml.parsers.DocumentBuilder
 import javax.xml.parsers.DocumentBuilderFactory
@@ -35,7 +36,7 @@ class TextLineParserTest {
     val generated: GeneratedField? = generatedField.fold({ null }, { it })
     if (generated != null) {
       assertEquals(generated.nullable, true)
-      assertEquals(generated.comment, "The First Text Line")
+      assertEquals(generated.comment.right().toString(), "The First Text Line")
       assertEquals(generated.name, "firstTextLine")
       assertEquals(generated.type, InputType.COMBOBOX)
     }
@@ -53,7 +54,7 @@ class TextLineParserTest {
     val generated: GeneratedField? = generatedField.fold({ null }, { it })
     if (generated != null) {
       assertEquals(generated.nullable, true)
-      assertEquals(generated.comment, "The Second Text Line")
+      assertEquals(generated.comment.right().toString(), "The Second Text Line")
       assertEquals(generated.name, "secondTextLine")
       assertEquals(generated.type, InputType.TEXTLINE)
     }
@@ -71,7 +72,7 @@ class TextLineParserTest {
     val generated: GeneratedField? = generatedField.fold({ null }, { it })
     if (generated != null) {
       assertEquals(generated.nullable, false)
-      assertEquals(generated.comment, "The Third Text Line")
+      assertEquals(generated.comment.right().toString(), "The Third Text Line")
       assertEquals(generated.name, "thirdTextLine")
       assertEquals(generated.type, InputType.TEXTLINE)
     }
@@ -82,13 +83,14 @@ class TextLineParserTest {
       "<input type=\"TextLine\" name=\"thirdTextLine\">" +
         "<occurrences minimum=\"1\" maximum=\"1\"/>" +
         "<label>The Third Text Line</label>" +
+        "whatever"+
         "</input>"
     val node: Node = getNodeFromString(nodeString)
     val generatedField: Option<GeneratedField> = parseTextLine(node)
     val generated: GeneratedField? = generatedField.fold({ null }, { it })
     if (generated != null) {
       assertEquals(generated.nullable, false)
-      assertEquals(generated.comment, "The Third Text Line")
+      assertEquals(generated.comment.right().toString(), "The Third Text Line")
       assertEquals(generated.name, "thirdTextLine")
       assertEquals(generated.type, InputType.TEXTLINE)
     }
