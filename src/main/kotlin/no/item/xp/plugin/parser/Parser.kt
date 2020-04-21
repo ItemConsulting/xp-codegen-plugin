@@ -3,16 +3,16 @@ package no.item.xp.plugin.parser
 import arrow.core.*
 import arrow.core.extensions.either.monad.flatMap
 import no.item.xp.plugin.extensions.applySequence
-import no.item.xp.plugin.models.GeneratedField
+import no.item.xp.plugin.models.GeneratedInputType
 import no.item.xp.plugin.util.getFormElementChildren
 import org.w3c.dom.Document
 import org.w3c.dom.Node
 
-fun parse(doc: Document): Either<Throwable, Sequence<Option<GeneratedField>>> =
+fun parse(doc: Document): Either<Throwable, Sequence<Option<GeneratedInputType>>> =
   getFormElementChildren(doc)
     .flatMap { parseNodes(it) }
 
-private fun parseNodes(nodes: Sequence<Node>): Either<Throwable, Sequence<Option<GeneratedField>>> =
+private fun parseNodes(nodes: Sequence<Node>): Either<Throwable, Sequence<Option<GeneratedInputType>>> =
   applySequence(
     nodes
       .map {
@@ -20,11 +20,12 @@ private fun parseNodes(nodes: Sequence<Node>): Either<Throwable, Sequence<Option
       }
   )
 
-private fun createGeneratedField(node: Node): Either<Throwable, Option<GeneratedField>> =
+private fun createGeneratedField(node: Node): Either<Throwable, Option<GeneratedInputType>> =
   getInputType(node)
     .flatMap {
       when (it) {
         "textline" -> Either.right(parseTextLine(node))
+        "combobox" -> Either.right(parseComboBox(node))
         else -> Either.left(Exception("Input type \"$it\" not found"))
       }
     }
