@@ -11,7 +11,6 @@ fun TypeScriptWriter(generatedTypeScriptInterfaceFile: String, type: XmlType, ob
   var content = "export interface "
   content += xmlTypeFormatted(type) + "{\n"
   for (fields: Any in objList) {
-    returnCommentFromAny(fields)
     if (fields is GeneratedField) {
       content += returnCommentFromLabel(fields)
       content += returnStringValue(fields) + "\n"
@@ -58,11 +57,6 @@ fun xmlTypeFormatted(type: XmlType): String {
     XmlType.MACRO -> "Macro"
     XmlType.MIXIN -> "Mixin"
   }
-}
-
-fun returnCommentFromAny(fields: Any):String{
-  println(fields.javaClass)
-  return ""
 }
 
 fun returnCommentFromLabel(fields: GeneratedField): String

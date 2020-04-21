@@ -2,19 +2,15 @@ package no.item.xp.plugin.parser
 
 import arrow.core.*
 import arrow.core.extensions.option.applicative.applicative
-import no.item.xp.plugin.extensions.getAttributeAsOption
 import no.item.xp.plugin.models.GeneratedComboBoxField
 import no.item.xp.plugin.models.InputType
 import no.item.xp.plugin.models.YesNoMaybe
-import no.item.xp.plugin.util.getCommentForGeneratedField
-import no.item.xp.plugin.util.getConfigOptions
-import no.item.xp.plugin.util.getTypeForGeneratedField
-import no.item.xp.plugin.util.isOptional
+import no.item.xp.plugin.util.*
 import org.w3c.dom.Node
 
 fun parseComboBox(node: Node): Option<GeneratedComboBoxField> {
   return Option.applicative().map(
-    node.getAttributeAsOption("name"),
+    getNameForGeneratedField(node),
     getTypeForGeneratedField(node),
     Some(isOptional(node)),
     Some(getConfigOptions(node)),

@@ -4,17 +4,17 @@ import arrow.core.Option
 import arrow.core.Some
 import arrow.core.extensions.option.applicative.applicative
 import arrow.core.fix
-import no.item.xp.plugin.extensions.getAttributeAsOption
 import no.item.xp.plugin.models.GeneratedField
 import no.item.xp.plugin.models.InputType
 import no.item.xp.plugin.util.getCommentForGeneratedField
+import no.item.xp.plugin.util.getNameForGeneratedField
 import no.item.xp.plugin.util.getTypeForGeneratedField
 import no.item.xp.plugin.util.isOptional
 import org.w3c.dom.Node
 
 fun parseTextLine(node: Node): Option<GeneratedField> {
   return Option.applicative().map(
-    node.getAttributeAsOption("name"),
+    getNameForGeneratedField(node),
     getTypeForGeneratedField(node),
     Some(isOptional(node)),
     Some(sequenceOf<GeneratedField>()),
