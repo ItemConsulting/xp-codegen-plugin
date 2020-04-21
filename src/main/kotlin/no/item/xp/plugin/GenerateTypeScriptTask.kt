@@ -1,3 +1,5 @@
+@file:Suppress("UNUSED_PARAMETER")
+
 package no.item.xp.plugin
 
 import arrow.core.Either
@@ -10,7 +12,6 @@ import java.nio.file.Paths
 import javax.inject.Inject
 import javax.xml.parsers.DocumentBuilder
 import javax.xml.parsers.DocumentBuilderFactory
-import no.item.xp.plugin.models.GeneratedField
 import no.item.xp.plugin.models.XmlFile
 import no.item.xp.plugin.models.XmlType
 import no.item.xp.plugin.parser.parse
@@ -41,12 +42,11 @@ open class GenerateTypeScriptTask @Inject constructor(private val extension: Gen
       .map {
         val xmlFile: XmlFile = generateXmlFile(filePath, it)
         val document: Document = getXmlDocumentByFile(xmlFile)
-        parse(document)
         val interfaceName: String? = generateFilePathForInterface(File(filePath))
-        val xml: Either<Throwable, Sequence<Option<GeneratedField>>> = parse(document)
+        val xml: Either<Throwable, Sequence<Option<Any>>> = parse(document)
         xml.fold(
           {throwable: Throwable -> handleError(throwable) },
-          {sequence: Sequence<Option<GeneratedField>> -> handleSuccess(sequence)}
+          {sequence: Sequence<Option<Any>> -> handleSuccess(sequence)}
         )
       }
   }
@@ -88,10 +88,13 @@ open class GenerateTypeScriptTask @Inject constructor(private val extension: Gen
     )
   }
 
-  private fun handleSuccess(sequence: Sequence<Option<GeneratedField>>) {
+  private fun handleSuccess(sequence: Sequence<Option<Any>>) {
+    //sende sequencen til writer'n
+    //writern tar imot de forskjellige typene av GeneratedField og printer disse.
     TODO("Not yet implemented")
   }
   private fun handleError(throwable: Throwable) {
+    //logge errors til console/fil.
     TODO("Not yet implemented")
   }
 }

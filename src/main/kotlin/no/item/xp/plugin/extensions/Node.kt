@@ -1,5 +1,3 @@
-@file:Suppress("unused")
-
 package no.item.xp.plugin.extensions
 
 import arrow.core.Option

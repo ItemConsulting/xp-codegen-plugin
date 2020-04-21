@@ -2,28 +2,14 @@ package no.item.xp.plugin
 
 import arrow.core.Option
 import arrow.core.right
-import java.io.ByteArrayInputStream
-import javax.xml.parsers.DocumentBuilder
-import javax.xml.parsers.DocumentBuilderFactory
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import no.item.xp.plugin.models.GeneratedField
 import no.item.xp.plugin.models.InputType
 import no.item.xp.plugin.parser.parseTextLine
-import org.w3c.dom.Document
 import org.w3c.dom.Node
 
 class TextLineParserTest {
-
-  private fun getNodeFromString(stringNode: String): Node {
-    val builder: DocumentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder()
-    val strBuilder = StringBuilder()
-    strBuilder.append(stringNode)
-    val byteStream = ByteArrayInputStream(strBuilder.toString().toByteArray())
-    val doc: Document = builder.parse(byteStream)
-    doc.documentElement.normalize()
-    return doc
-  }
 
   @Test
   fun textLineParserTestNoOccurrences() {

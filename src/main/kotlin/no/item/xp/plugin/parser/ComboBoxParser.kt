@@ -1,27 +1,26 @@
 package no.item.xp.plugin.parser
 
-import arrow.core.Option
-import arrow.core.Some
+import arrow.core.*
 import arrow.core.extensions.option.applicative.applicative
-import arrow.core.fix
 import no.item.xp.plugin.extensions.getAttributeAsOption
-import no.item.xp.plugin.models.GeneratedField
+import no.item.xp.plugin.models.GeneratedComboBoxField
 import no.item.xp.plugin.models.InputType
+import no.item.xp.plugin.models.YesNoMaybe
 import no.item.xp.plugin.util.getCommentForGeneratedField
+import no.item.xp.plugin.util.getConfigOptions
 import no.item.xp.plugin.util.getTypeForGeneratedField
 import no.item.xp.plugin.util.isOptional
 import org.w3c.dom.Node
 
-fun parseTextLine(node: Node): Option<GeneratedField> {
+fun parseComboBox(node: Node): Option<GeneratedComboBoxField> {
   return Option.applicative().map(
     node.getAttributeAsOption("name"),
     getTypeForGeneratedField(node),
     Some(isOptional(node)),
-    Some(sequenceOf<GeneratedField>()),
+    Some(getConfigOptions(node)),
     Some(getCommentForGeneratedField(node))
-  ) { (name: String, type: InputType, nullable: Boolean, subFields: Sequence<GeneratedField>, comment: Option<String>) ->
-    GeneratedField(name, type, nullable, subFields, comment)
+  ) { (name: String, type: InputType, nullable: Boolean, configs: Option<HashMap<YesNoMaybe, Boolean>>, comment: Option<String>) ->
+    GeneratedComboBoxField(name, type, nullable, configs, comment)
   }.fix()
 }
-
 

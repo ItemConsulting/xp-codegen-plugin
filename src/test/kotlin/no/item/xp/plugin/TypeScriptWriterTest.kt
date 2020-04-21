@@ -16,6 +16,47 @@ import no.item.xp.plugin.writer.TypeScriptWriter
 
 class TypeScriptWriterTest {
 
+  private val path: String = Paths.get("").toAbsolutePath().toString()
+/*
+  @Test
+  fun testTypeScriptWriterOnCombobox(){
+    val objList: ArrayList<GeneratedComboBoxField> = arrayListOf()
+    val generatedComboBoxField1 = GeneratedComboBoxField(
+      "String2",
+      InputType.COMBOBOX,
+      true,
+      Some(hashMapOf()),
+      none()
+    )
+    val generatedComboBoxField2 = GeneratedComboBoxField(
+      "String2",
+      InputType.COMBOBOX,
+      false,
+      Some(hashMapOf()),
+      Some("comment2")
+    )
+    objList.add(generatedComboBoxField1)
+    objList.add(generatedComboBoxField2)
+
+    val type = XmlType.MIXIN
+    val file = File("src/test/testFiles/testComboBox.xml")
+    val generatedInterfaceFile: String = generateFilePathForInterface(file)
+
+    val generatedTypeScriptFile: String = TypeScriptWriter(generatedInterfaceFile, type, objList)
+    val bufferedReader: BufferedReader = bufferedReader(generatedTypeScriptFile)
+    val inputString: String = bufferedReader.use { it.readText() }
+    val outputString: String =
+      "export interface ComboBoxExample {" +
+      "/**" +
+      " * Invited" +
+      " */" +
+     " invite?: \"Yes\" | \"No\" | \"Maybe\";" +
+     "}" +
+     ";"
+    assertEquals(inputString, outputString)
+    Files.delete(Paths.get(generatedInterfaceFile))
+  }*/
+
   @Test
   fun testTypeScriptWriter() {
     val objList: ArrayList<GeneratedField> = arrayListOf()
@@ -39,12 +80,11 @@ class TypeScriptWriterTest {
     val type = XmlType.MIXIN
     val file = File("src/test/testFiles/testMixin.xml")
     val generatedInterfaceFile: String = generateFilePathForInterface(file)
-    val path: String = Paths.get("").toAbsolutePath().toString()
 
     assertEquals("\\src\\test\\testFiles\\testMixin.ts", generatedInterfaceFile.removePrefix(path))
 
     val generatedTypeScriptFile: String = TypeScriptWriter(generatedInterfaceFile, type, objList)
-    val bufferedReader: BufferedReader = File(generatedTypeScriptFile).bufferedReader()
+    val bufferedReader: BufferedReader = bufferedReader(generatedTypeScriptFile)
     val inputString: String = bufferedReader.use { it.readText() }
     val outputString: String = "export interface Mixin{\n" +
       "/** comment1 */\n" +
@@ -57,4 +97,6 @@ class TypeScriptWriterTest {
     assertEquals(inputString, outputString)
     Files.delete(Paths.get(generatedInterfaceFile))
   }
+
+  private fun bufferedReader(file: String): BufferedReader = File(file).bufferedReader()
 }

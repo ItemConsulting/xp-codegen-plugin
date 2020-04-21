@@ -1,0 +1,14 @@
+<content-type>
+  <display-name>Using mixins</display-name>
+  <form>
+    <input name="invite" type="ComboBox">
+      <label>Invited</label>
+      <occurrences minimum="0" maximum="1"/>
+      <config>
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+        <option value="Maybe">Maybe</option>
+      </config>
+    </input>
+  </form>
+</content-type>

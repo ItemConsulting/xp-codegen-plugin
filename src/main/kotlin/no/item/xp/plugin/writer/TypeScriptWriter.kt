@@ -7,13 +7,16 @@ import no.item.xp.plugin.models.InputType
 import no.item.xp.plugin.models.XmlType
 
 @Suppress("FunctionName")
-fun TypeScriptWriter(generatedTypeScriptInterfaceFile: String, type: XmlType, objList: List<GeneratedField>): String {
+fun TypeScriptWriter(generatedTypeScriptInterfaceFile: String, type: XmlType, objList: List<Any>): String {
   var content = "export interface "
   content += xmlTypeFormatted(type) + "{\n"
-  for (fields: GeneratedField in objList) {
-    content += returnCommentFromLabel(fields)
-    content += returnStringValue(fields) + "\n"
-    content += "\n"
+  for (fields: Any in objList) {
+    returnCommentFromAny(fields)
+    if (fields is GeneratedField) {
+      content += returnCommentFromLabel(fields)
+      content += returnStringValue(fields) + "\n"
+      content += "\n"
+    }
   }
   content += "}"
   File(generatedTypeScriptInterfaceFile).bufferedWriter().use { out: BufferedWriter ->
@@ -55,6 +58,11 @@ fun xmlTypeFormatted(type: XmlType): String {
     XmlType.MACRO -> "Macro"
     XmlType.MIXIN -> "Mixin"
   }
+}
+
+fun returnCommentFromAny(fields: Any):String{
+  println(fields.javaClass)
+  return ""
 }
 
 fun returnCommentFromLabel(fields: GeneratedField): String
