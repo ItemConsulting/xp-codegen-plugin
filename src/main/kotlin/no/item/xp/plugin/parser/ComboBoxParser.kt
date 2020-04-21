@@ -19,4 +19,3 @@ fun parseComboBox(node: Node): Option<GeneratedComboBoxField> {
     GeneratedComboBoxField(name, type, nullable, configs, comment)
   }.fix()
 }
-

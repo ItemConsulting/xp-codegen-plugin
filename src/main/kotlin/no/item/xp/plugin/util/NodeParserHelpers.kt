@@ -12,7 +12,7 @@ import org.w3c.dom.Node
 
 fun getTypeForGeneratedField(node: Node): Option<InputType> =
   node.getAttributeAsOption("type")
-    .map{
+    .map {
       InputType.valueOf(it.toUpperCase())
     }
 
@@ -20,7 +20,7 @@ fun getCommentForGeneratedField(node: Node): Option<String> =
   node.getChildNodeAtXPath(getXpathExpressionFromString("label"))
   .flatMap(Node::getTextContentAsOption)
 
-fun getNameForGeneratedField(node: Node ): Option<String> =
+fun getNameForGeneratedField(node: Node): Option<String> =
   node.getAttributeAsOption("name")
 
 @Suppress("ReplaceWithEnumMap", "ReplacePutWithAssignment")

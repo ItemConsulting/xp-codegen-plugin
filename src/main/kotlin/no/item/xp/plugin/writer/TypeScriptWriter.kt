@@ -42,7 +42,7 @@ fun typeScriptType(type: InputType): String {
   }
 }
 
-fun isNullable(valueIsNullable: Boolean): String{
+fun isNullable(valueIsNullable: Boolean): String {
   return if (valueIsNullable) "?" else ""
 }
 
@@ -59,11 +59,10 @@ fun xmlTypeFormatted(type: XmlType): String {
   }
 }
 
-fun returnCommentFromLabel(fields: GeneratedField): String
-  = fields.comment
+fun returnCommentFromLabel(fields: GeneratedField): String =
+  fields.comment
     .filter { it.isNotBlank() }
     .fold(
-      {"\n"},
+      { "\n" },
       { "/** $it */\n" }
     )
-

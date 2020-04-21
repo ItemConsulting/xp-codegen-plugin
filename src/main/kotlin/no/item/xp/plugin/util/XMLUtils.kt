@@ -1,11 +1,11 @@
 package no.item.xp.plugin.util
 
 import arrow.core.*
-import no.item.xp.plugin.extensions.getChildNodeAtXPath
-import no.item.xp.plugin.models.YesNoMaybe
 import javax.xml.xpath.XPathConstants
 import javax.xml.xpath.XPathExpression
 import javax.xml.xpath.XPathFactory
+import no.item.xp.plugin.extensions.getChildNodeAtXPath
+import no.item.xp.plugin.models.YesNoMaybe
 import org.w3c.dom.Document
 import org.w3c.dom.Node
 import org.w3c.dom.NodeList
@@ -18,7 +18,7 @@ val XPATH_CONFIG: XPathExpression = XPATH_FACTORY.newXPath().compile("//config")
 fun getFormElementChildren(doc: Document): Either<Throwable, Sequence<Node>> =
   getNodesByXpath(doc, XPATH_FORM_ELEMENT)
 
-fun  getXpathExpressionFromString(xpath: String): XPathExpression =
+fun getXpathExpressionFromString(xpath: String): XPathExpression =
   XPATH_FACTORY.newXPath().compile(xpath)
 
 fun getNodesByXpath(doc: Document, xpath: XPathExpression): Either<Throwable, Sequence<Node>> =
@@ -37,7 +37,7 @@ fun isOptional(node: Node): Boolean =
 
 fun isNotZero(node: Node): Boolean = Integer.parseInt(node.nodeValue) < 1
 
-fun getConfigOptions(node:Node): Option<HashMap<YesNoMaybe, Boolean>> =
+fun getConfigOptions(node: Node): Option<HashMap<YesNoMaybe, Boolean>> =
   node.getChildNodeAtXPath(XPATH_CONFIG)
   .flatMap {
     mapToHashMap(it)

@@ -45,8 +45,8 @@ open class GenerateTypeScriptTask @Inject constructor(private val extension: Gen
         val interfaceName: String? = generateFilePathForInterface(File(filePath))
         val xml: Either<Throwable, Sequence<Option<Any>>> = parse(document)
         xml.fold(
-          {throwable: Throwable -> handleError(throwable) },
-          {sequence: Sequence<Option<Any>> -> handleSuccess(sequence)}
+          { throwable: Throwable -> handleError(throwable) },
+          { sequence: Sequence<Option<Any>> -> handleSuccess(sequence) }
         )
       }
   }
@@ -89,12 +89,12 @@ open class GenerateTypeScriptTask @Inject constructor(private val extension: Gen
   }
 
   private fun handleSuccess(sequence: Sequence<Option<Any>>) {
-    //sende sequencen til writer'n
-    //writern tar imot de forskjellige typene av GeneratedField og printer disse.
+    // sende sequencen til writer'n
+    // writern tar imot de forskjellige typene av GeneratedField og printer disse.
     TODO("Not yet implemented")
   }
   private fun handleError(throwable: Throwable) {
-    //logge errors til console/fil.
+    // logge errors til console/fil.
     TODO("Not yet implemented")
   }
 }

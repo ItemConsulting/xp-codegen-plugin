@@ -23,5 +23,3 @@ fun parseTextLine(node: Node): Option<GeneratedField> {
     GeneratedField(name, type, nullable, subFields, comment)
   }.fix()
 }
-
-

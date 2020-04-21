@@ -1,12 +1,12 @@
 package no.item.xp.plugin
 
 import arrow.core.Option
+import kotlin.test.assertEquals
 import no.item.xp.plugin.models.GeneratedComboBoxField
 import no.item.xp.plugin.models.InputType
 import no.item.xp.plugin.parser.parseComboBox
 import org.junit.Test
 import org.w3c.dom.Node
-import kotlin.test.assertEquals
 
 class ComboBoxParserTest {
 
@@ -27,16 +27,15 @@ class ComboBoxParserTest {
     val generated: GeneratedComboBoxField? = generatedField.fold({ null }, { it })
     if (generated != null) {
       assertEquals(generated.name, "invite")
-      assertEquals(generated.comment.fold({""},{it}), "Invited")
+      assertEquals(generated.comment.fold({ "" }, { it }), "Invited")
       assertEquals(generated.nullable, true)
       assertEquals(generated.type, InputType.COMBOBOX)
       generated.optionList.fold(
         { null },
-        { it.forEach{
+        { it.forEach {
           (key, value) -> println("$key = $value")
-        }}
+        } }
       )
     }
   }
 }
-
