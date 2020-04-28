@@ -1,10 +1,10 @@
 package no.item.xp.plugin.util
 
 import arrow.core.*
-import no.item.xp.plugin.extensions.getChildNodeAtXPath
 import javax.xml.xpath.XPathConstants
 import javax.xml.xpath.XPathExpression
 import javax.xml.xpath.XPathFactory
+import no.item.xp.plugin.extensions.getChildNodeAtXPath
 import org.w3c.dom.Document
 import org.w3c.dom.Node
 import org.w3c.dom.NodeList

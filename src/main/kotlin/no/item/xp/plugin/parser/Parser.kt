@@ -2,8 +2,8 @@ package no.item.xp.plugin.parser
 
 import arrow.core.*
 import arrow.core.extensions.either.monad.flatMap
-import no.item.xp.plugin.models.GeneratedField
 import no.item.xp.plugin.extensions.applySequence
+import no.item.xp.plugin.models.GeneratedField
 import no.item.xp.plugin.util.getFormElementChildren
 import org.w3c.dom.Document
 import org.w3c.dom.Node
