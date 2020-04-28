@@ -8,35 +8,30 @@ import java.nio.file.Paths
 import java.util.ArrayList
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import no.item.xp.plugin.models.GeneratedField
-import no.item.xp.plugin.models.InputType
-import no.item.xp.plugin.models.XmlType
+import no.item.xp.plugin.models.*
 import no.item.xp.plugin.util.generateFilePathForInterface
 import no.item.xp.plugin.writer.TypeScriptWriter
 
 class TypeScriptWriterTest {
 
   private val path: String = Paths.get("").toAbsolutePath().toString()
-/*
+
   @Test
-  fun testTypeScriptWriterOnCombobox(){
+  @Suppress("ReplaceWithEnumMap")
+  fun testTypeScriptWriterOnComboBox() {
     val objList: ArrayList<GeneratedComboBoxField> = arrayListOf()
+    val hashMap: HashMap<YesNoMaybe, Boolean> = HashMap()
+    hashMap[YesNoMaybe.YES] = true
+    hashMap[YesNoMaybe.NO] = true
+    hashMap[YesNoMaybe.MAYBE] = true
     val generatedComboBoxField1 = GeneratedComboBoxField(
-      "String2",
+      "invite",
       InputType.COMBOBOX,
       true,
-      Some(hashMapOf()),
-      none()
-    )
-    val generatedComboBoxField2 = GeneratedComboBoxField(
-      "String2",
-      InputType.COMBOBOX,
-      false,
-      Some(hashMapOf()),
-      Some("comment2")
+      Some(hashMap),
+      Some("Invited")
     )
     objList.add(generatedComboBoxField1)
-    objList.add(generatedComboBoxField2)
 
     val type = XmlType.MIXIN
     val file = File("src/test/testFiles/testComboBox.xml")
@@ -46,16 +41,15 @@ class TypeScriptWriterTest {
     val bufferedReader: BufferedReader = bufferedReader(generatedTypeScriptFile)
     val inputString: String = bufferedReader.use { it.readText() }
     val outputString: String =
-      "export interface ComboBoxExample {" +
+      "export interface Mixin {" +
       "/**" +
       " * Invited" +
       " */" +
      " invite?: \"Yes\" | \"No\" | \"Maybe\";" +
-     "}" +
-     ";"
+     "}"
     assertEquals(inputString, outputString)
     Files.delete(Paths.get(generatedInterfaceFile))
-  }*/
+  }
 
   @Test
   fun testTypeScriptWriter() {

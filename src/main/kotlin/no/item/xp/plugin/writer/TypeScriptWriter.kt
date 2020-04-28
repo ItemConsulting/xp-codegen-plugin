@@ -2,6 +2,7 @@ package no.item.xp.plugin.writer
 
 import java.io.BufferedWriter
 import java.io.File
+import no.item.xp.plugin.models.GeneratedComboBoxField
 import no.item.xp.plugin.models.GeneratedField
 import no.item.xp.plugin.models.InputType
 import no.item.xp.plugin.models.XmlType
@@ -11,10 +12,9 @@ fun TypeScriptWriter(generatedTypeScriptInterfaceFile: String, type: XmlType, ob
   var content = "export interface "
   content += xmlTypeFormatted(type) + "{\n"
   for (fields: Any in objList) {
-    if (fields is GeneratedField) {
-      content += returnCommentFromLabel(fields)
-      content += returnStringValue(fields) + "\n"
-      content += "\n"
+    when (fields) {
+      is GeneratedField -> content += fields.showGeneratedField()
+      is GeneratedComboBoxField -> content += fields.showGeneratedComboBox()
     }
   }
   content += "}"

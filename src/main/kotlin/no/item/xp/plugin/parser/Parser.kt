@@ -1,6 +1,7 @@
 package no.item.xp.plugin.parser
 
-import arrow.core.*
+import arrow.core.Either
+import arrow.core.Option
 import arrow.core.extensions.either.monad.flatMap
 import no.item.xp.plugin.extensions.applySequence
 import no.item.xp.plugin.util.getFormElementChildren
