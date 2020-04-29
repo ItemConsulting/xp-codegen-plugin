@@ -23,3 +23,13 @@ fun parseTextLine(node: Node): Option<GeneratedField> {
     GeneratedField(name, type, nullable, subFields, comment)
   }.fix()
 }
+
+fun getTypeForGeneratedField(node: Node): Option<InputType> =
+  node.getAttributeAsOption("type")
+    .map {
+      InputType.valueOf(it.toUpperCase())
+    }
+
+fun getCommentForGeneratedField(node: Node): Option<String> =
+  node.getChildNodeAtXPath(getXpathExpressionFromString("label"))
+    .flatMap(Node::getTextContentAsOption)
