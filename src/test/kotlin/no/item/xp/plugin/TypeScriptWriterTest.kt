@@ -34,12 +34,12 @@ class TypeScriptWriterTest {
     val bufferedReader: BufferedReader = bufferedReader(generatedTypeScriptFile)
     val inputString: String = bufferedReader.use { it.readText() }
     val outputString: String =
-      "export interface Mixin {" +
+      "export interface Mixin{\n" +
         "/**" +
-        " * Invited" +
-        " */" +
-        " invite?: \"Yes\" | \"No\" | \"Maybe\";" +
-        "}"
+        " Invited" +
+        " */\n" +
+        "invite?: \"Yes\" | \"No\" | \"Maybe\";" +
+        "\n\n}"
     assertEquals(inputString, outputString)
     Files.delete(Paths.get(generatedInterfaceFile))
   }
