@@ -29,7 +29,6 @@ class TypeScriptWriterTest {
     val type = XmlType.MIXIN
     val file = File("src/test/testFiles/testComboBox.xml")
     val generatedInterfaceFile: String = generateFilePathForInterface(file)
-
     val generatedTypeScriptFile: String = typeScriptWriter(generatedInterfaceFile, type, objList)
     val bufferedReader: BufferedReader = bufferedReader(generatedTypeScriptFile)
     val inputString: String = bufferedReader.use { it.readText() }
