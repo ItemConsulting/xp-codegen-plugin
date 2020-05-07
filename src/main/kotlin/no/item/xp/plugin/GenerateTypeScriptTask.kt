@@ -10,7 +10,7 @@ import java.nio.file.Paths
 import javax.inject.Inject
 import javax.xml.parsers.DocumentBuilder
 import javax.xml.parsers.DocumentBuilderFactory
-import no.item.xp.plugin.models.GeneratedField
+import no.item.xp.plugin.models.GeneratedInputType
 import no.item.xp.plugin.models.XmlFile
 import no.item.xp.plugin.models.XmlType
 import no.item.xp.plugin.parser.parse
@@ -41,12 +41,11 @@ open class GenerateTypeScriptTask @Inject constructor(private val extension: Gen
       .map {
         val xmlFile: XmlFile = generateXmlFile(filePath, it)
         val document: Document = getXmlDocumentByFile(xmlFile)
-        parse(document)
         val interfaceName: String? = generateFilePathForInterface(File(filePath))
-        val xml: Either<Throwable, Sequence<Option<GeneratedField>>> = parse(document)
+        val xml: Either<Throwable, Sequence<Option<GeneratedInputType>>> = parse(document)
         xml.fold(
           { throwable: Throwable -> handleError(throwable) },
-          { sequence: Sequence<Option<GeneratedField>> -> handleSuccess(sequence) }
+          { sequence: Sequence<Option<GeneratedInputType>> -> handleSuccess(sequence) }
         )
       }
   }
@@ -88,7 +87,7 @@ open class GenerateTypeScriptTask @Inject constructor(private val extension: Gen
     )
   }
 
-  private fun handleSuccess(sequence: Sequence<Option<GeneratedField>>) {
+  private fun handleSuccess(sequence: Sequence<Option<GeneratedInputType>>) {
     TODO("Not yet implemented")
   }
   private fun handleError(throwable: Throwable) {

@@ -8,29 +8,52 @@ import java.nio.file.Paths
 import java.util.ArrayList
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import no.item.xp.plugin.models.GeneratedField
-import no.item.xp.plugin.models.InputType
-import no.item.xp.plugin.models.XmlType
+import no.item.xp.plugin.models.*
 import no.item.xp.plugin.util.generateFilePathForInterface
-import no.item.xp.plugin.writer.TypeScriptWriter
+import no.item.xp.plugin.writer.typeScriptWriter
 
 class TypeScriptWriterTest {
 
+  private val path: String = Paths.get("").toAbsolutePath().toString()
+
+  @Test
+  fun testTypeScriptWriterOnComboBox() {
+    val objList: ArrayList<UnionOfStringField> = arrayListOf()
+    val unionOfStringField = UnionOfStringField(
+      "invite",
+      true,
+      Some("Invited"),
+      sequenceOf("Yes", "No", "Maybe")
+    )
+    objList.add(unionOfStringField)
+    val type = XmlType.MIXIN
+    val file = File("src/test/testFiles/testComboBox.xml")
+    val generatedInterfaceFile: String = generateFilePathForInterface(file)
+    val generatedTypeScriptFile: String = typeScriptWriter(generatedInterfaceFile, type, objList)
+    val bufferedReader: BufferedReader = bufferedReader(generatedTypeScriptFile)
+    val inputString: String = bufferedReader.use { it.readText() }
+    val outputString: String =
+      "export interface Mixin{\n" +
+        "/**" +
+        " Invited" +
+        " */\n" +
+        "invite?: \"Yes\" | \"No\" | \"Maybe\";" +
+        "\n\n}"
+    assertEquals(inputString, outputString)
+    Files.delete(Paths.get(generatedInterfaceFile))
+  }
+
   @Test
   fun testTypeScriptWriter() {
-    val objList: ArrayList<GeneratedField> = arrayListOf()
-    val generatedField1 = GeneratedField(
+    val objList: ArrayList<StringField> = arrayListOf()
+    val generatedField1 = StringField(
       "String1",
-      InputType.TEXTLINE,
       false,
-      emptySequence(),
       Some("comment1")
     )
-    val generatedField2 = GeneratedField(
+    val generatedField2 = StringField(
       "String2",
-      InputType.TEXTLINE,
       true,
-      emptySequence(),
       Some("comment2")
     )
     objList.add(generatedField1)
@@ -39,12 +62,11 @@ class TypeScriptWriterTest {
     val type = XmlType.MIXIN
     val file = File("src/test/testFiles/testMixin.xml")
     val generatedInterfaceFile: String = generateFilePathForInterface(file)
-    val path: String = Paths.get("").toAbsolutePath().toString()
 
     assertEquals("\\src\\test\\testFiles\\testMixin.ts", generatedInterfaceFile.removePrefix(path))
 
-    val generatedTypeScriptFile: String = TypeScriptWriter(generatedInterfaceFile, type, objList)
-    val bufferedReader: BufferedReader = File(generatedTypeScriptFile).bufferedReader()
+    val generatedTypeScriptFile: String = typeScriptWriter(generatedInterfaceFile, type, objList)
+    val bufferedReader: BufferedReader = bufferedReader(generatedTypeScriptFile)
     val inputString: String = bufferedReader.use { it.readText() }
     val outputString: String = "export interface Mixin{\n" +
       "/** comment1 */\n" +
@@ -57,4 +79,6 @@ class TypeScriptWriterTest {
     assertEquals(inputString, outputString)
     Files.delete(Paths.get(generatedInterfaceFile))
   }
+
+  private fun bufferedReader(file: String): BufferedReader = File(file).bufferedReader()
 }

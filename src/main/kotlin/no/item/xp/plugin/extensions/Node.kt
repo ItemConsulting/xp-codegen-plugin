@@ -1,5 +1,3 @@
-@file:Suppress("unused")
-
 package no.item.xp.plugin.extensions
 
 import arrow.core.Option
@@ -18,7 +16,7 @@ fun Node.getChildNodeAtXPath(xpath: String): Option<Node> =
   getChildNodeAtXPath(getXpathExpressionFromString(xpath))
 
 fun Node.getAttributeAsOption(attributeName: String): Option<String> =
-  Option.fromNullable(this.attributes)
+  Option.fromNullable(this.firstChild.attributes)
     .flatMap {
       Option.fromNullable(it.getNamedItem(attributeName))
     }

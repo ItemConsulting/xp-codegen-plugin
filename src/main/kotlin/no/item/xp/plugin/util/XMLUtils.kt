@@ -12,6 +12,7 @@ import org.w3c.dom.NodeList
 val XPATH_FACTORY: XPathFactory = XPathFactory.newInstance()
 val XPATH_FORM_ELEMENT: XPathExpression = XPATH_FACTORY.newXPath().compile("//form/*[type]")
 val XPATH_MINIMUM_ELEMENT: XPathExpression = XPATH_FACTORY.newXPath().compile("//input/occurrences/@minimum")
+val XPATH_CONFIG: XPathExpression = XPATH_FACTORY.newXPath().compile("//config")
 
 fun getFormElementChildren(doc: Document): Either<Throwable, Sequence<Node>> =
   getNodesByXpath(doc, XPATH_FORM_ELEMENT)
@@ -34,3 +35,10 @@ fun isOptional(node: Node): Boolean =
     )
 
 fun isNotZero(node: Node): Boolean = Integer.parseInt(node.nodeValue) < 1
+
+fun getConfigOptions(node: Node): Sequence<String> =
+  node.getChildNodeAtXPath(XPATH_CONFIG)
+    .fold(
+      { emptySequence() },
+      { getChildNodesTextContent(it) }
+    )

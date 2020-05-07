@@ -1,44 +1,27 @@
 package no.item.xp.plugin
 
 import arrow.core.Option
-import arrow.core.right
-import java.io.ByteArrayInputStream
-import javax.xml.parsers.DocumentBuilder
-import javax.xml.parsers.DocumentBuilderFactory
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import no.item.xp.plugin.models.GeneratedField
-import no.item.xp.plugin.models.InputType
+import no.item.xp.plugin.models.StringField
 import no.item.xp.plugin.parser.parseTextLine
-import org.w3c.dom.Document
 import org.w3c.dom.Node
 
 class TextLineParserTest {
 
-  private fun getNodeFromString(stringNode: String): Node {
-    val builder: DocumentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder()
-    val strBuilder = StringBuilder()
-    strBuilder.append(stringNode)
-    val byteStream = ByteArrayInputStream(strBuilder.toString().toByteArray())
-    val doc: Document = builder.parse(byteStream)
-    doc.documentElement.normalize()
-    return doc
-  }
-
   @Test
   fun textLineParserTestNoOccurrences() {
     val nodeString: String =
-      "<input type=\"COMBOBOX\" name=\"firstTextLine\">" +
+      "<input type=\"TextLine\" name=\"firstTextLine\">" +
       "<label>The First Text Line</label>" +
       "</input>"
     val node: Node = getNodeFromString(nodeString)
-    val generatedField: Option<GeneratedField> = parseTextLine(node)
-    val generated: GeneratedField? = generatedField.fold({ null }, { it })
+    val generatedField: Option<StringField> = parseTextLine(node)
+    val generated: StringField? = generatedField.fold({ null }, { it })
     if (generated != null) {
       assertEquals(generated.nullable, true)
-      assertEquals(generated.comment.right().toString(), "The First Text Line")
+      assertEquals(generated.comment.fold({ "" }, { it }), "The First Text Line")
       assertEquals(generated.name, "firstTextLine")
-      assertEquals(generated.type, InputType.COMBOBOX)
     }
   }
 
@@ -50,13 +33,12 @@ class TextLineParserTest {
       "<occurrences minimum=\"0\" maximum=\"1\"/>" +
       "</input>"
     val node: Node = getNodeFromString(nodeString)
-    val generatedField: Option<GeneratedField> = parseTextLine(node)
-    val generated: GeneratedField? = generatedField.fold({ null }, { it })
+    val generatedField: Option<StringField> = parseTextLine(node)
+    val generated: StringField? = generatedField.fold({ null }, { it })
     if (generated != null) {
       assertEquals(generated.nullable, true)
-      assertEquals(generated.comment.right().toString(), "The Second Text Line")
+      assertEquals(generated.comment.fold({ "" }, { it }), "The Second Text Line")
       assertEquals(generated.name, "secondTextLine")
-      assertEquals(generated.type, InputType.TEXTLINE)
     }
   }
 
@@ -68,13 +50,12 @@ class TextLineParserTest {
         "<occurrences minimum=\"1\" maximum=\"1\"/>" +
         "</input>"
     val node: Node = getNodeFromString(nodeString)
-    val generatedField: Option<GeneratedField> = parseTextLine(node)
-    val generated: GeneratedField? = generatedField.fold({ null }, { it })
+    val generatedField: Option<StringField> = parseTextLine(node)
+    val generated: StringField? = generatedField.fold({ null }, { it })
     if (generated != null) {
       assertEquals(generated.nullable, false)
-      assertEquals(generated.comment.right().toString(), "The Third Text Line")
+      assertEquals(generated.comment.fold({ "" }, { it }), "The Third Text Line")
       assertEquals(generated.name, "thirdTextLine")
-      assertEquals(generated.type, InputType.TEXTLINE)
     }
   }
   @Test
@@ -86,13 +67,12 @@ class TextLineParserTest {
         "whatever" +
         "</input>"
     val node: Node = getNodeFromString(nodeString)
-    val generatedField: Option<GeneratedField> = parseTextLine(node)
-    val generated: GeneratedField? = generatedField.fold({ null }, { it })
+    val generatedField: Option<StringField> = parseTextLine(node)
+    val generated: StringField? = generatedField.fold({ null }, { it })
     if (generated != null) {
       assertEquals(generated.nullable, false)
-      assertEquals(generated.comment.right().toString(), "The Third Text Line")
+      assertEquals(generated.comment.fold({ "" }, { it }), "The Third Text Line")
       assertEquals(generated.name, "thirdTextLine")
-      assertEquals(generated.type, InputType.TEXTLINE)
     }
   }
 }

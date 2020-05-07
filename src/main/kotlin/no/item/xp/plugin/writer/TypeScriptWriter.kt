@@ -2,15 +2,15 @@ package no.item.xp.plugin.writer
 
 import java.io.BufferedWriter
 import java.io.File
-import no.item.xp.plugin.models.GeneratedField
-import no.item.xp.plugin.models.InputType
+import no.item.xp.plugin.models.GeneratedInputType
+import no.item.xp.plugin.models.StringField
+import no.item.xp.plugin.models.UnionOfStringField
 import no.item.xp.plugin.models.XmlType
 
-@Suppress("FunctionName")
-fun TypeScriptWriter(generatedTypeScriptInterfaceFile: String, type: XmlType, objList: List<GeneratedField>): String {
+fun typeScriptWriter(generatedTypeScriptInterfaceFile: String, type: XmlType, objList: List<GeneratedInputType>): String {
   var content = "export interface "
   content += xmlTypeFormatted(type) + "{\n"
-  for (fields: GeneratedField in objList) {
+  for (fields: GeneratedInputType in objList) {
     content += returnCommentFromLabel(fields)
     content += returnStringValue(fields) + "\n"
     content += "\n"
@@ -22,27 +22,34 @@ fun TypeScriptWriter(generatedTypeScriptInterfaceFile: String, type: XmlType, ob
   return generatedTypeScriptInterfaceFile
 }
 
-fun returnStringValue(fields: GeneratedField): String {
+fun returnStringValue(fields: GeneratedInputType): String {
   val name: String = fields.name
   val nullable: String = isNullable(fields.nullable)
   val separator = ": "
-  val type: String = typeScriptType(fields.type)
+  val type: String = typeScriptType(fields)
   val end = ";"
   return "$name$nullable$separator$type$end"
 }
 
-fun typeScriptType(type: InputType): String {
-  return when (type) {
-    InputType.CHECKBOX -> "boolean"
-    InputType.DOUBLE -> "number"
-    InputType.LONG -> "number"
-    else -> "string"
+fun typeScriptType(fields: GeneratedInputType): String {
+  return when (fields) {
+    is UnionOfStringField -> showUnion(fields.optionList)
+    is StringField -> "string"
   }
 }
-
-fun isNullable(valueIsNullable: Boolean): String {
-  return if (valueIsNullable) "?" else ""
+fun showUnion(optionList: Sequence<String>): String {
+  var returnValue = ""
+  optionList.forEach {
+    returnValue += "\"" + it + "\""
+    if (it != optionList.last() && optionList.count()> 1) {
+      returnValue += " | "
+    }
+  }
+  return returnValue
 }
+
+fun isNullable(valueIsNullable: Boolean): String =
+  if (valueIsNullable) "?" else ""
 
 fun xmlTypeFormatted(type: XmlType): String {
   return when (type) {
@@ -57,7 +64,7 @@ fun xmlTypeFormatted(type: XmlType): String {
   }
 }
 
-fun returnCommentFromLabel(fields: GeneratedField): String =
+fun returnCommentFromLabel(fields: GeneratedInputType): String =
   fields.comment
     .filter { it.isNotBlank() }
     .fold(
