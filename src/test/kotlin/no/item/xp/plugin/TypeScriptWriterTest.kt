@@ -17,6 +17,32 @@ class TypeScriptWriterTest {
   private val path: String = Paths.get("").toAbsolutePath().toString()
 
   @Test
+  fun testOnCheckBox() {
+    val objList: ArrayList<BooleanField> = arrayListOf()
+    val generatedField = BooleanField(
+      "gdprSigned",
+      false,
+      Some("GDPR Signed")
+    )
+    objList.add(generatedField)
+    val type = XmlType.PART
+    val file = File("src/test/testFiles/testCheckBox.xml")
+    val generatedInterfaceFile: String = generateFilePathForInterface(file)
+    val generatedTypeScriptFile: String = typeScriptWriter(generatedInterfaceFile, type, objList)
+    val bufferedReader: BufferedReader = bufferedReader(generatedTypeScriptFile)
+    val inputString: String = bufferedReader.use { it.readText() }
+    val outputString: String =
+      "export interface Part{\n" +
+        "/**" +
+        " GDPR Signed" +
+        " */\n" +
+        "gdprSigned: boolean;\n\n" +
+        "}"
+    assertEquals(inputString, outputString)
+    Files.delete(Paths.get(generatedInterfaceFile))
+  }
+
+  @Test
   fun testTypeScriptWriterOnComboBox() {
     val objList: ArrayList<UnionOfStringField> = arrayListOf()
     val unionOfStringField = UnionOfStringField(
