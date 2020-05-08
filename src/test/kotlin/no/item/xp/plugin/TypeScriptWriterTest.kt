@@ -43,6 +43,59 @@ class TypeScriptWriterTest {
   }
 
   @Test
+  fun testOnContentSelector() {
+    val objList: ArrayList<StringField> = arrayListOf()
+    val generatedField = StringField(
+      "fabTarget",
+      true,
+      Some("FAB button target")
+    )
+    objList.add(generatedField)
+    val type = XmlType.CONTENT_TYPE
+    val file = File("src/test/testFiles/testContentSelector.xml")
+    val generatedInterfaceFile: String = generateFilePathForInterface(file)
+    val generatedTypeScriptFile: String = typeScriptWriter(generatedInterfaceFile, type, objList)
+    val bufferedReader: BufferedReader = bufferedReader(generatedTypeScriptFile)
+    val inputString: String = bufferedReader.use { it.readText() }
+    val outputString: String =
+      "export interface ContentType{\n" +
+        "/**" +
+        " FAB button target" +
+        " */\n" +
+        "fabTarget?: string;\n\n" +
+        "}"
+    assertEquals(inputString, outputString)
+    Files.delete(Paths.get(generatedInterfaceFile))
+  }
+
+  @Test
+  fun testOnContentSelectorArray() {
+    val objList: ArrayList<MultipleField> = arrayListOf()
+    val generatedField = MultipleField(
+      "members",
+      true,
+      Some("Members"),
+      arrayOf<String>("employee", "some").asSequence()
+    )
+    objList.add(generatedField)
+    val type = XmlType.CONTENT_TYPE
+    val file = File("src/test/testFiles/testContentSelectorMultiple.xml")
+    val generatedInterfaceFile: String = generateFilePathForInterface(file)
+    val generatedTypeScriptFile: String = typeScriptWriter(generatedInterfaceFile, type, objList)
+    val bufferedReader: BufferedReader = bufferedReader(generatedTypeScriptFile)
+    val inputString: String = bufferedReader.use { it.readText() }
+    val outputString: String =
+      "export interface ContentType{\n" +
+        "/**" +
+        " Members" +
+        " */\n" +
+        "members?: Array<string>;\n\n" +
+        "}"
+    assertEquals(inputString, outputString)
+    Files.delete(Paths.get(generatedInterfaceFile))
+  }
+
+  @Test
   fun testTypeScriptWriterOnComboBox() {
     val objList: ArrayList<UnionOfStringField> = arrayListOf()
     val unionOfStringField = UnionOfStringField(
