@@ -26,6 +26,7 @@ private fun createGeneratedField(node: Node): Either<Throwable, Option<Generated
   getInputType(node)
     .flatMap {
       when (it) {
+        "contentselector" -> Either.right(parseContentSelector(node))
         "checkbox" -> Either.right(parseCheckBox(node))
         "combobox" -> Either.right(parseComboBox(node))
         "textline" -> Either.right(parseTextLine(node))

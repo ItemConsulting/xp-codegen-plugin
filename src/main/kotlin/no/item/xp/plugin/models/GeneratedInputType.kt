@@ -28,4 +28,11 @@ data class BooleanField(
   override val name: String,
   override var nullable: Boolean,
   override val comment: Option<String>
-):GeneratedInputType()
+) : GeneratedInputType()
+
+data class MultipleField(
+  override val name: String,
+  override val nullable: Boolean,
+  override val comment: Option<String>,
+  val configList: Sequence<String>
+) : GeneratedInputType()
