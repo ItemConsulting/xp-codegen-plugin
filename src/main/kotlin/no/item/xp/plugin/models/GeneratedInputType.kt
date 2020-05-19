@@ -22,3 +22,10 @@ data class UnionOfStringField(
   override val comment: Option<String>,
   val optionList: Sequence<String>
 ) : GeneratedInputType()
+
+// name: boolean
+data class BooleanField(
+  override val name: String,
+  override var nullable: Boolean,
+  override val comment: Option<String>
+):GeneratedInputType()

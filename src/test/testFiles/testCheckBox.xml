@@ -1,0 +1,7 @@
+<mixin>
+  <form>
+    <input type="checkbox" name="checkbox">
+      <label>checkbox test</label>
+    </input>
+  </form>
+</mixin>

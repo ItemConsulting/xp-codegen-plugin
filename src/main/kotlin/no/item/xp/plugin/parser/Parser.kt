@@ -1,3 +1,5 @@
+@file:Suppress("SpellCheckingInspection")
+
 package no.item.xp.plugin.parser
 
 import arrow.core.*
@@ -24,8 +26,9 @@ private fun createGeneratedField(node: Node): Either<Throwable, Option<Generated
   getInputType(node)
     .flatMap {
       when (it) {
-        "textline" -> Either.right(parseTextLine(node))
+        "checkbox" -> Either.right(parseCheckBox(node))
         "combobox" -> Either.right(parseComboBox(node))
+        "textline" -> Either.right(parseTextLine(node))
         else -> Either.left(Exception("Input type \"$it\" not found"))
       }
     }

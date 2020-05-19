@@ -1,11 +1,8 @@
 package no.item.xp.plugin.writer
 
+import no.item.xp.plugin.models.*
 import java.io.BufferedWriter
 import java.io.File
-import no.item.xp.plugin.models.GeneratedInputType
-import no.item.xp.plugin.models.StringField
-import no.item.xp.plugin.models.UnionOfStringField
-import no.item.xp.plugin.models.XmlType
 
 fun typeScriptWriter(generatedTypeScriptInterfaceFile: String, type: XmlType, objList: List<GeneratedInputType>): String {
   var content = "export interface "
@@ -35,6 +32,7 @@ fun typeScriptType(fields: GeneratedInputType): String {
   return when (fields) {
     is UnionOfStringField -> showUnion(fields.optionList)
     is StringField -> "string"
+    is BooleanField -> "boolean"
   }
 }
 fun showUnion(optionList: Sequence<String>): String {
