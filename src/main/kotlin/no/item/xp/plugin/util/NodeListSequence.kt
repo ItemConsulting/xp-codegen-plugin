@@ -1,8 +1,8 @@
 package no.item.xp.plugin.util
 
-import kotlin.collections.Iterator as KIterator
 import org.w3c.dom.Node
 import org.w3c.dom.NodeList
+import kotlin.collections.Iterator as KIterator
 
 class NodeListSequence(private val nodeList: NodeList) : Sequence<Node> {
 

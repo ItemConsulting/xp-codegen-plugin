@@ -5,7 +5,7 @@ import java.io.File
 fun generateFilePathForInterface(fileName: File): String {
   val path: String = getPathFromFile(fileName.absolutePath)
   val typeScriptFilename: String = fileName.nameWithoutExtension
-  val newFilePath = "$path\\$typeScriptFilename.ts"
+  val newFilePath = "$path/$typeScriptFilename.ts"
   File(newFilePath).createNewFile()
   return newFilePath
 }

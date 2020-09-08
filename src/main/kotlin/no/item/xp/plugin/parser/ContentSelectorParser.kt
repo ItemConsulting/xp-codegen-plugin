@@ -25,16 +25,17 @@ fun parseContentSelectorSingle(node: Node): Option<StringField> =
   parseTextLine(node)
 
 fun parseContentSelectorMultiple(node: Node): Option<MultipleField> {
-  return Option.applicative().map(
+  return Option.applicative().mapN(
     getNameForGeneratedField(node),
     Some(isOptional(node)),
     Some(getCommentForGeneratedField(node)),
     Some(getConfigOptions(node))
-  ) { (name: String,
-        nullable: Boolean,
-        comment: Option<String>,
-        configs: Sequence<String>
-      ) ->
+  ) { (
+    name: String,
+    nullable: Boolean,
+    comment: Option<String>,
+    configs: Sequence<String>
+  ) ->
     MultipleField(name, nullable, comment, configs)
   }.fix()
 }

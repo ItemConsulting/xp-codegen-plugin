@@ -1,13 +1,13 @@
 package no.item.xp.plugin.util
 
 import arrow.core.*
-import javax.xml.xpath.XPathConstants
-import javax.xml.xpath.XPathExpression
-import javax.xml.xpath.XPathFactory
 import no.item.xp.plugin.extensions.getChildNodeAtXPath
 import org.w3c.dom.Document
 import org.w3c.dom.Node
 import org.w3c.dom.NodeList
+import javax.xml.xpath.XPathConstants
+import javax.xml.xpath.XPathExpression
+import javax.xml.xpath.XPathFactory
 
 val XPATH_FACTORY: XPathFactory = XPathFactory.newInstance()
 val XPATH_FORM_ELEMENT: XPathExpression = XPATH_FACTORY.newXPath().compile("//form/*[type]")

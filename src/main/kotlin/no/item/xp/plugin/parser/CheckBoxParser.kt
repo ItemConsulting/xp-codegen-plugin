@@ -10,7 +10,7 @@ import no.item.xp.plugin.util.getNameForGeneratedField
 import org.w3c.dom.Node
 
 fun parseCheckBox(node: Node): Option<BooleanField> {
-  return Option.applicative().map(
+  return Option.applicative().mapN(
     getNameForGeneratedField(node),
     Some(false),
     Some(getCommentForGeneratedField(node))

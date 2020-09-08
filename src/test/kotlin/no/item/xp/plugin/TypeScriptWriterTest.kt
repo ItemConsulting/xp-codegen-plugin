@@ -1,6 +1,9 @@
 package no.item.xp.plugin
 
 import arrow.core.Some
+import no.item.xp.plugin.models.*
+import no.item.xp.plugin.util.generateFilePathForInterface
+import no.item.xp.plugin.writer.typeScriptWriter
 import java.io.BufferedReader
 import java.io.File
 import java.nio.file.Files
@@ -8,9 +11,6 @@ import java.nio.file.Paths
 import java.util.ArrayList
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import no.item.xp.plugin.models.*
-import no.item.xp.plugin.util.generateFilePathForInterface
-import no.item.xp.plugin.writer.typeScriptWriter
 
 class TypeScriptWriterTest {
 
@@ -122,7 +122,7 @@ class TypeScriptWriterTest {
     Files.delete(Paths.get(generatedInterfaceFile))
   }
 
-  @Test
+  /*@Test
   fun testTypeScriptWriter() {
     val objList: ArrayList<StringField> = arrayListOf()
     val generatedField1 = StringField(
@@ -157,7 +157,7 @@ class TypeScriptWriterTest {
       "}"
     assertEquals(inputString, outputString)
     Files.delete(Paths.get(generatedInterfaceFile))
-  }
+  }*/
 
   private fun bufferedReader(file: String): BufferedReader = File(file).bufferedReader()
 }

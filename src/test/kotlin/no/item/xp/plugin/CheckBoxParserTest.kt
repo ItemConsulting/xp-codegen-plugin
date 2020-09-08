@@ -1,11 +1,11 @@
 package no.item.xp.plugin
 
 import arrow.core.Option
-import kotlin.test.assertEquals
 import no.item.xp.plugin.models.BooleanField
 import no.item.xp.plugin.parser.parseCheckBox
 import org.junit.Test
 import org.w3c.dom.Node
+import kotlin.test.assertEquals
 
 class CheckBoxParserTest {
   @Test

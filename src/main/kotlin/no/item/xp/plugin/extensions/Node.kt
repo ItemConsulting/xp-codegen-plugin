@@ -1,10 +1,10 @@
 package no.item.xp.plugin.extensions
 
 import arrow.core.Option
-import javax.xml.xpath.XPathConstants
-import javax.xml.xpath.XPathExpression
 import no.item.xp.plugin.util.getXpathExpressionFromString
 import org.w3c.dom.Node
+import javax.xml.xpath.XPathConstants
+import javax.xml.xpath.XPathExpression
 
 fun Node.getTextContentAsOption(): Option<String> =
   Option.fromNullable(this.textContent)
@@ -26,5 +26,5 @@ fun Node.getAttributeAsOption(attributeName: String): Option<String> =
 
 fun Node.getChildNodesSequence(): Sequence<Node> =
   (0 until this.childNodes.length)
-      .asSequence()
-      .map { this.childNodes.item(it) }
+    .asSequence()
+    .map { this.childNodes.item(it) }

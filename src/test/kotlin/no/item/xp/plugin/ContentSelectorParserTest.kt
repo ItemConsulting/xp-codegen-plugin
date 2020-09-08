@@ -2,14 +2,14 @@ package no.item.xp.plugin
 
 import arrow.core.Option
 import arrow.core.extensions.sequence.foldable.isEmpty
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
 import no.item.xp.plugin.models.GeneratedInputType
 import no.item.xp.plugin.models.MultipleField
 import no.item.xp.plugin.models.StringField
 import no.item.xp.plugin.parser.parseContentSelector
 import org.junit.Test
 import org.w3c.dom.Node
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 
 class ContentSelectorParserTest {
 

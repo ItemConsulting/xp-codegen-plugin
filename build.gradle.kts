@@ -1,7 +1,7 @@
 import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
 
 plugins {
-  `java`
+  java
   `java-gradle-plugin`
   `maven-publish`
   id("org.jetbrains.kotlin.jvm") version "1.3.61"
@@ -17,7 +17,7 @@ repositories {
   jcenter()
 }
 
-val arrowVersion = "0.10.4"
+val arrowVersion = "0.10.5"
 
 dependencies {
   implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
@@ -33,14 +33,16 @@ dependencies {
 }
 
 gradlePlugin {
-  val generateTypeScript by plugins.creating {
-    id = "no.item.xp.plugin.generateTypeScript"
-    implementationClass = "no.item.xp.plugin.GenerateTypeScriptPlugin"
+  plugins {
+    create("generateTypeScript") {
+      id = "no.item.xp.plugin.generateTypeScript"
+      implementationClass = "no.item.xp.plugin.GenerateTypeScriptPlugin"
+    }
   }
 }
 
 ktlint {
-  version.set("0.36.0")
+  version.set("0.38.1")
   debug.set(false)
   verbose.set(true)
   android.set(false)

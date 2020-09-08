@@ -11,7 +11,7 @@ import no.item.xp.plugin.util.isOptional
 import org.w3c.dom.Node
 
 fun parseTextLine(node: Node): Option<StringField> {
-  return Option.applicative().map(
+  return Option.applicative().mapN(
     getNameForGeneratedField(node),
     Some(isOptional(node)),
     Some(getCommentForGeneratedField(node))

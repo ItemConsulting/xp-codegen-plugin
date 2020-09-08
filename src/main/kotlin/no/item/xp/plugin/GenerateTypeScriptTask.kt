@@ -3,13 +3,6 @@ package no.item.xp.plugin
 import arrow.core.Either
 import arrow.core.Option
 import arrow.core.extensions.list.foldable.find
-import java.io.File
-import java.lang.Exception
-import java.nio.file.Path
-import java.nio.file.Paths
-import javax.inject.Inject
-import javax.xml.parsers.DocumentBuilder
-import javax.xml.parsers.DocumentBuilderFactory
 import no.item.xp.plugin.models.GeneratedInputType
 import no.item.xp.plugin.models.XmlFile
 import no.item.xp.plugin.models.XmlType
@@ -18,15 +11,22 @@ import no.item.xp.plugin.util.generateFilePathForInterface
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 import org.w3c.dom.Document
+import java.io.File
+import java.lang.Exception
+import java.nio.file.Path
+import java.nio.file.Paths
+import javax.inject.Inject
+import javax.xml.parsers.DocumentBuilder
+import javax.xml.parsers.DocumentBuilderFactory
 
 open class GenerateTypeScriptTask @Inject constructor(private val extension: GenerateTypeScriptExtension) : DefaultTask() {
 
   private val docBuilder: DocumentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder()
 
   @TaskAction
-    fun generateTypeScript() {
-      val files: Sequence<String> = findXmlFiles()
-      files.forEach { parseFile(it) }
+  fun generateTypeScript() {
+    val files: Sequence<String> = findXmlFiles()
+    files.forEach { parseFile(it) }
   }
   private fun findXmlFiles(): Sequence<String> {
     return File(extension.fileDir)
