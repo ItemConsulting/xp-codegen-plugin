@@ -21,21 +21,25 @@ This plugin can create interfaces for:
  
  ## Usage
  
- To get started add the following to your projects *build.gradle*-file:  
+To get started add the following to your project's *build.gradle* file:  
  
  ```groovy
- buildscript {
-   dependencies {
-     classpath "no.item.xp.plugin:xp-ts-codegen-plugin:0.0.3-SNAPSHOT"
-   }
- }
- 
- apply plugin: "no.item.xp.plugin.generateTypeScript"
+plugins {
+    id  'no.item.xp.codegen' version '1.0.0-SNAPSHOT'
+}
+
+jar {
+    // Add this before your TypeScript build task
+    dependsOn += generateTypeScript
+}
+
  ```
 
 ## Example
 
-Given that we have a content-type described in **content-types/article/article.xml**:
+Here is an example of how an xml-file can be parsed to create a TypeScript interface.
+
+We have created a content type for `Article` in the file **content-types/article/article.xml**:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -56,7 +60,8 @@ Given that we have a content-type described in **content-types/article/article.x
 </content-type>
 ```
 
-Running *enonic-ts-codegen* will generate a TypeScript-interface in the file **content-types/article/article.ts**:
+We can then run the `./gradlew generateTypeScript` task, which will generate a new file in 
+**content-types/article/article.ts** with the following content:
 
 ```typescript
 export interface Article {
@@ -72,19 +77,48 @@ export interface Article {
 }
 ```
 
+
+
 ## Development
 
-### Installing locally
+### Local manual testing
 
-To install this plugin locally for testing you can run:
+To test this plugin locally you can run the following task to publish the plugin locally on your machine.
 
 ```bash
 ./gradlew publishToMavenLocal
 ```
 
+Then – in your Enonic-project – you can add the following to your build.gradle file to use the plugin:
+
+ ```groovy
+ buildscript {
+   dependencies {
+     classpath "no.item.xp.plugin:xp-codegen-plugin:1.0.0-SNAPSHOT"
+   }
+ }
+ 
+ apply plugin: "no.item.xp.codegen"
+ ```
+
+To use the plugin your can just run the following task:
+
+```bash
+./gradlew generateTypeScript
+```
+
 ### Running tests
+
+To run the unittests in the project you can run:
 
 ```bash
 ./gradlew test
 ```
 
+To run automatic formatting of the Kotlin code you can run:
+
+```bash
+./gradlew klintFormat
+```
+
+Automatic formatting should always be run before commiting code to git!
