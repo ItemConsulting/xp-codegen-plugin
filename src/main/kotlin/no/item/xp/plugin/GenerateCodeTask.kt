@@ -1,12 +1,8 @@
 package no.item.xp.plugin
 
-import arrow.core.extensions.either.monad.flatMap
-import arrow.core.orNull
-import no.item.xp.plugin.extensions.getFormNode
-import no.item.xp.plugin.parser.parseInterfaceModel
+import no.item.xp.plugin.parser.resolveMixinGraph
 import no.item.xp.plugin.util.IS_MIXIN
 import no.item.xp.plugin.util.getTargetFile
-import no.item.xp.plugin.util.parseXml
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.model.ObjectFactory
@@ -35,15 +31,9 @@ open class GenerateCodeTask @Inject constructor(objects: ObjectFactory, private 
   private fun execute(inputChanges: InputChanges) {
     val workQueue = workerExecutor.noIsolation()
 
-    // Parse mixins
-    val mixins = inputFiles
-      .filter { file -> IS_MIXIN.matches(file.absolutePath) }
-      .mapNotNull { file ->
-        parseXml(file)
-          .flatMap { doc -> doc.getFormNode() }
-          .flatMap { formNode -> parseInterfaceModel(formNode, file.nameWithoutExtension, emptyList()) }
-          .orNull()
-      }
+    val mixins = resolveMixinGraph(
+      inputFiles.filter { file -> IS_MIXIN.matches(file.absolutePath) }
+    )
 
     inputChanges.getFileChanges(inputFiles).forEach { change ->
       val targetFile = getTargetFile(change.file, fileExtension ?: ".ts")

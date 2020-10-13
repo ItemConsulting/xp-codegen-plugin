@@ -23,6 +23,9 @@ fun Node.getChildNodeAtXPath(xpath: String): Node? =
 fun Node.getChildNodesAtXPath(xpath: XPathExpression): Collection<Node> =
   (xpath.evaluate(this, XPathConstants.NODESET) as NodeList).toCollection()
 
+fun Node.getChildNodesAtXPath(xpath: String): Collection<Node> =
+  getChildNodesAtXPath(getXpathExpressionFromString(xpath))
+
 fun Node.getFormNode(): Either<Throwable, Node> =
   try {
     (xpathFormElement.evaluate(this, XPathConstants.NODE) as Node?)?.right()

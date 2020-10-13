@@ -23,6 +23,8 @@ This plugin can create interfaces for:
  
  ## Usage
  
+This plugin requires at least **Gradle 5.6**.
+ 
 To get started add the following to your project's *build.gradle* file:  
  
  ```groovy
