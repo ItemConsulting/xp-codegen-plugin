@@ -1,6 +1,6 @@
 # Enonic XP Codegen plugin
 
-[![build-test Actions Status](https://github.com/ItemConsulting/xp-codegen-plugin/workflows/build-test/badge.svg)](https://github.com/ItemConsulting/xp-codegen-plugin/actions)
+![build-test](https://github.com/ItemConsulting/xp-codegen-plugin/workflows/build-test/badge.svg?branch=master)
 
 This is Gradle plugin for *Enonic XP 7 projects*. 
 
