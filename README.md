@@ -1,11 +1,13 @@
 # Enonic XP Codegen plugin
 
-![build-test](https://github.com/ItemConsulting/xp-codegen-plugin/workflows/build-test/badge.svg?branch=master)
+![build-test](https://github.com/ItemConsulting/xp-codegen-plugin/workflows/build-test/badge.svg?branch=master) [![PluginVersion](https://img.shields.io/maven-metadata/v.svg?label=gradle&metadataUrl=https://plugins.gradle.org/m2/no/item/xp/codegen/no.item.xp.codegen.gradle.plugin/maven-metadata.xml)](https://plugins.gradle.org/plugin/no.item.xp.codegen)
 
-This is Gradle plugin for *Enonic XP 7 projects*. 
+This is Gradle plugin for *Enonic XP 7 projects*. It requires at least **Gradle 5.6**.
 
-It parses the projects XML-files, and generate TypeScript interfaces that can be used in your server- or client-side 
-code.
+The plugin parses the Enonic projects XML-files, and generates **TypeScript interfaces** that can be used in your 
+server- or client-side code.
+
+The plugin can also output **JSDoc** instead of TypeScript, in case you are developing in JavaScript. 
 
 This creates a **tight coupling** between your configuration and your code. If you change an xml-file, the TypeScript
 -files will be regenerated, and it will not compile until you have fixed your code.
@@ -22,9 +24,7 @@ This plugin can create interfaces for:
  - Mixins
  
  ## Usage
- 
-This plugin requires at least **Gradle 5.6**.
- 
+
 To get started add the following to your project's *build.gradle* file:  
  
  ```groovy
@@ -35,8 +35,10 @@ plugins {
 jar {
     // Add this before your TypeScript build task
     dependsOn += generateTypeScript
-}
 
+    // If you want JSDoc generated instead (because JS-project), use this:
+    // dependsOn += generateJSDoc
+}
  ```
 
 ## Example
@@ -81,8 +83,6 @@ export interface Article {
 }
 ```
 
-
-
 ## Development
 
 ### Local manual testing
@@ -116,16 +116,12 @@ To use the plugin your can just run the following task:
 
 ### Running tests
 
-To run the unittests in the project you can run:
+To run the unit tests, linting and plugin verification in the project you can run:
 
 ```bash
 ./gradlew test
-```
-
-To run automatic formatting of the Kotlin code you can run:
-
-```bash
 ./gradlew klintFormat
+./gradlew validatePlugins
 ```
 
-Automatic formatting should always be run before commiting code to git!
+You should always run `./gradlew klintFormat` before commiting code to git!
