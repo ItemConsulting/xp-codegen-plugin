@@ -29,7 +29,7 @@ To get started add the following to your project's *build.gradle* file:
  
  ```groovy
 plugins {
-    id  'no.item.xp.codegen' version '1.0.0-SNAPSHOT'
+    id  'no.item.xp.codegen' version '1.0.0'
 }
 
 jar {
@@ -101,7 +101,7 @@ Then – in your Enonic-project – you can add the following to your build.grad
      mavenLocal()
    }
    dependencies {
-     classpath "no.item.xp.plugin:xp-codegen-plugin:1.0.0-SNAPSHOT"
+     classpath "no.item.xp.plugin:xp-codegen-plugin:1.0.0"
    }
  }
  
@@ -124,4 +124,15 @@ To run the unit tests, linting and plugin verification in the project you can ru
 ./gradlew validatePlugins
 ```
 
-You should always run `./gradlew klintFormat` before commiting code to git!
+You should always run `./gradlew klintFormat` before committing code to git!
+
+### Publishing to plugin portal
+
+To publish to the plugin portal, you first need to set up your local api-keys. Instrunctions can be found in the 
+[plugin documentation](https://plugins.gradle.org/docs/submit).
+
+Then you can run the following to submit the plugin to the plugin portal:
+
+```bash
+./gradlew publishPlugins
+```
