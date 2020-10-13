@@ -26,7 +26,7 @@ fun parseInput(inputNode: Node): InterfaceModelField? {
       "tag" ->
         StringField(unknownField)
       "checkbox" ->
-        BooleanField(unknownField.copy(nullable = false, isArray = false))
+        BooleanField(unknownField.copy(isNullable = false, isArray = false))
       "combobox" ->
         UnionOfStringLiteralField(unknownField, parseConfigOptionValue(inputNode))
       "long",

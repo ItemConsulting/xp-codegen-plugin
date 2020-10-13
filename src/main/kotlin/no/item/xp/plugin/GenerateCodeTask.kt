@@ -10,6 +10,7 @@ import no.item.xp.plugin.util.parseXml
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.model.ObjectFactory
+import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.OutputFiles
 import org.gradle.api.tasks.TaskAction
@@ -19,13 +20,16 @@ import org.gradle.work.InputChanges
 import org.gradle.workers.WorkerExecutor
 import javax.inject.Inject
 
-open class GenerateTypeScriptTask @Inject constructor(objects: ObjectFactory, private val workerExecutor: WorkerExecutor) : DefaultTask() {
+open class GenerateCodeTask @Inject constructor(objects: ObjectFactory, private val workerExecutor: WorkerExecutor) : DefaultTask() {
   @Incremental
   @InputFiles
-  var inputFiles: ConfigurableFileCollection = objects.fileCollection()
+  val inputFiles: ConfigurableFileCollection = objects.fileCollection()
 
   @OutputFiles
   val outputFiles: ConfigurableFileCollection = objects.fileCollection()
+
+  @Input
+  var fileExtension: String? = null
 
   @TaskAction
   private fun execute(inputChanges: InputChanges) {
@@ -42,7 +46,7 @@ open class GenerateTypeScriptTask @Inject constructor(objects: ObjectFactory, pr
       }
 
     inputChanges.getFileChanges(inputFiles).forEach { change ->
-      val targetFile = getTargetFile(change.file)
+      val targetFile = getTargetFile(change.file, fileExtension ?: ".ts")
 
       if (change.changeType == ChangeType.REMOVED && targetFile.delete()) {
         logger.lifecycle("Removed ${targetFile.absolutePath}")

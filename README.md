@@ -93,6 +93,9 @@ Then – in your Enonic-project – you can add the following to your build.grad
 
  ```groovy
  buildscript {
+   repositories {
+     mavenLocal()
+   }
    dependencies {
      classpath "no.item.xp.plugin:xp-codegen-plugin:1.0.0-SNAPSHOT"
    }

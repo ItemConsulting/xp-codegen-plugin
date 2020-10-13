@@ -1,7 +1,7 @@
 package no.item.xp.plugin.renderers.ts
 
+import no.item.xp.plugin.models.ObjectField
 import no.item.xp.plugin.models.OptionSetField
-import no.item.xp.plugin.models.OptionSetFieldOption
 
 fun renderOptionSetField(field: OptionSetField, indentLevel: Int): String {
   val indentation = createIndentation(indentLevel)
@@ -9,12 +9,12 @@ fun renderOptionSetField(field: OptionSetField, indentLevel: Int): String {
 
   return """
       #${renderComment(field.comment, indentLevel)}
-      #$indentation${escapeName(field.name)}${if (field.nullable) "?" else ""}: ${if (field.isArray) "Array<" else "" }
+      #$indentation${escapeName(field.name)}${if (field.isNullable) "?" else ""}: ${if (field.isArray) "Array<" else "" }
       #$options${if (field.isArray) "\n$indentation>" else "" };
       """.trimMargin("#")
 }
 
-private fun renderOptionSetFieldOption(fieldOption: OptionSetFieldOption, indentLevel: Int): String {
+private fun renderOptionSetFieldOption(fieldOption: ObjectField, indentLevel: Int): String {
   val indentation0 = createIndentation(indentLevel - 1)
   val indentation1 = createIndentation(indentLevel)
   val indentation2 = createIndentation(indentLevel + 1)

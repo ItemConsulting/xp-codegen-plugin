@@ -6,8 +6,8 @@ import no.item.xp.plugin.extensions.getChildNodesAtXPath
 import no.item.xp.plugin.extensions.getNodeAttribute
 import no.item.xp.plugin.models.InterfaceModel
 import no.item.xp.plugin.models.InterfaceModelField
+import no.item.xp.plugin.models.ObjectField
 import no.item.xp.plugin.models.OptionSetField
-import no.item.xp.plugin.models.OptionSetFieldOption
 import org.w3c.dom.Node
 
 fun parseOptionSet(inputNode: Node, mixins: List<InterfaceModel>): OptionSetField? {
@@ -23,12 +23,12 @@ fun parseOptionSet(inputNode: Node, mixins: List<InterfaceModel>): OptionSetFiel
   return null
 }
 
-private fun parseOptionSetFieldOption(optionNode: Node, mixins: List<InterfaceModel>): OptionSetFieldOption {
+private fun parseOptionSetFieldOption(optionNode: Node, mixins: List<InterfaceModel>): ObjectField {
   val optionComment = optionNode.getChildNodeAtXPath("label")?.textContent
   val itemsNode = optionNode.getChildNodeAtXPath("items")
 
   val fields: List<InterfaceModelField> = itemsNode
     ?.let { parseFields(it, mixins).orNull() } ?: emptyList()
 
-  return OptionSetFieldOption(optionNode.getNodeAttribute("name")!!, optionComment, fields)
+  return ObjectField(optionNode.getNodeAttribute("name")!!, optionComment, true, false, fields)
 }

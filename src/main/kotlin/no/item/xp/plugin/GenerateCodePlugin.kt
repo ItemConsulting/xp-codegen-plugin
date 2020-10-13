@@ -1,5 +1,6 @@
 package no.item.xp.plugin
 
+import no.item.xp.plugin.util.FileType
 import no.item.xp.plugin.util.getTargetFile
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -11,11 +12,17 @@ class GenerateCodePlugin : Plugin<Project> {
       sourceSet.resources.filter { it.extension == "xml" && it.name != "application.xml" }
     }.flatten()
 
-    val targetFiles = files.map(::getTargetFile)
-
-    project.tasks.create("generateTypeScript", GenerateTypeScriptTask::class.java).apply {
+    project.tasks.create("generateTypeScript", GenerateCodeTask::class.java).apply {
       inputFiles.from(files)
-      outputFiles.from(targetFiles)
+      outputFiles.from(files.map { getTargetFile(it, FileType.TypeScript) })
+      fileExtension = FileType.TypeScript.filePostfix
+      group = "enonic"
+    }
+
+    project.tasks.create("generateJSDoc", GenerateCodeTask::class.java).apply {
+      inputFiles.from(files)
+      outputFiles.from(files.map { getTargetFile(it, FileType.JSDoc) })
+      fileExtension = FileType.JSDoc.filePostfix
       group = "enonic"
     }
   }

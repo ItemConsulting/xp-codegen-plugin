@@ -7,7 +7,7 @@ import kotlin.test.assertEquals
 class RenderInterfaceModelTest {
   @Test
   fun `render mixed`() {
-    val result = renderInterfaceModel(
+    val result = renderInterfaceModelAsTypeScript(
       InterfaceModel(
         "my-type",
         listOf(

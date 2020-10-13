@@ -9,7 +9,7 @@ fun renderObjectField(field: ObjectField, indentLevel: Int): String {
 
   return """
       #${renderComment(field.comment, indentLevel)}
-      #$indentation${escapeName(field.name)}${if (field.nullable) "?" else ""}: ${if (field.isArray) "Array<" else "" }{
+      #$indentation${escapeName(field.name)}${if (field.isNullable) "?" else ""}: ${if (field.isArray) "Array<" else "" }{
       #$fieldList
       #$indentation}${if (field.isArray) ">" else "" };
       """.trimMargin("#")

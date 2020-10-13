@@ -11,8 +11,17 @@ val IS_ERROR = "^.*site/error/error.xml\$".toRegex(RegexOption.IGNORE_CASE)
 val IS_MACRO = "^.*site/macros.*\$".toRegex(RegexOption.IGNORE_CASE)
 val IS_ID_PROVIDER = "^.*idprovider.*\$".toRegex(RegexOption.IGNORE_CASE)
 
-fun getTargetFile(inputFile: File): File {
-  return File(inputFile.parent, inputFile.nameWithoutExtension + getTargetFilePostfix(inputFile) + ".ts")
+enum class FileType(val filePostfix: String) {
+  TypeScript(".ts"),
+  JSDoc(".js")
+}
+
+fun getTargetFile(inputFile: File, filePostfix: String): File {
+  return File(inputFile.parent, inputFile.nameWithoutExtension + getTargetFilePostfix(inputFile) + filePostfix)
+}
+
+fun getTargetFile(inputFile: File, fileType: FileType): File {
+  return getTargetFile(inputFile, fileType.filePostfix)
 }
 
 fun getTargetFilePostfix(file: File): String =

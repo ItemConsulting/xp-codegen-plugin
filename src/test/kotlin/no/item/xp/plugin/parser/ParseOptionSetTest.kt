@@ -1,8 +1,8 @@
 package no.item.xp.plugin.parser
 
 import no.item.xp.plugin.extensions.getChildNodeAtXPath
+import no.item.xp.plugin.models.ObjectField
 import no.item.xp.plugin.models.OptionSetField
-import no.item.xp.plugin.models.OptionSetFieldOption
 import no.item.xp.plugin.models.StringField
 import no.item.xp.plugin.stringToXMLDocument
 import org.junit.jupiter.api.Test
@@ -49,16 +49,25 @@ class ParseOptionSetTest {
         false,
         false,
         listOf(
-          OptionSetFieldOption(
+          ObjectField(
             "no",
             "No",
+            true,
+            false,
             listOf()
           ),
-          OptionSetFieldOption(
+          ObjectField(
             "yes",
             "Yes",
+            true,
+            false,
             listOf(
-              StringField("articleList", "Select articles for the list", true, true)
+              StringField(
+                "articleList",
+                "Select articles for the list",
+                true,
+                true
+              )
             )
           )
         )

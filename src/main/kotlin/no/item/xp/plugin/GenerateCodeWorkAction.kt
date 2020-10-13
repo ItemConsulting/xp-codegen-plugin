@@ -4,7 +4,8 @@ import arrow.core.extensions.either.monad.flatMap
 import no.item.xp.plugin.extensions.getFormNode
 import no.item.xp.plugin.models.InterfaceModel
 import no.item.xp.plugin.parser.parseInterfaceModel
-import no.item.xp.plugin.renderers.ts.renderInterfaceModel
+import no.item.xp.plugin.renderers.jsdoc.renderInterfaceModelAsJSDoc
+import no.item.xp.plugin.renderers.ts.renderInterfaceModelAsTypeScript
 import no.item.xp.plugin.util.parseXml
 import no.item.xp.plugin.util.simpleFilePath
 import org.gradle.api.file.RegularFileProperty
@@ -42,7 +43,13 @@ abstract class GenerateTypeScriptWorkAction : WorkAction<CodegenWorkParameters> 
           },
           { model ->
             if (model.fields.isNotEmpty()) {
-              targetFile.writeText(renderInterfaceModel(model), Charsets.UTF_8)
+              val fileContent = if (targetFile.extension == "ts") {
+                renderInterfaceModelAsTypeScript(model)
+              } else {
+                renderInterfaceModelAsJSDoc(model)
+              }
+
+              targetFile.writeText(fileContent, Charsets.UTF_8)
               logger.lifecycle("Updated file: ${simpleFilePath(targetFile)}")
             }
           }

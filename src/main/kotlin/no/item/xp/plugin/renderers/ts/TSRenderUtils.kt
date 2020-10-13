@@ -11,8 +11,8 @@ fun escapeName(name: String): String =
     name
   }
 
-fun joinOptionList(optionList: List<String>) =
-  optionList.joinToString(" | ") { "\"$it\"" }
+fun joinOptionList(optionList: List<String>, prefix: CharSequence = "", postfix: CharSequence = "") =
+  optionList.joinToString(" | ", prefix, postfix) { "\"$it\"" }
 
 fun renderComment(comment: String?, indentLevel: Int): String {
   val indentation = createIndentation(indentLevel)
@@ -32,4 +32,10 @@ fun renderComment(comment: String?, indentLevel: Int): String {
   } else {
     ""
   }
+}
+
+fun getInterfaceName(nameWithoutExtension: String): String {
+  return nameWithoutExtension
+    .split("-")
+    .joinToString("") { it.capitalize() }
 }
