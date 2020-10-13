@@ -1,5 +1,7 @@
 # Enonic XP Codegen plugin
 
+[![build-test Actions Status](https://github.com/ItemConsulting/xp-codegen-plugin/workflows/build-test/badge.svg)](https://github.com/ItemConsulting/xp-codegen-plugin/actions)
+
 This is Gradle plugin for *Enonic XP 7 projects*. 
 
 It parses the projects XML-files, and generate TypeScript interfaces that can be used in your server- or client-side 
