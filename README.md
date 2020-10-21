@@ -29,7 +29,7 @@ To get started add the following to your project's *build.gradle* file:
  
  ```groovy
 plugins {
-    id  'no.item.xp.codegen' version '1.0.0'
+    id 'no.item.xp.codegen' version '1.0.0'
 }
 
 jar {
