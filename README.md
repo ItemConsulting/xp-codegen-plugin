@@ -29,6 +29,7 @@ To get started add the following to your project's *build.gradle* file:
  
  ```groovy
 plugins {
+    id 'java'
     id 'no.item.xp.codegen' version '1.0.0'
 }
 
@@ -38,6 +39,9 @@ jar {
 
     // If you want JSDoc generated instead (because JS-project), use this:
     // dependsOn += generateJSDoc
+
+    // If you want io-ts codecs generated instead (must be used instead of generateTypeScript):
+    // dependsOn += generateIoTs
 }
  ```
 

@@ -4,7 +4,9 @@ import no.item.xp.plugin.models.*
 
 fun renderInterfaceModelField(field: InterfaceModelField, indent: Int): String {
   return when (field) {
-    is StringField -> simpleFieldAsString(field, "string", indent)
+    is StringField,
+    is StringFieldWithValidation -> simpleFieldAsString(field, "string", indent)
+    is NumberFieldWithValidation,
     is NumberField -> simpleFieldAsString(field, "number", indent)
     is BooleanField -> simpleFieldAsString(field, "boolean", indent)
     is UnknownField -> simpleFieldAsString(field, "unknown", indent)

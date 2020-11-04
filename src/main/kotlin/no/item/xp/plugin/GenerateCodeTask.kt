@@ -1,6 +1,7 @@
 package no.item.xp.plugin
 
 import no.item.xp.plugin.parser.resolveMixinGraph
+import no.item.xp.plugin.util.FileType
 import no.item.xp.plugin.util.IS_MIXIN
 import no.item.xp.plugin.util.getTargetFile
 import org.gradle.api.DefaultTask
@@ -25,7 +26,7 @@ open class GenerateCodeTask @Inject constructor(objects: ObjectFactory, private 
   val outputFiles: ConfigurableFileCollection = objects.fileCollection()
 
   @Input
-  var fileExtension: String? = null
+  var fileType: FileType = FileType.TypeScript
 
   @TaskAction
   private fun execute(inputChanges: InputChanges) {
@@ -36,7 +37,7 @@ open class GenerateCodeTask @Inject constructor(objects: ObjectFactory, private 
     )
 
     inputChanges.getFileChanges(inputFiles).forEach { change ->
-      val targetFile = getTargetFile(change.file, fileExtension ?: ".ts")
+      val targetFile = getTargetFile(change.file, fileType.filePostfix)
 
       if (change.changeType == ChangeType.REMOVED && targetFile.delete()) {
         logger.lifecycle("Removed ${targetFile.absolutePath}")
@@ -45,6 +46,7 @@ open class GenerateCodeTask @Inject constructor(objects: ObjectFactory, private 
           it.getXmlFile().set(change.file)
           it.getTargetFile().set(targetFile)
           it.getMixins().value(mixins)
+          it.getFileType().value(fileType)
         }
       }
     }

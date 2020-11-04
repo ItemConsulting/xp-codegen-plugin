@@ -5,7 +5,9 @@ import no.item.xp.plugin.renderers.ts.joinOptionList
 
 fun renderInterfaceModelField(field: InterfaceModelField, path: List<String>): String {
   return when (field) {
-    is StringField -> simpleJsDocFieldAsString(field, "string", path)
+    is StringField,
+    is StringFieldWithValidation -> simpleJsDocFieldAsString(field, "string", path)
+    is NumberFieldWithValidation,
     is NumberField -> simpleJsDocFieldAsString(field, "number", path)
     is BooleanField -> simpleJsDocFieldAsString(field, "boolean", path)
     is UnknownField -> simpleJsDocFieldAsString(field, "unknown", path)

@@ -19,6 +19,18 @@ data class StringField(
   constructor(field: InterfaceModelField) : this(field.name, field.comment, field.isNullable, field.isArray)
 }
 
+// name?: string
+data class StringFieldWithValidation(
+  override val name: String,
+  override val comment: String?,
+  override val isNullable: Boolean,
+  override val isArray: Boolean,
+  val regexp: String?,
+  val maxLength: Int?
+) : InterfaceModelField() {
+  constructor(field: InterfaceModelField, regexp: String?, maxLength: Int?) : this(field.name, field.comment, field.isNullable, field.isArray, regexp, maxLength)
+}
+
 // name?: number
 data class NumberField(
   override val name: String,
@@ -27,6 +39,18 @@ data class NumberField(
   override val isArray: Boolean
 ) : InterfaceModelField() {
   constructor(field: InterfaceModelField) : this(field.name, field.comment, field.isNullable, field.isArray)
+}
+
+// name?: number
+data class NumberFieldWithValidation(
+  override val name: String,
+  override val comment: String?,
+  override val isNullable: Boolean,
+  override val isArray: Boolean,
+  val min: Int?,
+  val max: Int?
+) : InterfaceModelField() {
+  constructor(field: InterfaceModelField, min: Int?, max: Int?) : this(field.name, field.comment, field.isNullable, field.isArray, min, max)
 }
 
 // name?: "a" | "b" | "c"

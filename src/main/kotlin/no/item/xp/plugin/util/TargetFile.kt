@@ -13,7 +13,9 @@ val IS_ID_PROVIDER = "^.*idprovider.*\$".toRegex(RegexOption.IGNORE_CASE)
 
 enum class FileType(val filePostfix: String) {
   TypeScript(".ts"),
-  JSDoc(".js")
+  JSDoc(".js"),
+  IoTs(".ts"),
+  None("")
 }
 
 fun getTargetFile(inputFile: File, filePostfix: String): File {
