@@ -1,6 +1,6 @@
 # Enonic XP Codegen plugin
 
-![build-test](https://github.com/ItemConsulting/xp-codegen-plugin/workflows/build-test/badge.svg?branch=master) [![PluginVersion](https://img.shields.io/maven-metadata/v.svg?label=gradle&metadataUrl=https://plugins.gradle.org/m2/no/item/xp/codegen/no.item.xp.codegen.gradle.plugin/maven-metadata.xml)](https://plugins.gradle.org/plugin/no.item.xp.codegen)
+![build-test](https://github.com/ItemConsulting/xp-codegen-plugin/workflows/build-test/badge.svg?branch=main) [![PluginVersion](https://img.shields.io/maven-metadata/v.svg?label=gradle&metadataUrl=https://plugins.gradle.org/m2/no/item/xp/codegen/no.item.xp.codegen.gradle.plugin/maven-metadata.xml)](https://plugins.gradle.org/plugin/no.item.xp.codegen)
 
 This is Gradle plugin for *Enonic XP 7 projects*. It requires at least **Gradle 5.6**.
 
