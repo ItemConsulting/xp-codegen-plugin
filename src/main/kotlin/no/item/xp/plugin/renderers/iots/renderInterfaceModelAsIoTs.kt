@@ -2,13 +2,15 @@ package no.item.xp.plugin.renderers.iots
 
 import no.item.xp.plugin.models.*
 import no.item.xp.plugin.renderers.ts.getInterfaceName
+import no.item.xp.plugin.util.OUTPUT_FILE_HEADER_WARNING
 
 fun renderInterfaceModelAsIoTs(model: InterfaceModel): String {
   val fieldList = model.fields.joinToString("\n\n") { renderInterfaceModelField(it, 1) }
   val interfaceName = getInterfaceName(model.nameWithoutExtension)
   val addWizardryImport = usesValidation(model.fields)
 
-  return """import * as t from 'io-ts';${if (addWizardryImport) "\nimport * as w from \"enonic-wizardry/validation\";" else ""}
+  return """// $OUTPUT_FILE_HEADER_WARNING
+    #import * as t from 'io-ts';${if (addWizardryImport) "\nimport * as w from \"enonic-wizardry/validation\";" else ""}
     #
     #export const $interfaceName = t.type({
     #$fieldList
