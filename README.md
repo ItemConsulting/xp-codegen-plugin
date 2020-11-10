@@ -152,7 +152,7 @@ export const Article = t.type({
 export type Article = t.TypeOf<typeof Article>;
 ```
 
-To use the io-ts `Article` type to validate the code we can do the following:
+To use the `Article` codec to validate the content we can do the following:
 
 ```typescript
 import {Request, Response} from 'enonic-types/controller';
@@ -196,15 +196,15 @@ export function post(req: Request): Response {
     return {
       status: 400,
       /**
-       * If `title` was blank then `body` will become:
+       * If `title` was undefined, then the result of `report(decoded)` become:
        * [
        *   {
        *     key: "title",
-       *     message: "<i18n phrase with key: 'articleFormPart.error.title'>"
+       *     message: "<i18n phrase with key = 'articleFormPart.error.400.title'>"
        *   }
        * ]
        */
-      body: getErrorDetailReporter({ i18nPrefix: "articleFormPart.error" }).report(decoded),
+      body: getErrorDetailReporter("articleFormPart.error").report(decoded),
     };
   }
 }
