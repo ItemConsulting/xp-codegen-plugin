@@ -28,6 +28,7 @@ data class StringFieldWithValidation(
   val regexp: String?,
   val maxLength: Int?
 ) : InterfaceModelField() {
+  constructor(field: InterfaceModelField, regexp: String?) : this(field.name, field.comment, field.isNullable, field.isArray, regexp, null)
   constructor(field: InterfaceModelField, regexp: String?, maxLength: Int?) : this(field.name, field.comment, field.isNullable, field.isArray, regexp, maxLength)
 }
 
