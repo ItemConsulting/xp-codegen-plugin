@@ -30,7 +30,7 @@ To get started add the following to your project's *build.gradle* file:
  ```groovy
 plugins {
     id 'java'
-    id 'no.item.xp.codegen' version '1.0.0'
+    id 'no.item.xp.codegen' version '1.1.1'
 }
 
 jar {
@@ -244,7 +244,7 @@ Then – in your Enonic-project – you can add the following to your build.grad
      mavenLocal()
    }
    dependencies {
-     classpath "no.item.xp.plugin:xp-codegen-plugin:1.0.0"
+     classpath "no.item.xp.plugin:xp-codegen-plugin:1.1.1"
    }
  }
  
