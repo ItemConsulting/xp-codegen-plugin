@@ -64,7 +64,13 @@ abstract class GenerateTypeScriptWorkAction : WorkAction<CodegenWorkParameters> 
               }
 
               if (fileContent != null) {
-                targetFile.writeText(fileContent, Charsets.UTF_8)
+                val writeFile =
+                  if (defaultFileType != fileType) {
+                    File(targetFile.parent + "/" + targetFile.nameWithoutExtension + fileType.filePostfix)
+                  }
+                  else targetFile
+
+                writeFile.writeText(fileContent, Charsets.UTF_8)
                 logger.lifecycle("Updated file: ${simpleFilePath(targetFile)}")
               } else if (targetFile.delete()) {
                 logger.lifecycle("Removed ${targetFile.absolutePath}")
