@@ -8,10 +8,10 @@ import no.item.xp.plugin.renderers.ts.renderComment
 fun renderObjectField(field: ObjectField, indentLevel: Int): String {
   val indentation = createIndentation(indentLevel)
 
-  val fieldList = field.fields.joinToString("\n\n") { renderInterfaceModelField(it, indentLevel + 1) }
+  val fieldList = field.fields.joinToString("\n\n", "t.type({\n", "\n#$indentation})") { renderInterfaceModelField(it, indentLevel + 1) }
 
   return """
       #${renderComment(field.comment, indentLevel)}
-      #$indentation${escapeName(field.name)}: ${renderNullable(field, renderArray(field, fieldList))}
+      #$indentation${escapeName(field.name)}: ${renderNullable(field, renderArray(field, fieldList))},
       """.trimMargin("#")
 }
