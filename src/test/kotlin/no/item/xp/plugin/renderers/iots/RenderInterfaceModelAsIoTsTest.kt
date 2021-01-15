@@ -64,7 +64,8 @@ class RenderInterfaceModelAsIoTsTest {
       #  /**
       #   * Preferences
       #   */
-      #  preferences: t.union([t.undefined, t.array(    /**
+      #  preferences: t.union([t.undefined, t.array(t.type({
+      #    /**
       #     * Key
       #     */
       #    key: t.string,
@@ -72,7 +73,8 @@ class RenderInterfaceModelAsIoTsTest {
       #    /**
       #     * Value
       #     */
-      #    value: t.string,)])
+      #    value: t.string,
+      #  }))]),
       #});
       #
       #export type MyType = t.TypeOf<typeof MyType>;
