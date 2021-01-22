@@ -28,9 +28,7 @@ private fun renderOptionSetFieldOption(fieldOption: ObjectField, indentLevel: In
     #${indentation2}_selected: "${fieldOption.name}";
     #
     #${renderComment(fieldOption.comment, indentLevel + 1)}
-    #$indentation2${escapeName(fieldOption.name)}: ${if (fieldOption.fields.isNotEmpty()) "{" else "Record<string, unknown>"}
-    #$content
-    #$indentation2${if (fieldOption.fields.isNotEmpty()) "}" else ""}
+    #$indentation2${escapeName(fieldOption.name)}: ${if (fieldOption.fields.isNotEmpty()) "{\n$content" else "Record<string, unknown>"}${if (fieldOption.fields.isNotEmpty()) "\n#$indentation2}" else ""}
     #$indentation1}
     """.trimMargin("#")
 }

@@ -57,8 +57,6 @@ class RenderOptionSetFieldTest {
       #       * No
       #       */
       #      no: Record<string, unknown>
-      #
-      #      
       #    }
       #  | {
       #      /**
