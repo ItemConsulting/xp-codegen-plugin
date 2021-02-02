@@ -60,6 +60,7 @@ abstract class GenerateTypeScriptWorkAction : WorkAction<CodegenWorkParameters> 
                 FileType.JSDoc -> renderInterfaceModelAsJSDoc(model)
                 FileType.IoTs -> renderInterfaceModelAsIoTs(model)
                 FileType.TypeScript -> renderInterfaceModelAsTypeScript(model)
+                FileType.TypeScriptDeclaration -> renderInterfaceModelAsTypeScript(model)
                 FileType.None -> null
               }
 
