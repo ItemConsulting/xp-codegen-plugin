@@ -19,6 +19,13 @@ class GenerateCodePlugin : Plugin<Project> {
       group = "enonic"
     }
 
+    project.tasks.create("generateTypeScriptDeclaration", GenerateCodeTask::class.java).apply {
+      inputFiles.from(files)
+      outputFiles.from(files.map { getTargetFile(it, FileType.TypeScriptDeclaration) })
+      fileType = FileType.TypeScriptDeclaration
+      group = "enonic"
+    }
+
     project.tasks.create("generateJSDoc", GenerateCodeTask::class.java).apply {
       inputFiles.from(files)
       outputFiles.from(files.map { getTargetFile(it, FileType.JSDoc) })

@@ -36,6 +36,7 @@ fun renderComment(comment: String?, indentLevel: Int): String {
 
 fun getInterfaceName(nameWithoutExtension: String): String {
   return nameWithoutExtension
+    .split(".")[0]
     .split("-")
     .joinToString("") { it.capitalize() }
 }

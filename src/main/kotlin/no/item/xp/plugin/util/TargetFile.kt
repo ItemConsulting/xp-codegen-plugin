@@ -15,6 +15,7 @@ val IS_MACRO = "^.*site/macros.*\$".toRegex(RegexOption.IGNORE_CASE)
 val IS_ID_PROVIDER = "^.*idprovider.*\$".toRegex(RegexOption.IGNORE_CASE)
 
 enum class FileType(val filePostfix: String) {
+  TypeScriptDeclaration(".d.ts"),
   TypeScript(".ts"),
   JSDoc(".js"),
   IoTs(".ts"),
