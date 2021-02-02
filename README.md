@@ -236,19 +236,15 @@ To test this plugin locally you can run the following task to publish the plugin
 ./gradlew publishToMavenLocal
 ```
 
-Then – in your Enonic-project – you can add the following to your build.gradle file to use the plugin:
+Then – in your Enonic-project – you can add the following to the top of your settings.gradle file to use the plugin:
 
  ```groovy
- buildscript {
-   repositories {
-     mavenLocal()
-   }
-   dependencies {
-     classpath "no.item.xp.plugin:xp-codegen-plugin:1.1.1"
-   }
- }
- 
- apply plugin: "no.item.xp.codegen"
+pluginManagement {
+    repositories {
+        mavenLocal()
+        gradlePluginPortal()
+    }
+}
  ```
 
 To use the plugin your can just run the following task:
