@@ -11,7 +11,11 @@ fun renderInterfaceModelField(field: InterfaceModelField, indent: Int): String {
     is BooleanField -> simpleFieldAsString(field, "boolean", indent)
     is UnknownField -> simpleFieldAsString(field, "unknown", indent)
     is UnionOfStringLiteralField -> simpleFieldAsString(field, joinOptionList(field.optionList), indent)
-    is OptionSetField -> renderOptionSetField(field, indent)
+    is OptionSetField ->
+      if (field.isMultiSelect)
+        renderOptionSetFieldMultiChoice(field, indent)
+      else
+        renderOptionSetField(field, indent)
     is ObjectField -> renderObjectField(field, indent)
   }
 }

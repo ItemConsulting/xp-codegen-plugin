@@ -48,6 +48,7 @@ class ParseOptionSetTest {
         "Select content manually?",
         false,
         false,
+        false,
         listOf(
           ObjectField(
             "no",

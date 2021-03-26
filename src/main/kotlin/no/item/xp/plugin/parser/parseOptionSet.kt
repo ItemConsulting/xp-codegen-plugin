@@ -17,7 +17,9 @@ fun parseOptionSet(inputNode: Node, mixins: List<InterfaceModel>): OptionSetFiel
     val optionList = inputNode.getChildNodesAtXPath(xpathOption)
       .map { optionNode -> parseOptionSetFieldOption(optionNode, mixins) }
 
-    return OptionSetField(unknownField, optionList)
+    val maximum = inputNode.getChildNodeAtXPath("options/@maximum")?.nodeValue
+    val isMultiSelect = maximum?.let { Integer.parseInt(it) != 1 } ?: false
+    return OptionSetField(unknownField, isMultiSelect, optionList)
   }
 
   return null

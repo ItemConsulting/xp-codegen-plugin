@@ -99,7 +99,8 @@ data class OptionSetField(
   override val comment: String?,
   override val isNullable: Boolean,
   override val isArray: Boolean,
+  val isMultiSelect: Boolean,
   val optionList: List<ObjectField>
 ) : InterfaceModelField() {
-  constructor(field: InterfaceModelField, optionList: List<ObjectField>) : this(field.name, field.comment, field.isNullable, field.isArray, optionList)
+  constructor(field: InterfaceModelField, isMultiSelect: Boolean, optionList: List<ObjectField>) : this(field.name, field.comment, field.isNullable, field.isArray, isMultiSelect, optionList)
 }
