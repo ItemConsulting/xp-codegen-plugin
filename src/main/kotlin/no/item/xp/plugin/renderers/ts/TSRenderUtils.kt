@@ -6,7 +6,7 @@ fun createIndentation(indentLevel: Int): String = INDENTATION_TO_SPACES.repeat(i
 
 fun escapeName(name: String): String =
   if (name.contains('-')) {
-    "'$name'"
+    "\"$name\""
   } else {
     name
   }

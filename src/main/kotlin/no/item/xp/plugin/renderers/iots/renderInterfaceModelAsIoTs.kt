@@ -10,7 +10,7 @@ fun renderInterfaceModelAsIoTs(model: InterfaceModel): String {
   val addWizardryImport = usesValidation(model.fields)
 
   return """// $OUTPUT_FILE_HEADER_WARNING
-    #import * as t from 'io-ts';${if (addWizardryImport) "\nimport * as w from \"enonic-wizardry/validation\";" else ""}
+    #import * as t from "io-ts";${if (addWizardryImport) "\nimport * as w from \"enonic-wizardry/validation\";" else ""}
     #
     #export const $interfaceName = t.type({
     #$fieldList

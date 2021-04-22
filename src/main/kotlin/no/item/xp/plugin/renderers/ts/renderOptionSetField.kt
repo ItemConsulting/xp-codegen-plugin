@@ -5,11 +5,11 @@ import no.item.xp.plugin.models.OptionSetField
 
 fun renderOptionSetField(field: OptionSetField, indentLevel: Int): String {
   val indentation = createIndentation(indentLevel)
-  val options = field.optionList.joinToString("\n") { renderOptionSetFieldOption(it, indentLevel + 1) }
+  val options = field.optionList.joinToString("\n") { renderOptionSetFieldOption(it, indentLevel + 2) }
 
   return """
       #${renderComment(field.comment, indentLevel)}
-      #$indentation${escapeName(field.name)}${if (field.isNullable) "?" else ""}: ${if (field.isArray) "Array<" else "" }
+      #$indentation${escapeName(field.name)}${if (field.isNullable) "?" else ""}:${if (field.isArray) " Array<" else "" }
       #$options${if (field.isArray) "\n$indentation>" else "" };
       """.trimMargin("#")
 }
@@ -28,7 +28,7 @@ private fun renderOptionSetFieldOption(fieldOption: ObjectField, indentLevel: In
     #${indentation2}_selected: "${fieldOption.name}";
     #
     #${renderComment(fieldOption.comment, indentLevel + 1)}
-    #$indentation2${escapeName(fieldOption.name)}: ${if (fieldOption.fields.isNotEmpty()) "{\n$content" else "Record<string, unknown>"}${if (fieldOption.fields.isNotEmpty()) "\n#$indentation2}" else ""}
+    #$indentation2${escapeName(fieldOption.name)}: ${if (fieldOption.fields.isNotEmpty()) "{\n$content" else "Record<string, unknown>;"}${if (fieldOption.fields.isNotEmpty()) "\n#$indentation2};" else ""}
     #$indentation1}
     """.trimMargin("#")
 }

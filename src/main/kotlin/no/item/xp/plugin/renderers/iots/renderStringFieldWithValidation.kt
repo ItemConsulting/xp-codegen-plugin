@@ -7,10 +7,16 @@ import no.item.xp.plugin.renderers.ts.renderComment
 
 fun renderStringFieldWithValidation(field: StringFieldWithValidation, indentLevel: Int): String {
   val indentation = createIndentation(indentLevel)
+  val indentation1 = createIndentation(indentLevel + 1)
 
   val innerType = when (field.isNullable) {
-    true -> "w.RegexpValidatedString({ regexp: /${field.regexp}/, isNullable: true })"
-    false -> "w.RegexpValidatedString({ regexp: /${field.regexp}/ })"
+    true -> """
+      #w.RegexpValidatedString({
+      #${indentation1}regexp: /${field.regexp}/,
+      #${indentation1}isNullable: true,
+      #${indentation}})
+      """.trimMargin("#")
+   false -> "w.RegexpValidatedString({ regexp: /${field.regexp}/ })"
   }
 
   return """

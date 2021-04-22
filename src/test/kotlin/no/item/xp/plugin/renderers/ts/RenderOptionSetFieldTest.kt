@@ -47,34 +47,34 @@ class RenderOptionSetFieldTest {
       #  /**
       #   * Select content manually?
       #   */
-      #  myOptionSet: 
-      #  | {
-      #      /**
-      #       * Selected
-      #       */
-      #      _selected: "no";
-      #
-      #      /**
-      #       * No
-      #       */
-      #      no: Record<string, unknown>
-      #    }
-      #  | {
-      #      /**
-      #       * Selected
-      #       */
-      #      _selected: "yes";
-      #
-      #      /**
-      #       * Yes
-      #       */
-      #      yes: {
+      #  myOptionSet:
+      #    | {
       #        /**
-      #         * Select articles for the list
+      #         * Selected
       #         */
-      #        articleList?: Array<string>;
+      #        _selected: "no";
+      #
+      #        /**
+      #         * No
+      #         */
+      #        no: Record<string, unknown>;
       #      }
-      #    };
+      #    | {
+      #        /**
+      #         * Selected
+      #         */
+      #        _selected: "yes";
+      #
+      #        /**
+      #         * Yes
+      #         */
+      #        yes: {
+      #          /**
+      #           * Select articles for the list
+      #           */
+      #          articleList?: Array<string>;
+      #        };
+      #      };
       #}
       #""".trimMargin("#"),
       result
