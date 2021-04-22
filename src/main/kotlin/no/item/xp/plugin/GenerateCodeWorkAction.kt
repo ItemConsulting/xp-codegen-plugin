@@ -24,6 +24,7 @@ interface CodegenWorkParameters : WorkParameters {
   fun getTargetFile(): RegularFileProperty
   fun getMixins(): ListProperty<InterfaceModel>
   fun getFileType(): Property<FileType>
+  fun getPrependText(): Property<String>
   fun getSingleQuote(): Property<Boolean>
 }
 
@@ -70,9 +71,14 @@ abstract class GenerateTypeScriptWorkAction : WorkAction<CodegenWorkParameters> 
                   fileContent = fileContent.replace("\"", "'")
                 }
 
+                val prependText = parameters.getPrependText().get();
+                if (prependText.length > 0) {
+                  fileContent = prependText + "\n" + fileContent
+                }
+
                 val writeFile =
                   if (defaultFileType != fileType) {
-                    File(targetFile.parent + "/" + targetFile.nameWithoutExtension + fileType.filePostfix)
+                    File(targetFile.parent + File.separator + targetFile.nameWithoutExtension + fileType.filePostfix)
                   } else targetFile
 
                 writeFile.writeText(fileContent, Charsets.UTF_8)
