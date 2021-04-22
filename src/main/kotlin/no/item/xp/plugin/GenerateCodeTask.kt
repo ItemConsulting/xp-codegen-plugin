@@ -18,6 +18,9 @@ import org.gradle.workers.WorkerExecutor
 import javax.inject.Inject
 
 open class GenerateCodeTask @Inject constructor(objects: ObjectFactory, private val workerExecutor: WorkerExecutor) : DefaultTask() {
+  @Input
+  val singleQuote = false
+
   @Incremental
   @InputFiles
   val inputFiles: ConfigurableFileCollection = objects.fileCollection()
@@ -47,6 +50,7 @@ open class GenerateCodeTask @Inject constructor(objects: ObjectFactory, private 
           it.getTargetFile().set(targetFile)
           it.getMixins().value(mixins)
           it.getFileType().value(fileType)
+          it.getSingleQuote().value(singleQuote)
         }
       }
     }

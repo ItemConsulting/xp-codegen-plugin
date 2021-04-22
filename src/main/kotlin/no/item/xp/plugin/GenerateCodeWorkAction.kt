@@ -24,6 +24,7 @@ interface CodegenWorkParameters : WorkParameters {
   fun getTargetFile(): RegularFileProperty
   fun getMixins(): ListProperty<InterfaceModel>
   fun getFileType(): Property<FileType>
+  fun getSingleQuote(): Property<Boolean>
 }
 
 abstract class GenerateTypeScriptWorkAction : WorkAction<CodegenWorkParameters> {
@@ -56,7 +57,7 @@ abstract class GenerateTypeScriptWorkAction : WorkAction<CodegenWorkParameters> 
           },
           { (model: InterfaceModel, fileType: FileType) ->
             if (model.fields.isNotEmpty()) {
-              val fileContent = when (fileType) {
+              var fileContent = when (fileType) {
                 FileType.JSDoc -> renderInterfaceModelAsJSDoc(model)
                 FileType.IoTs -> renderInterfaceModelAsIoTs(model)
                 FileType.TypeScript -> renderInterfaceModelAsTypeScript(model)
@@ -65,6 +66,10 @@ abstract class GenerateTypeScriptWorkAction : WorkAction<CodegenWorkParameters> 
               }
 
               if (fileContent != null) {
+                if (parameters.getSingleQuote().get()) {
+                  fileContent = fileContent.replace("\"", "'")
+                }
+
                 val writeFile =
                   if (defaultFileType != fileType) {
                     File(targetFile.parent + "/" + targetFile.nameWithoutExtension + fileType.filePostfix)
