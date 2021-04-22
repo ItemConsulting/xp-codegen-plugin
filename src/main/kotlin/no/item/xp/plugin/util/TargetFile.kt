@@ -24,13 +24,15 @@ fun getTargetFile(inputFile: File, fileType: FileType): File =
 
 fun getTargetFilePostfix(file: File): String =
   when {
-    IS_MIXIN.matches(file.absolutePath) -> ""
-    IS_CONTENT_TYPE.matches(file.absolutePath) -> ""
-    IS_XDATA.matches(file.absolutePath) -> ""
-    IS_PART.matches(file.absolutePath) -> "-part-config"
-    IS_PAGE.matches(file.absolutePath) -> "-page-config"
+    IS_MIXIN.matches(normalizeFilePath(file)) -> ""
+    IS_CONTENT_TYPE.matches(normalizeFilePath(file)) -> ""
+    IS_XDATA.matches(normalizeFilePath(file)) -> ""
+    IS_PART.matches(normalizeFilePath(file)) -> "-part-config"
+    IS_PAGE.matches(normalizeFilePath(file)) -> "-page-config"
     else -> "-config"
   }
 
 fun simpleFilePath(file: File): String =
-  file.canonicalPath.substringAfter("resources/")
+  file.canonicalPath.substringAfter("""resources${File.separatorChar}""")
+
+fun normalizeFilePath(file: File) = file.absolutePath.replace(File.separatorChar, '/')
