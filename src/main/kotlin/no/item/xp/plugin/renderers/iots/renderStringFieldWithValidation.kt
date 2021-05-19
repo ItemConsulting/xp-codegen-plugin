@@ -14,9 +14,9 @@ fun renderStringFieldWithValidation(field: StringFieldWithValidation, indentLeve
       #w.RegexpValidatedString({
       #${indentation1}regexp: /${field.regexp}/,
       #${indentation1}isNullable: true,
-      #${indentation}})
+      #$indentation})
       """.trimMargin("#")
-   false -> "w.RegexpValidatedString({ regexp: /${field.regexp}/ })"
+    false -> "w.RegexpValidatedString({ regexp: /${field.regexp}/ })"
   }
 
   return """

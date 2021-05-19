@@ -71,18 +71,18 @@ abstract class GenerateTypeScriptWorkAction : WorkAction<CodegenWorkParameters> 
                   fileContent = fileContent.replace("\"", "'")
                 }
 
-                val prependText = parameters.getPrependText().get();
+                val prependText = parameters.getPrependText().get()
                 if (prependText.length > 0) {
                   fileContent = prependText + "\n" + fileContent
                 }
 
                 val writeFile =
                   if (defaultFileType != fileType) {
-                    File(targetFile.parent + File.separator + targetFile.nameWithoutExtension + fileType.filePostfix)
+                    File(targetFile.parent + File.separator + getNameWithoutExtension(targetFile) + fileType.filePostfix)
                   } else targetFile
 
                 writeFile.writeText(fileContent, Charsets.UTF_8)
-                logger.lifecycle("Updated file: ${simpleFilePath(targetFile)}")
+                logger.lifecycle("Updated file: ${simpleFilePath(writeFile)}")
               } else if (targetFile.delete()) {
                 logger.lifecycle("Removed ${targetFile.absolutePath}")
               }
@@ -93,6 +93,11 @@ abstract class GenerateTypeScriptWorkAction : WorkAction<CodegenWorkParameters> 
       logger.error("Can't parse file", e)
     }
   }
+
+  private fun getNameWithoutExtension(file: File): String =
+    // file.nameWithoutExtension does not take the ".d" into account.
+    if (file.name.endsWith(".d.ts")) file.name.removeSuffix(".d.ts")
+    else file.nameWithoutExtension
 
   private fun parseFileTypeStr(str: String?, defaultValue: FileType, file: File): FileType {
     return try {
