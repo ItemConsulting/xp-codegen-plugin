@@ -4,6 +4,7 @@ import no.item.xp.plugin.parser.resolveMixinGraph
 import no.item.xp.plugin.util.FileType
 import no.item.xp.plugin.util.IS_MIXIN
 import no.item.xp.plugin.util.getTargetFile
+import no.item.xp.plugin.util.normalizeFilePath
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.model.ObjectFactory
@@ -39,7 +40,7 @@ open class GenerateCodeTask @Inject constructor(objects: ObjectFactory, private 
     val workQueue = workerExecutor.noIsolation()
 
     val mixins = resolveMixinGraph(
-      inputFiles.filter { file -> IS_MIXIN.matches(file.absolutePath) }
+      inputFiles.filter { file -> IS_MIXIN.matches(normalizeFilePath(file)) }
     )
 
     inputChanges.getFileChanges(inputFiles).forEach { change ->
