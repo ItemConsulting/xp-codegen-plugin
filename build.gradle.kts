@@ -3,22 +3,21 @@ import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
 plugins {
   `java-gradle-plugin`
   `maven-publish`
-  id("com.gradle.plugin-publish") version "0.12.0"
-  id("org.jetbrains.kotlin.jvm") version "1.3.72"
-  id("org.jlleitschuh.gradle.ktlint") version "9.2.1"
+  id("com.gradle.plugin-publish") version "1.0.0-rc-2"
+  id("org.jetbrains.kotlin.jvm") version "1.6.21"
+  id("org.jlleitschuh.gradle.ktlint") version "10.3.0"
 }
 
 group = "no.item.xp.plugin"
-version = "1.1.9"
+version = "2.0.0-SNAPSHOT"
 
 java {
-  sourceCompatibility = JavaVersion.VERSION_1_8
-  targetCompatibility = JavaVersion.VERSION_1_8
+  sourceCompatibility = JavaVersion.VERSION_11
+  targetCompatibility = JavaVersion.VERSION_11
 }
 
 repositories {
   mavenCentral()
-  jcenter()
 }
 
 dependencies {
@@ -35,6 +34,7 @@ gradlePlugin {
     create("codegen") {
       id = "no.item.xp.codegen"
       implementationClass = "no.item.xp.plugin.GenerateCodePlugin"
+      displayName = "Enonic XP Code Generation"
     }
   }
 }
@@ -43,13 +43,7 @@ pluginBundle {
   website = "https://item.no"
   vcsUrl = "https://github.com/ItemConsulting/xp-codegen-plugin"
   description = "Plugin for generating code based on XMLs in Enonic XP 7"
-
-  (plugins) {
-    "codegen" {
-      displayName = "Enonic XP Code Generation"
-      tags = listOf("enonic", "xp", "codegen", "typescript", "javascript", "jsdoc")
-    }
-  }
+  tags = listOf("enonic", "xp", "codegen", "typescript", "javascript", "jsdoc")
 }
 
 tasks.withType<Test>().configureEach {
@@ -57,7 +51,6 @@ tasks.withType<Test>().configureEach {
 }
 
 ktlint {
-  version.set("0.38.1")
   debug.set(false)
   verbose.set(true)
   android.set(false)

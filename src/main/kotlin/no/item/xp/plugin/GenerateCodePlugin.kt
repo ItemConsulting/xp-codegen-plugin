@@ -4,11 +4,13 @@ import no.item.xp.plugin.util.FileType
 import no.item.xp.plugin.util.getTargetFile
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.plugins.JavaPluginConvention
+import org.gradle.api.plugins.JavaPluginExtension
 
 class GenerateCodePlugin : Plugin<Project> {
   override fun apply(project: Project) {
-    val files = project.convention.getPlugin(JavaPluginConvention::class.java).sourceSets.map { sourceSet ->
+    val javaExt = project.extensions
+      .getByType(JavaPluginExtension::class.java)
+    val files = javaExt.sourceSets.map { sourceSet ->
       sourceSet.resources.filter { it.extension == "xml" && it.name != "application.xml" }
     }.flatten()
 
