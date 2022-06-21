@@ -1,5 +1,7 @@
 package no.item.xp.plugin.renderers.ts
 
+import java.util.*
+
 const val INDENTATION_TO_SPACES = "  "
 
 fun createIndentation(indentLevel: Int): String = INDENTATION_TO_SPACES.repeat(indentLevel)
@@ -38,5 +40,5 @@ fun getInterfaceName(nameWithoutExtension: String): String {
   return nameWithoutExtension
     .split(".")[0]
     .split("-")
-    .joinToString("") { it.capitalize() }
+    .joinToString("") { it.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() } }
 }

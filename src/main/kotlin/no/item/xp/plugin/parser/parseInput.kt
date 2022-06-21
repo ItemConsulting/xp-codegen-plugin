@@ -14,7 +14,7 @@ fun parseInput(inputNode: Node): InterfaceModelField? {
   val type = inputNode.getNodeAttribute("type")
 
   if (unknownField != null && type != null) {
-    return when (type.toLowerCase()) {
+    return when (type.lowercase()) {
       "geopoint",
       "htmlarea",
       "contentselector",
