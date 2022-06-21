@@ -33,7 +33,7 @@ open class GenerateCodeTask @Inject constructor(objects: ObjectFactory, private 
   val outputFiles: ConfigurableFileCollection = objects.fileCollection()
 
   @Input
-  var fileType: FileType = FileType.TypeScript
+  var fileType: FileType = FileType.TypeScriptDeclaration
 
   @TaskAction
   private fun execute(inputChanges: InputChanges) {

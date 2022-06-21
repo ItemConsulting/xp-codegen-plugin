@@ -5,8 +5,6 @@ import no.item.xp.plugin.extensions.getFormNode
 import no.item.xp.plugin.extensions.getNodeAttribute
 import no.item.xp.plugin.models.InterfaceModel
 import no.item.xp.plugin.parser.parseInterfaceModel
-import no.item.xp.plugin.renderers.iots.renderInterfaceModelAsIoTs
-import no.item.xp.plugin.renderers.jsdoc.renderInterfaceModelAsJSDoc
 import no.item.xp.plugin.renderers.ts.renderInterfaceModelAsTypeScript
 import no.item.xp.plugin.util.FileType
 import no.item.xp.plugin.util.parseXml
@@ -59,9 +57,6 @@ abstract class GenerateTypeScriptWorkAction : WorkAction<CodegenWorkParameters> 
           { (model: InterfaceModel, fileType: FileType) ->
             if (model.fields.isNotEmpty()) {
               var fileContent = when (fileType) {
-                FileType.JSDoc -> renderInterfaceModelAsJSDoc(model)
-                FileType.IoTs -> renderInterfaceModelAsIoTs(model)
-                FileType.TypeScript -> renderInterfaceModelAsTypeScript(model)
                 FileType.TypeScriptDeclaration -> renderInterfaceModelAsTypeScript(model)
                 FileType.None -> null
               }

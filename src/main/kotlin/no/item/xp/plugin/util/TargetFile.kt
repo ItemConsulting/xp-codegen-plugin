@@ -10,9 +10,6 @@ val IS_PAGE = "^.*site/pages.*\$".toRegex(RegexOption.IGNORE_CASE)
 
 enum class FileType(val filePostfix: String) {
   TypeScriptDeclaration(".d.ts"),
-  TypeScript(".ts"),
-  JSDoc(".js"),
-  IoTs(".ts"),
   None("")
 }
 
