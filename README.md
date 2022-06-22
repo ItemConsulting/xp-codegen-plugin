@@ -7,8 +7,6 @@ This is Gradle plugin for *Enonic XP 7 projects*. It requires at least **Gradle 
 The plugin parses the Enonic projects XML-files, and generates **TypeScript interfaces** that can be used in your 
 server- or client-side code.
 
-The plugin can also output **JSDoc** instead of TypeScript, in case you are developing in JavaScript. 
-
 This creates a **tight coupling** between your configuration and your code. If you change an xml-file, the TypeScript
 -files will be regenerated, and it will not compile until you have fixed your code.
 
@@ -38,12 +36,11 @@ plugins {
 jar {
     // Add this before your TypeScript build task
     dependsOn += generateTypeScript
+}
 
-    // If you want JSDoc generated instead (because JS-project), use this:
-    // dependsOn += generateJSDoc
-
-    // If you want io-ts codecs generated instead (must be used instead of generateTypeScript):
-    // dependsOn += generateIoTs
+// Add dependency to webpack tasks too
+task serverWebpack( type: NodeTask, dependsOn: [ npmInstall, generateTypeScriptDeclaration ] ) {
+  ...
 }
  ```
 
@@ -110,141 +107,6 @@ jar {
 
 > TIP: You can use `prependText` to give instructions to the e.g. the linter. If you add
 `/* eslint-disable prettier/prettier */` you can stop [eslint](https://eslint.org/) from processing the generated files.
-
-### Validation using io-ts
-
-The [io-ts](https://github.com/gcanti/io-ts) library provides a DSL for declaring the shape of an object, and use this
-schema to validate that json matches that definition.
-
-The *XP Codegen plugin* provides the option to generate *io-ts* types (+ TypeScript types) instead of normal TypeScript 
-interfaces with the `generateIoTs` Gradle-task.
-
-This lets developers verify that user inputted data is valid according to the XP Content Type
-definition in the XML-file (it will even validate `input/config/regexp` and `input/config/max-length` for 
-`<input type="TextLine">`). 
-
-> Since we don't expect user inputs for all content types, we recommend adding `codegen-output="IoTs"` like this: `<form codegen-output="IoTs">`
-> in your Content Type XMLs only where you get user input to be validated.
-
-#### io-ts example
-
-Let's add `codegen-output="IoTs"` to the `<form>` element form the previous example.
-
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<content-type>
-  <display-name>Article</display-name>
-  <super-type>base:structured</super-type>
-
-  <!-- We specify `codegen-output` to say we want io-ts definitions -->
-  <form codegen-output="IoTs">
-    <input name="title" type="TextLine">
-      <label>Title of the article</label>
-      <occurrences minimum="1" maximum="1"/>
-    </input>
-
-    <input name="body" type="HtmlArea">
-      <label>Main text body</label>
-      <occurrences minimum="0" maximum="1"/>
-    </input>
-  </form>
-</content-type>
-```
-
-This will now generate the following TypeScript-file:
-
-Note that it exports both a `const Article` and a `type Article`. These are in two different namespaces. The 
-`type Article` will work as a drop in replacement for the `Article` interface generated in the previous example. 
-
-```typescript
-import * as t from 'io-ts';
-
-export const Article = t.type({
-  /**
-   * Title of the article
-   */
-  title: t.string,
-
-  /**
-   * Main text body
-   */
-  body: t.union([t.undefined, t.string]),
-});
-
-export type Article = t.TypeOf<typeof Article>;
-```
-
-To use the `Article` codec to validate the content we can do the following:
-
-```typescript
-import {Request, Response} from 'enonic-types/controller';
-import {Article} from "../../content-types/article/article";
-import {Either, isRight} from "fp-ts/Either";
-import {Errors} from "io-ts";
-import {getErrorDetailReporter} from "enonic-wizardry/reporters/ErrorDetailReporter";
-import {create} from "/lib/xp/content";
-import {run} from "/lib/xp/context";
-import {sanitize} from "/lib/xp/common";
-
-export function post(req: Request): Response {
-  const rawArticle: Partial<Article> = {
-    title: emptyStringToUndefined(req.params.title),
-    body: emptyStringToUndefined(req.params.body)
-  };
-
-  // `decode` is where io-ts is used to validate. It either returns:
-  // - Errors on the left side
-  // - The Article on the right side
-  const decoded: Either<Errors, Article> = Article.decode(rawArticle);
-
-  if(isRight(decoded)) {
-    const article: Article = decoded.right;
-    runAsSu(() => create({
-        displayName: article.title,
-        parentPath: req.params.parentPath!,
-        contentType: `${app.name}:article`,
-        name: sanitize(article.title),
-        data: article
-      })
-    );
-
-    return {
-      status: 201,
-      body: article
-    };
-  } else {
-    return {
-      status: 400,
-      /**
-       * If `title` was undefined, then the result of `report(decoded)` become:
-       * [
-       *   {
-       *     key: "title",
-       *     message: "<i18n phrase with key = 'articleFormPart.error.400.title'>"
-       *   }
-       * ]
-       */
-      body: getErrorDetailReporter("articleFormPart.error").report(decoded),
-    };
-  }
-}
-
-const runContext = {
-  user: {
-    login: "su",
-    idProvider: "system"
-  },
-  branch: 'draft'
-};
-
-function runAsSu(f: () => void): void {
-  run(runContext, f);
-}
-
-function emptyStringToUndefined(str: string | undefined): string | undefined {
-  return (str === undefined || str === null || str.length === 0) ? undefined : str;
-}
-```
 
 ## Development
 
