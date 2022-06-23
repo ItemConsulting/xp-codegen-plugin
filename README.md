@@ -39,7 +39,7 @@ jar {
 }
 
 // Add dependency to webpack tasks too
-task serverWebpack( type: NodeTask, dependsOn: [ npmInstall, generateTypeScriptDeclaration ] ) {
+task serverWebpack( type: NodeTask, dependsOn: [ npmInstall, generateTypeScript ] ) {
   ...
 }
  ```
