@@ -8,16 +8,9 @@ val IS_MIXIN = "^.*site/mixins.*\$".toRegex(RegexOption.IGNORE_CASE)
 val IS_PART = "^.*site/parts.*\$".toRegex(RegexOption.IGNORE_CASE)
 val IS_PAGE = "^.*site/pages.*\$".toRegex(RegexOption.IGNORE_CASE)
 
-enum class FileType(val filePostfix: String) {
-  TypeScriptDeclaration(".d.ts"),
-  None("")
-}
 
-fun getTargetFile(inputFile: File, filePostfix: String): File =
-  File(inputFile.parent, inputFile.nameWithoutExtension + getTargetFilePostfix(inputFile) + filePostfix)
-
-fun getTargetFile(inputFile: File, fileType: FileType): File =
-  getTargetFile(inputFile, fileType.filePostfix)
+fun getTargetFile(inputFile: File): File =
+  File(inputFile.parent, inputFile.nameWithoutExtension + getTargetFilePostfix(inputFile) + ".d.ts")
 
 fun getTargetFilePostfix(file: File): String =
   when {

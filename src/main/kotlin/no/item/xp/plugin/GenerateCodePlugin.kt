@@ -1,6 +1,5 @@
 package no.item.xp.plugin
 
-import no.item.xp.plugin.util.FileType
 import no.item.xp.plugin.util.getTargetFile
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -16,8 +15,7 @@ class GenerateCodePlugin : Plugin<Project> {
 
     project.tasks.create("generateTypeScript", GenerateCodeTask::class.java).apply {
       inputFiles.from(files)
-      outputFiles.from(files.map { getTargetFile(it, FileType.TypeScriptDeclaration) })
-      fileType = FileType.TypeScriptDeclaration
+      outputFiles.from(files.map { getTargetFile(it) })
       group = "enonic"
     }
   }

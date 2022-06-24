@@ -1,7 +1,6 @@
 package no.item.xp.plugin
 
 import no.item.xp.plugin.parser.resolveMixinGraph
-import no.item.xp.plugin.util.FileType
 import no.item.xp.plugin.util.IS_MIXIN
 import no.item.xp.plugin.util.getTargetFile
 import no.item.xp.plugin.util.normalizeFilePath
@@ -32,9 +31,6 @@ open class GenerateCodeTask @Inject constructor(objects: ObjectFactory, private 
   @OutputFiles
   val outputFiles: ConfigurableFileCollection = objects.fileCollection()
 
-  @Input
-  var fileType: FileType = FileType.TypeScriptDeclaration
-
   @TaskAction
   private fun execute(inputChanges: InputChanges) {
     val workQueue = workerExecutor.noIsolation()
@@ -44,7 +40,7 @@ open class GenerateCodeTask @Inject constructor(objects: ObjectFactory, private 
     )
 
     inputChanges.getFileChanges(inputFiles).forEach { change ->
-      val targetFile = getTargetFile(change.file, fileType.filePostfix)
+      val targetFile = getTargetFile(change.file)
 
       if (change.changeType == ChangeType.REMOVED && targetFile.delete()) {
         logger.lifecycle("Removed ${targetFile.absolutePath}")
@@ -53,7 +49,6 @@ open class GenerateCodeTask @Inject constructor(objects: ObjectFactory, private 
           it.getXmlFile().set(change.file)
           it.getTargetFile().set(targetFile)
           it.getMixins().value(mixins)
-          it.getFileType().value(fileType)
           it.getSingleQuote().value(singleQuote)
           it.getPrependText().value(prependText)
         }
