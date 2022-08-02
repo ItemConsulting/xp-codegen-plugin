@@ -3,7 +3,7 @@ import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
 plugins {
   `java-gradle-plugin`
   `maven-publish`
-  id("com.gradle.plugin-publish") version "1.0.0-rc-2"
+  id("com.gradle.plugin-publish") version "1.0.0"
   id("org.jetbrains.kotlin.jvm") version "1.6.21"
   id("org.jlleitschuh.gradle.ktlint") version "10.3.0"
 }

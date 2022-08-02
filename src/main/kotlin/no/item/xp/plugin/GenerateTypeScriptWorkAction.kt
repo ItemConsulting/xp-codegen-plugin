@@ -4,7 +4,11 @@ import arrow.core.extensions.either.monad.flatMap
 import no.item.xp.plugin.extensions.getFormNode
 import no.item.xp.plugin.models.InterfaceModel
 import no.item.xp.plugin.parser.parseInterfaceModel
+import no.item.xp.plugin.renderers.renderSiteConfig
+import no.item.xp.plugin.renderers.ts.getTypeName
 import no.item.xp.plugin.renderers.ts.renderInterfaceModelAsTypeScript
+import no.item.xp.plugin.util.concatFileName
+import no.item.xp.plugin.util.isContentType
 import no.item.xp.plugin.util.parseXml
 import no.item.xp.plugin.util.simpleFilePath
 import org.gradle.api.file.RegularFileProperty
@@ -13,6 +17,7 @@ import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.workers.WorkAction
 import org.gradle.workers.WorkParameters
+import java.io.File
 
 interface CodegenWorkParameters : WorkParameters {
   fun getXmlFile(): RegularFileProperty
@@ -20,6 +25,7 @@ interface CodegenWorkParameters : WorkParameters {
   fun getMixins(): ListProperty<InterfaceModel>
   fun getPrependText(): Property<String>
   fun getSingleQuote(): Property<Boolean>
+  fun getAppName(): Property<String>
 }
 
 abstract class GenerateTypeScriptWorkAction : WorkAction<CodegenWorkParameters> {
@@ -33,7 +39,7 @@ abstract class GenerateTypeScriptWorkAction : WorkAction<CodegenWorkParameters> 
 
       parseXml(file)
         .flatMap { doc -> doc.getFormNode() }
-        .flatMap { formNode -> parseInterfaceModel(formNode, targetFile.nameWithoutExtension, mixins) }
+        .flatMap { formNode -> parseInterfaceModel(formNode, file.nameWithoutExtension, mixins) }
         .fold(
           {
             if (it is NoFormException) {
@@ -44,22 +50,26 @@ abstract class GenerateTypeScriptWorkAction : WorkAction<CodegenWorkParameters> 
             }
           },
           {
-            if (it.fields.isNotEmpty()) {
-            var fileContent = renderInterfaceModelAsTypeScript(it)
 
-              if (parameters.getSingleQuote().get()) {
-                fileContent = fileContent.replace("\"", "'")
-              }
+            var fileContent =
+              if (file.absolutePath.endsWith(concatFileName("resources", "site", "site.xml")))
+                renderSiteConfig(it)
+              else
+                renderInterfaceModelAsTypeScript(it, getTypeNameIfContentType(file, parameters.getAppName().get()))
 
-              val prependText = parameters.getPrependText().get()
-              if (prependText.isNotEmpty()) {
-                fileContent = prependText + "\n" + fileContent
-              }
-
-              targetFile.writeText(fileContent, Charsets.UTF_8)
-              logger.lifecycle("Updated file: ${simpleFilePath(targetFile)}")
+            if (parameters.getSingleQuote().get()) {
+              fileContent = fileContent.replace("\"", "'")
             }
 
+            val prependText = parameters.getPrependText().get()
+            if (prependText.isNotEmpty()) {
+              fileContent = prependText + "\n" + fileContent
+            }
+
+            targetFile.parentFile.mkdirs()
+            targetFile.createNewFile()
+            targetFile.writeText(fileContent, Charsets.UTF_8)
+            logger.lifecycle("Updated file: ${simpleFilePath(targetFile)}")
           }
         )
     } catch (e: Exception) {
@@ -68,3 +78,6 @@ abstract class GenerateTypeScriptWorkAction : WorkAction<CodegenWorkParameters> 
   }
 }
 
+fun getTypeNameIfContentType(file: File, appName: String): String? =
+  if (isContentType(file)) getTypeName(file.nameWithoutExtension, appName)
+  else null
