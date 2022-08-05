@@ -71,7 +71,7 @@ class RenderOptionSetFieldTest {
       #          /**
       #           * Select articles for the list
       #           */
-      #          articleList?: Array<string>;
+      #          articleList?: Array<string> | string;
       #        };
       #      };
       #}
@@ -139,7 +139,7 @@ class RenderOptionSetFieldTest {
       #      /**
       #       * Select articles for the list
       #       */
-      #      articleList?: Array<string>;
+      #      articleList?: Array<string> | string;
       #    };
       #  };
       #}

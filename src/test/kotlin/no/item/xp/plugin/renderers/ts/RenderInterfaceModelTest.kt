@@ -32,7 +32,7 @@ class RenderInterfaceModelTest {
       #  /**
       #   * Emails
       #   */
-      #  emails?: Array<string>;
+      #  emails?: Array<string> | string;
       #
       #  /**
       #   * Is manager
