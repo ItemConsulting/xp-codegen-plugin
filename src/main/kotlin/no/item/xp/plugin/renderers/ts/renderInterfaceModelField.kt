@@ -25,6 +25,6 @@ private fun simpleFieldAsString(field: InterfaceModelField, innerType: String, i
 
   return """
       #${renderComment(field.comment, indentLevel)}
-      #$indentation${escapeName(field.name)}${if (field.isNullable) "?" else ""}: ${if (field.isArray) "Array<$innerType>" else innerType};
+      #$indentation${escapeName(field.name)}${if (field.isNullable) "?" else ""}: ${if (field.isArray) "Array<$innerType> | $innerType" else innerType};
       """.trimMargin("#")
 }
