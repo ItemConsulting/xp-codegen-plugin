@@ -44,6 +44,33 @@ task serverWebpack( type: NodeTask, dependsOn: [ npmInstall, generateTypeScript 
 }
  ```
 
+## Update *./tsconfig.json*
+
+By setting the `rootDirs` field in *tsconfig.json*, you can "overlay" the two directory structures over each other, and
+references to generated Types becomes very natural.
+
+E.g if you have a content type in 
+"**./resources/site/content-types/article/article.xml**", the generated TypeScript interface for that type can be imported
+from "**./resources/site/content-types/article**" (or alternatively from "**./resources/site/content-types**").
+
+
+```json
+{
+  "compilerOptions": {
+    ...
+      
+    "rootDirs": [
+      "./src/main/resources",
+      "./.xp-codegen"
+    ]
+  },
+  "include": [
+    "./.xp-codegen/**/*",
+    "./src/main/resources/**/*"
+  ]
+}
+```
+
 ## Examples
 
 ### Generating TypeScript interfaces
@@ -105,8 +132,47 @@ jar {
 }
 ```
 
-> TIP: You can use `prependText` to give instructions to the e.g. the linter. If you add
+> **Note**
+> You can use `prependText` to give instructions to the e.g. the linter. If you add
 `/* eslint-disable prettier/prettier */` you can stop [eslint](https://eslint.org/) from processing the generated files.
+
+### Using the generated interfaces
+
+Here we can see an example of using generated interfaces it in a part specified in 
+**"./site/parts/article-view/article-view.xml"**.
+
+```typescript
+// We can import the generated Article interface from "./site/content-types/index.d.ts"
+import type { Article } from "../../content-types";
+// We can import the shape of the part config from "./index.d.ts"
+import type { ArticleView } from ".";
+// imports from XP libraries:
+import { getContent, getComponent } from "/lib/xp/portal";
+import { render } from "/lib/thymeleaf";
+
+
+const view = resolve("article-view.html");
+
+export function get(): XP.Response {
+  const content = getContent<Article>();
+  const part = getComponent<ArticleView>();
+
+  return {
+    status: 200,
+    body: render<ThymeleafParams>(view, {
+      title: content.displayName,
+      preface: content.data.preface,
+      backgroundColor: part.config.backgroundColor
+    }),
+  };
+}
+
+interface ThymeleafParams {
+  title: string;
+  preface: string | undefined;
+  backgroundColor: string;  
+}
+```
 
 ## Development
 
