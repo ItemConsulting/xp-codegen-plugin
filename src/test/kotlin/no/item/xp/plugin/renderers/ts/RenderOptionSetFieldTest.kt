@@ -41,6 +41,7 @@ class RenderOptionSetFieldTest {
     )
 
     assertEquals(
+      //language=TypeScript
       """
       #export interface MyType {
       #  /**
@@ -75,7 +76,10 @@ class RenderOptionSetFieldTest {
       #        };
       #      };
       #}
-      #""".trimMargin("#"),
+      #""".trimMargin(
+        //language=
+        "#"
+      ),
       result
     )
   }
@@ -116,6 +120,7 @@ class RenderOptionSetFieldTest {
     )
 
     assertEquals(
+      //language=TypeScript
       """
       #export interface MyType {
       #  /**
@@ -143,7 +148,90 @@ class RenderOptionSetFieldTest {
       #    };
       #  };
       #}
-      #""".trimMargin("#"),
+      #""".trimMargin(
+        //language=
+        "#"
+      ),
+      result
+    )
+  }
+
+  @Test
+  fun `render Array of option set entries`() {
+    val result = renderInterfaceModelAsTypeScript(
+      InterfaceModel(
+        "my-type",
+        listOf(
+          OptionSetField(
+            "myOptionSet",
+            "Select content manually?",
+            true,
+            true,
+            false,
+            listOf(
+              ObjectField(
+                "no",
+                "No",
+                true,
+                false,
+                emptyList()
+              ),
+              ObjectField(
+                "yes",
+                "Yes",
+                true,
+                false,
+                listOf(
+                  StringField("articleList", "Select articles for the list", true, true)
+                )
+              )
+            )
+          )
+        )
+      )
+    )
+
+    assertEquals(
+      //language=TypeScript
+      """
+      #export interface MyType {
+      #  /**
+      #   * Select content manually?
+      #   */
+      #  myOptionSet?: Array<
+      #    | {
+      #        /**
+      #         * Selected
+      #         */
+      #        _selected: "no";
+      #
+      #        /**
+      #         * No
+      #         */
+      #        no: Record<string, unknown>;
+      #      }
+      #    | {
+      #        /**
+      #         * Selected
+      #         */
+      #        _selected: "yes";
+      #
+      #        /**
+      #         * Yes
+      #         */
+      #        yes: {
+      #          /**
+      #           * Select articles for the list
+      #           */
+      #          articleList?: Array<string> | string;
+      #        };
+      #      }
+      #  >;
+      #}
+      #""".trimMargin(
+        //language=
+        "#"
+      ),
       result
     )
   }

@@ -22,6 +22,7 @@ class RenderInterfaceModelTest {
 
     assertEquals(
       result,
+      //language=TypeScript
       """
       #export interface MyType {
       #  /**
@@ -50,7 +51,10 @@ class RenderInterfaceModelTest {
       #  favouriteColor: "red" | "green" | "blue";
       #}
       #
-      """.trimMargin("#")
+      """.trimMargin(
+        //language=
+        "#"
+      )
     )
   }
 }
