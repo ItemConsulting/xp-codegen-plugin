@@ -30,7 +30,7 @@ To get started add the following to your project's *build.gradle* file:
  ```groovy
 plugins {
     id 'java'
-    id 'no.item.xp.codegen' version '2.0.0'
+    id 'no.item.xp.codegen' version '2.0.1'
 }
 
 jar {
@@ -113,6 +113,11 @@ export interface Article {
    * Main text body 
    */
   body?: string;
+
+  /**
+   * GraphQL name. Also used for separating unions in TypeScript
+   */
+  __typename?: "com_mysite_Article_Data";
 }
 ```
 
