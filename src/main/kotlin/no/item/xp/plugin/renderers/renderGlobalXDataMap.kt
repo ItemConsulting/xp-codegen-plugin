@@ -8,18 +8,16 @@ fun renderGlobalXDataMap(files: List<File>, appName: String): String {
     """export type ${getInterfaceName(it.nameWithoutExtension)} = import("./${it.nameWithoutExtension}").${getInterfaceName(it.nameWithoutExtension)}"""
   }
   val fieldList = files.joinToString("\n") {
-    """        ${escapeFieldName(it.nameWithoutExtension)}?: ${getInterfaceName(it.nameWithoutExtension)};"""
+    """      ${escapeFieldName(it.nameWithoutExtension)}?: ${getInterfaceName(it.nameWithoutExtension)};"""
   }
 
   return """
     #$importList
     #
     #declare global {
-    #  namespace XP {
-    #    interface XData {
-    #      "${snakeCase(appName)}"?: {
+    #  interface XpXData {
+    #    "${snakeCase(appName)}"?: {
     #$fieldList
-    #      }
     #    }
     #  }
     #}

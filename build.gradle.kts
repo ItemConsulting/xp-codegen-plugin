@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "no.item.xp.plugin"
-version = "2.0.1"
+version = "2.1.0"
 
 java {
   sourceCompatibility = JavaVersion.VERSION_11
