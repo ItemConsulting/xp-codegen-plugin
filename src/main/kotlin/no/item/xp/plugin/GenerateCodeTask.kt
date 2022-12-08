@@ -71,7 +71,7 @@ open class GenerateCodeTask @Inject constructor(objects: ObjectFactory, private 
 
   private fun createContentTypeIndexFile(rootOutputDir: File) {
     val appName = project.property("appName") as String
-    val files = inputFiles.files.filter { it.absolutePath.contains("content-types") }
+    val files = inputFiles.files.filter { it.absolutePath.contains("content-types") }.sortedBy { it.name }
     val fileContent = renderGlobalContentTypeMap(files, appName)
     val targetFile = File(rootOutputDir.absolutePath + "/site/content-types/index.d.ts")
     targetFile.parentFile.mkdirs()
@@ -82,7 +82,7 @@ open class GenerateCodeTask @Inject constructor(objects: ObjectFactory, private 
 
   private fun createXDataIndexFile(rootOutputDir: File) {
     val appName = project.property("appName") as String
-    val files = inputFiles.files.filter { it.absolutePath.contains("x-data") }
+    val files = inputFiles.files.filter { it.absolutePath.contains("x-data") }.sortedBy { it.name }
 
     if (files.isNotEmpty()) {
       val fileContent = renderGlobalXDataMap(files, appName)
