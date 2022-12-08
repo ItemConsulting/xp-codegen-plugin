@@ -212,11 +212,11 @@ To run the unit tests, linting and plugin verification in the project you can ru
 
 ```bash
 ./gradlew test
-./gradlew klintFormat
+./gradlew ktlintFormat
 ./gradlew validatePlugins
 ```
 
-You should always run `./gradlew klintFormat` before committing code to git!
+You should always run `./gradlew ktlintFormat` before committing code to git!
 
 ### Publishing to plugin portal
 
