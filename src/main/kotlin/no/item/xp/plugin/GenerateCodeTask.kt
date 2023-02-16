@@ -71,7 +71,7 @@ open class GenerateCodeTask @Inject constructor(objects: ObjectFactory, private 
 
   private fun createContentTypeIndexFile(rootOutputDir: File) {
     val appName = project.property("appName") as String
-    val files = inputFiles.files.filter { it.absolutePath.contains("content-types") }.sortedBy { it.name }
+    val files = inputFiles.files.filter { it.absolutePath.contains(concatFileName("resources", "site", "content-types")) }.sortedBy { it.name }
     val fileContent = renderGlobalContentTypeMap(files, appName)
     val targetFile = File(rootOutputDir.absolutePath + "/site/content-types/index.d.ts")
     targetFile.parentFile.mkdirs()
