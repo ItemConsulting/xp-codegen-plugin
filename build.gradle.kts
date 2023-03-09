@@ -3,17 +3,16 @@ import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
 plugins {
   `java-gradle-plugin`
   `maven-publish`
-  id("com.gradle.plugin-publish") version "1.0.0"
-  id("org.jetbrains.kotlin.jvm") version "1.6.21"
-  id("org.jlleitschuh.gradle.ktlint") version "10.3.0"
+  id("com.gradle.plugin-publish") version "1.1.0"
+  id("org.jetbrains.kotlin.jvm") version "1.8.10"
+  id("org.jlleitschuh.gradle.ktlint") version "11.3.1"
 }
 
 group = "no.item.xp.plugin"
 version = "2.2.1"
 
-java {
-  sourceCompatibility = JavaVersion.VERSION_11
-  targetCompatibility = JavaVersion.VERSION_11
+kotlin {
+  jvmToolchain(11)
 }
 
 repositories {
@@ -22,9 +21,9 @@ repositories {
 
 dependencies {
   implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
-  implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-  implementation("io.arrow-kt:arrow-core:0.10.5")
-  testImplementation("org.junit.jupiter:junit-jupiter:5.6.2")
+  implementation("org.jetbrains.kotlin:kotlin-stdlib")
+  implementation("io.arrow-kt:arrow-core:1.1.5")
+  testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
   testImplementation("org.jetbrains.kotlin:kotlin-test")
   testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 }

@@ -1,7 +1,6 @@
 package no.item.xp.plugin.parser
 
-import arrow.core.extensions.either.monad.flatMap
-import arrow.core.orNull
+import arrow.core.flatMap
 import no.item.xp.plugin.CyclicDependenciesException
 import no.item.xp.plugin.extensions.getChildNodesAtXPath
 import no.item.xp.plugin.extensions.getFormNode
@@ -21,7 +20,7 @@ fun resolveMixinGraph(mixinFiles: FileCollection): List<InterfaceModel> {
       parseXml(file)
         .flatMap { doc -> doc.getFormNode() }
         .map { formNode -> parseMixinDependencyModel(formNode, file.nameWithoutExtension) }
-        .orNull()
+        .getOrNull()
     }
 
   return mixinDependencies.mapNotNull { parseMixin(it, mixinDependencies) }
@@ -56,7 +55,7 @@ private fun walkMixinGraph(mixin: MixinDependencyModel, otherMixins: List<MixinD
       interfaceModel
     }
 
-  return parseInterfaceModel(mixin.node, mixin.name, dependentOnMixins).orNull()
+  return parseInterfaceModel(mixin.node, mixin.name, dependentOnMixins).getOrNull()
 }
 
 fun parseMixinDependencyModel(formNode: Node, name: String): MixinDependencyModel {

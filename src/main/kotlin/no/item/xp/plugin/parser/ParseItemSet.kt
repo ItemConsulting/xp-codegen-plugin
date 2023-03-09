@@ -1,6 +1,5 @@
 package no.item.xp.plugin.parser
 
-import arrow.core.orNull
 import no.item.xp.plugin.extensions.getChildNodeAtXPath
 import no.item.xp.plugin.models.InterfaceModel
 import no.item.xp.plugin.models.ObjectField
@@ -10,7 +9,7 @@ fun parseItemSet(itemSetNode: Node, mixins: List<InterfaceModel>): ObjectField? 
   val unknownField = parseUnknownField(itemSetNode)
 
   val subFields = itemSetNode.getChildNodeAtXPath("items")
-    ?.let { parseFields(it, mixins).orNull() } ?: emptyList()
+    ?.let { parseFields(it, mixins).getOrNull() } ?: emptyList()
 
   return unknownField?.let { ObjectField(it, subFields) }
 }

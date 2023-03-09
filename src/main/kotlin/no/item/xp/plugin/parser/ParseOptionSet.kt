@@ -1,6 +1,5 @@
 package no.item.xp.plugin.parser
 
-import arrow.core.orNull
 import no.item.xp.plugin.extensions.getChildNodeAtXPath
 import no.item.xp.plugin.extensions.getChildNodesAtXPath
 import no.item.xp.plugin.extensions.getNodeAttribute
@@ -30,7 +29,7 @@ private fun parseOptionSetFieldOption(optionNode: Node, mixins: List<InterfaceMo
   val itemsNode = optionNode.getChildNodeAtXPath("items")
 
   val fields: List<InterfaceModelField> = itemsNode
-    ?.let { parseFields(it, mixins).orNull() } ?: emptyList()
+    ?.let { parseFields(it, mixins).getOrNull() } ?: emptyList()
 
   return ObjectField(optionNode.getNodeAttribute("name")!!, optionComment, true, false, fields)
 }

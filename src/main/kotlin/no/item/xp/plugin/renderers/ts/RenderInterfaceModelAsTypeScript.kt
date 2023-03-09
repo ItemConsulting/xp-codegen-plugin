@@ -17,7 +17,7 @@ fun renderTypeName(typeName: String?): String = typeName?.let {
   |   * GraphQL name. Also used for separating unions in TypeScript
   |   */
   |  __typename?: "$it";
-""".trimMargin()
+  """.trimMargin()
 } ?: ""
 
 fun renderBlankLines(model: InterfaceModel, typeName: String? = null): String =

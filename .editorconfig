@@ -4,4 +4,4 @@ indent_size = 2
 insert_final_newline=true
 
 [*.{kt,kts}]
-disabled_rules=no-wildcard-imports
+ktlint_disabled_rules=no-wildcard-imports

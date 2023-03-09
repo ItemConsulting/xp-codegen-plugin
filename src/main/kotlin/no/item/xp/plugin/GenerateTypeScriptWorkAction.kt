@@ -1,6 +1,6 @@
 package no.item.xp.plugin
 
-import arrow.core.extensions.either.monad.flatMap
+import arrow.core.flatMap
 import no.item.xp.plugin.extensions.getFormNode
 import no.item.xp.plugin.models.InterfaceModel
 import no.item.xp.plugin.parser.parseInterfaceModel
@@ -50,12 +50,12 @@ abstract class GenerateTypeScriptWorkAction : WorkAction<CodegenWorkParameters> 
             }
           },
           {
-
             var fileContent =
-              if (file.absolutePath.endsWith(concatFileName("resources", "site", "site.xml")))
+              if (file.absolutePath.endsWith(concatFileName("resources", "site", "site.xml"))) {
                 renderSiteConfig(it)
-              else
+              } else {
                 renderInterfaceModelAsTypeScript(it, getTypeNameIfContentType(file, parameters.getAppName().get()))
+              }
 
             if (parameters.getSingleQuote().get()) {
               fileContent = fileContent.replace("\"", "'")
@@ -79,5 +79,8 @@ abstract class GenerateTypeScriptWorkAction : WorkAction<CodegenWorkParameters> 
 }
 
 fun getTypeNameIfContentType(file: File, appName: String): String? =
-  if (isContentType(file)) getTypeName(file.nameWithoutExtension, appName)
-  else null
+  if (isContentType(file)) {
+    getTypeName(file.nameWithoutExtension, appName)
+  } else {
+    null
+  }
