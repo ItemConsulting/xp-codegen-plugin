@@ -60,8 +60,9 @@ private fun walkMixinGraph(mixin: MixinDependencyModel, otherMixins: List<MixinD
 
 fun parseMixinDependencyModel(formNode: Node, name: String): MixinDependencyModel {
   val dependencies = formNode
-    .getChildNodesAtXPath("mixin/@name")
+    .getChildNodesAtXPath("//mixin/@name")
     .map { it.nodeValue }
+    .distinct()
 
   return MixinDependencyModel(name, dependencies, formNode)
 }
