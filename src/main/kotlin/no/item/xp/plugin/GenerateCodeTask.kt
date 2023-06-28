@@ -1,6 +1,7 @@
 package no.item.xp.plugin
 
 import no.item.xp.plugin.parser.resolveMixinGraph
+import no.item.xp.plugin.renderers.renderGlobalComponentMap
 import no.item.xp.plugin.renderers.renderGlobalContentTypeMap
 import no.item.xp.plugin.renderers.renderGlobalXDataMap
 import no.item.xp.plugin.util.*
@@ -66,18 +67,39 @@ open class GenerateCodeTask @Inject constructor(objects: ObjectFactory, private 
 
     createContentTypeIndexFile(rootOutputDir)
 
+    createComponentIndexFile(rootOutputDir, "parts", "XpPartMap")
+    createComponentIndexFile(rootOutputDir, "layouts", "XpLayoutMap")
+    createComponentIndexFile(rootOutputDir, "pages", "XpPageMap")
+
     createXDataIndexFile(rootOutputDir)
   }
 
   private fun createContentTypeIndexFile(rootOutputDir: File) {
     val appName = project.property("appName") as String
     val files = inputFiles.files.filter { it.absolutePath.contains(concatFileName("resources", "site", "content-types")) }.sortedBy { it.name }
-    val fileContent = renderGlobalContentTypeMap(files, appName)
-    val targetFile = File(rootOutputDir.absolutePath + "/site/content-types/index.d.ts")
-    targetFile.parentFile.mkdirs()
-    targetFile.createNewFile()
-    targetFile.writeText(prependText + "\n" + fileContent, Charsets.UTF_8)
-    logger.lifecycle("Updated file: ${simpleFilePath(targetFile)}")
+
+    if (files.isNotEmpty()) {
+      val fileContent = renderGlobalContentTypeMap(files, appName)
+      val targetFile = File(rootOutputDir.absolutePath + "/site/content-types/index.d.ts")
+      targetFile.parentFile.mkdirs()
+      targetFile.createNewFile()
+      targetFile.writeText(prependText + "\n" + fileContent, Charsets.UTF_8)
+      logger.lifecycle("Updated file: ${simpleFilePath(targetFile)}")
+    }
+  }
+
+  private fun createComponentIndexFile(rootOutputDir: File, componentTypeName: String, interfaceName: String) {
+    val appName = project.property("appName") as String
+    val files = inputFiles.files.filter { it.absolutePath.contains(concatFileName("resources", "site", componentTypeName)) }.sortedBy { it.name }
+
+    if (files.isNotEmpty()) {
+      val fileContent = renderGlobalComponentMap(files, appName, interfaceName)
+      val targetFile = File( concatFileName(rootOutputDir.absolutePath, "site", componentTypeName, "index.d.ts"))
+      targetFile.parentFile.mkdirs()
+      targetFile.createNewFile()
+      targetFile.writeText(prependText + "\n" + fileContent, Charsets.UTF_8)
+      logger.lifecycle("Updated file: ${simpleFilePath(targetFile)}")
+      }
   }
 
   private fun createXDataIndexFile(rootOutputDir: File) {
