@@ -55,7 +55,7 @@ private fun walkMixinGraph(mixin: MixinDependencyModel, otherMixins: List<MixinD
       interfaceModel
     }
 
-  return parseInterfaceModel(mixin.node, mixin.name, dependentOnMixins).getOrNull()
+  return parseObjectTypeModel(mixin.node, mixin.name, dependentOnMixins).getOrNull()
 }
 
 fun parseMixinDependencyModel(formNode: Node, name: String): MixinDependencyModel {

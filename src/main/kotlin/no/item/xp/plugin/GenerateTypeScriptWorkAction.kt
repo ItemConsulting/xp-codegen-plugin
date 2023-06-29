@@ -1,14 +1,13 @@
 package no.item.xp.plugin
 
 import arrow.core.flatMap
+import arrow.core.right
 import no.item.xp.plugin.extensions.getFormNode
 import no.item.xp.plugin.models.ObjectTypeModel
-import no.item.xp.plugin.parser.parseInterfaceModel
+import no.item.xp.plugin.parser.parseObjectTypeModel
 import no.item.xp.plugin.renderers.renderSiteConfig
-import no.item.xp.plugin.renderers.ts.getTypeName
 import no.item.xp.plugin.renderers.ts.renderTypeModelAsTypeScript
 import no.item.xp.plugin.util.concatFileName
-import no.item.xp.plugin.util.isContentType
 import no.item.xp.plugin.util.parseXml
 import no.item.xp.plugin.util.simpleFilePath
 import org.gradle.api.file.RegularFileProperty
@@ -17,7 +16,6 @@ import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.workers.WorkAction
 import org.gradle.workers.WorkParameters
-import java.io.File
 
 interface CodegenWorkParameters : WorkParameters {
   fun getXmlFile(): RegularFileProperty
@@ -39,15 +37,18 @@ abstract class GenerateTypeScriptWorkAction : WorkAction<CodegenWorkParameters> 
 
       parseXml(file)
         .flatMap { doc -> doc.getFormNode() }
-        .flatMap { formNode -> parseInterfaceModel(formNode, file.nameWithoutExtension, mixins) }
         .fold(
           {
-            if (it is NoFormException) {
-              logger.debug("No <form> found in: ${simpleFilePath(file)}")
-            } else {
-              logger.error("ERROR in: ${simpleFilePath(file)}")
-              logger.error(it.message)
-            }
+            ObjectTypeModel(file.nameWithoutExtension, emptyList()).right()
+          },
+          {
+            parseObjectTypeModel(it, file.nameWithoutExtension, mixins)
+          }
+        )
+        .fold(
+          {
+            logger.error("ERROR in: ${simpleFilePath(file)}")
+            logger.error(it.message)
           },
           {
             var fileContent =
@@ -77,10 +78,3 @@ abstract class GenerateTypeScriptWorkAction : WorkAction<CodegenWorkParameters> 
     }
   }
 }
-
-fun getTypeNameIfContentType(file: File, appName: String): String? =
-  if (isContentType(file)) {
-    getTypeName(file.nameWithoutExtension, appName)
-  } else {
-    null
-  }

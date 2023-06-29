@@ -14,7 +14,7 @@ val XPATH_FACTORY: XPathFactory = XPathFactory.newInstance()
 val xpathInputType: XPathExpression = XPATH_FACTORY.newXPath().compile("input[@type] | mixin | item-set | option-set | field-set")
 val xpathOption: XPathExpression = XPATH_FACTORY.newXPath().compile("options/option[@name]")
 
-fun parseInterfaceModel(node: Node, nameWithoutExtension: String, mixins: List<ObjectTypeModel>): Either<Throwable, ObjectTypeModel> {
+fun parseObjectTypeModel(node: Node, nameWithoutExtension: String, mixins: List<ObjectTypeModel>): Either<Throwable, ObjectTypeModel> {
   return parseFields(node, mixins)
     .map { ObjectTypeModel(nameWithoutExtension, it) }
 }
