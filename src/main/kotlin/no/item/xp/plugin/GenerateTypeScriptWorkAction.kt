@@ -2,11 +2,11 @@ package no.item.xp.plugin
 
 import arrow.core.flatMap
 import no.item.xp.plugin.extensions.getFormNode
-import no.item.xp.plugin.models.InterfaceModel
+import no.item.xp.plugin.models.ObjectTypeModel
 import no.item.xp.plugin.parser.parseInterfaceModel
 import no.item.xp.plugin.renderers.renderSiteConfig
 import no.item.xp.plugin.renderers.ts.getTypeName
-import no.item.xp.plugin.renderers.ts.renderInterfaceModelAsTypeScript
+import no.item.xp.plugin.renderers.ts.renderTypeModelAsTypeScript
 import no.item.xp.plugin.util.concatFileName
 import no.item.xp.plugin.util.isContentType
 import no.item.xp.plugin.util.parseXml
@@ -22,7 +22,7 @@ import java.io.File
 interface CodegenWorkParameters : WorkParameters {
   fun getXmlFile(): RegularFileProperty
   fun getTargetFile(): RegularFileProperty
-  fun getMixins(): ListProperty<InterfaceModel>
+  fun getMixins(): ListProperty<ObjectTypeModel>
   fun getPrependText(): Property<String>
   fun getSingleQuote(): Property<Boolean>
   fun getAppName(): Property<String>
@@ -54,7 +54,7 @@ abstract class GenerateTypeScriptWorkAction : WorkAction<CodegenWorkParameters> 
               if (file.absolutePath.endsWith(concatFileName("resources", "site", "site.xml"))) {
                 renderSiteConfig(it)
               } else {
-                renderInterfaceModelAsTypeScript(it, getTypeNameIfContentType(file, parameters.getAppName().get()))
+                renderTypeModelAsTypeScript(it)
               }
 
             if (parameters.getSingleQuote().get()) {

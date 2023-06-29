@@ -14,18 +14,18 @@ val XPATH_FACTORY: XPathFactory = XPathFactory.newInstance()
 val xpathInputType: XPathExpression = XPATH_FACTORY.newXPath().compile("input[@type] | mixin | item-set | option-set | field-set")
 val xpathOption: XPathExpression = XPATH_FACTORY.newXPath().compile("options/option[@name]")
 
-fun parseInterfaceModel(node: Node, nameWithoutExtension: String, mixins: List<InterfaceModel>): Either<Throwable, InterfaceModel> {
+fun parseInterfaceModel(node: Node, nameWithoutExtension: String, mixins: List<ObjectTypeModel>): Either<Throwable, ObjectTypeModel> {
   return parseFields(node, mixins)
-    .map { InterfaceModel(nameWithoutExtension, it) }
+    .map { ObjectTypeModel(nameWithoutExtension, it) }
 }
 
-fun parseFields(node: Node, mixins: List<InterfaceModel>): Either<Throwable, List<InterfaceModelField>> {
+fun parseFields(node: Node, mixins: List<ObjectTypeModel>): Either<Throwable, List<ObjectTypeModelField>> {
   return node
     .getChildNodesAtXPathAsEither(xpathInputType)
     .map { parseInputTypeList(it, mixins) }
 }
 
-fun parseInputTypeList(nodes: Collection<Node>, mixins: List<InterfaceModel>): List<InterfaceModelField> {
+fun parseInputTypeList(nodes: Collection<Node>, mixins: List<ObjectTypeModel>): List<ObjectTypeModelField> {
   return nodes
     .flatMap { node ->
       when (node.nodeName) {
@@ -39,7 +39,7 @@ fun parseInputTypeList(nodes: Collection<Node>, mixins: List<InterfaceModel>): L
     }
 }
 
-private fun findMixinFields(mixins: List<InterfaceModel>, node: Node): List<InterfaceModelField> {
+private fun findMixinFields(mixins: List<ObjectTypeModel>, node: Node): List<ObjectTypeModelField> {
   val mixinName = node.getNodeAttribute("name")
   return mixins.find { it.nameWithoutExtension == mixinName }?.fields ?: emptyList()
 }

@@ -1,7 +1,7 @@
 package no.item.xp.plugin.parser
 
 import no.item.xp.plugin.extensions.getChildNodeAtXPath
-import no.item.xp.plugin.models.InterfaceModel
+import no.item.xp.plugin.models.ObjectTypeModel
 import no.item.xp.plugin.models.StringField
 import no.item.xp.plugin.stringToXMLDocument
 import org.junit.jupiter.api.Test
@@ -73,7 +73,7 @@ class ParseMixinTest {
     assertEquals(
       result,
       listOf(
-        InterfaceModel(
+        ObjectTypeModel(
           "aa",
           listOf(
             StringField("isA", "Is A", true, false),
@@ -81,13 +81,13 @@ class ParseMixinTest {
             StringField("isB", "Is B", true, false)
           )
         ),
-        InterfaceModel(
+        ObjectTypeModel(
           "bb",
           listOf(
             StringField("isB", "Is B", true, false)
           )
         ),
-        InterfaceModel(
+        ObjectTypeModel(
           "cc",
           listOf(
             StringField("isC", "Is C", true, false),

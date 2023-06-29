@@ -7,8 +7,8 @@ import kotlin.test.assertEquals
 class RenderOptionSetFieldTest {
   @Test
   fun `render option set field`() {
-    val result = renderInterfaceModelAsTypeScript(
-      InterfaceModel(
+    val result = renderTypeModelAsTypeScript(
+      ObjectTypeModel(
         "my-type",
         listOf(
           OptionSetField(
@@ -43,7 +43,7 @@ class RenderOptionSetFieldTest {
     assertEquals(
       //language=TypeScript
       """
-      #export interface MyType {
+      #export type MyType = {
       #  /**
       #   * Select content manually?
       #   */
@@ -86,8 +86,8 @@ class RenderOptionSetFieldTest {
 
   @Test
   fun `render multiselect option set field`() {
-    val result = renderInterfaceModelAsTypeScript(
-      InterfaceModel(
+    val result = renderTypeModelAsTypeScript(
+      ObjectTypeModel(
         "my-type",
         listOf(
           OptionSetField(
@@ -122,7 +122,7 @@ class RenderOptionSetFieldTest {
     assertEquals(
       //language=TypeScript
       """
-      #export interface MyType {
+      #export type MyType = {
       #  /**
       #   * Select content manually?
       #   */
@@ -158,8 +158,8 @@ class RenderOptionSetFieldTest {
 
   @Test
   fun `render Array of option set entries`() {
-    val result = renderInterfaceModelAsTypeScript(
-      InterfaceModel(
+    val result = renderTypeModelAsTypeScript(
+      ObjectTypeModel(
         "my-type",
         listOf(
           OptionSetField(
@@ -194,7 +194,7 @@ class RenderOptionSetFieldTest {
     assertEquals(
       //language=TypeScript
       """
-      #export interface MyType {
+      #export type MyType = {
       #  /**
       #   * Select content manually?
       #   */

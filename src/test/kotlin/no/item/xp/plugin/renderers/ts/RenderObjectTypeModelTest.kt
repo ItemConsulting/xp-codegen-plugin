@@ -4,11 +4,11 @@ import no.item.xp.plugin.models.*
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
-class RenderInterfaceModelTest {
+class RenderObjectTypeModelTest {
   @Test
   fun `render mixed`() {
-    val result = renderInterfaceModelAsTypeScript(
-      InterfaceModel(
+    val result = renderTypeModelAsTypeScript(
+      ObjectTypeModel(
         "my-type",
         listOf(
           StringField("name", "Name", false, false),
@@ -24,7 +24,7 @@ class RenderInterfaceModelTest {
       result,
       //language=TypeScript
       """
-      #export interface MyType {
+      #export type MyType = {
       #  /**
       #   * Name
       #   */

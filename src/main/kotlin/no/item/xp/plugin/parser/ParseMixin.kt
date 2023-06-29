@@ -4,7 +4,7 @@ import arrow.core.flatMap
 import no.item.xp.plugin.CyclicDependenciesException
 import no.item.xp.plugin.extensions.getChildNodesAtXPath
 import no.item.xp.plugin.extensions.getFormNode
-import no.item.xp.plugin.models.InterfaceModel
+import no.item.xp.plugin.models.ObjectTypeModel
 import no.item.xp.plugin.models.MixinDependencyModel
 import no.item.xp.plugin.util.parseXml
 import org.gradle.api.file.FileCollection
@@ -14,7 +14,7 @@ import org.w3c.dom.Node
 
 val LOGGER: Logger = Logging.getLogger("GenerateTypeScript")
 
-fun resolveMixinGraph(mixinFiles: FileCollection): List<InterfaceModel> {
+fun resolveMixinGraph(mixinFiles: FileCollection): List<ObjectTypeModel> {
   val mixinDependencies = mixinFiles
     .mapNotNull { file ->
       parseXml(file)
@@ -26,7 +26,7 @@ fun resolveMixinGraph(mixinFiles: FileCollection): List<InterfaceModel> {
   return mixinDependencies.mapNotNull { parseMixin(it, mixinDependencies) }
 }
 
-fun parseMixin(mixin: MixinDependencyModel, otherMixins: List<MixinDependencyModel>): InterfaceModel? {
+fun parseMixin(mixin: MixinDependencyModel, otherMixins: List<MixinDependencyModel>): ObjectTypeModel? {
   try {
     return walkMixinGraph(mixin, otherMixins)
   } catch (e: StackOverflowError) {
@@ -34,7 +34,7 @@ fun parseMixin(mixin: MixinDependencyModel, otherMixins: List<MixinDependencyMod
   }
 }
 
-private fun walkMixinGraph(mixin: MixinDependencyModel, otherMixins: List<MixinDependencyModel>): InterfaceModel? {
+private fun walkMixinGraph(mixin: MixinDependencyModel, otherMixins: List<MixinDependencyModel>): ObjectTypeModel? {
   val dependentOnMixins = mixin.dependencies
     .mapNotNull { name ->
       val dependencyModel = otherMixins.find { it.name == name }

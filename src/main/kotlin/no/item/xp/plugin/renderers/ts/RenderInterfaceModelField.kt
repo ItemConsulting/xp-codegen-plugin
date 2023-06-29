@@ -2,7 +2,7 @@ package no.item.xp.plugin.renderers.ts
 
 import no.item.xp.plugin.models.*
 
-fun renderInterfaceModelField(field: InterfaceModelField, indent: Int): String {
+fun renderInterfaceModelField(field: ObjectTypeModelField, indent: Int): String {
   return when (field) {
     is StringField,
     is StringFieldWithValidation -> simpleFieldAsString(field, "string", indent)
@@ -21,7 +21,7 @@ fun renderInterfaceModelField(field: InterfaceModelField, indent: Int): String {
   }
 }
 
-private fun simpleFieldAsString(field: InterfaceModelField, innerType: String, indentLevel: Int): String {
+private fun simpleFieldAsString(field: ObjectTypeModelField, innerType: String, indentLevel: Int): String {
   val indentation = createIndentation(indentLevel)
 
   return """
