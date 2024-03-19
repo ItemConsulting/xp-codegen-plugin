@@ -17,7 +17,7 @@ val LOGGER: Logger = Logging.getLogger("GenerateTypeScript")
 fun resolveMixinGraph(mixinFiles: FileCollection): List<ObjectTypeModel> {
   val mixinDependencies = mixinFiles
     .mapNotNull { file ->
-      parseXml(file)
+      parseXml(file.inputStream())
         .flatMap { doc -> doc.getFormNode() }
         .map { formNode -> parseMixinDependencyModel(formNode, file.nameWithoutExtension) }
         .getOrNull()

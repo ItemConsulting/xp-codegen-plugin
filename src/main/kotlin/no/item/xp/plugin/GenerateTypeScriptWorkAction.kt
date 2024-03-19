@@ -35,7 +35,7 @@ abstract class GenerateTypeScriptWorkAction : WorkAction<CodegenWorkParameters> 
       val targetFile = parameters.getTargetFile().get().asFile
       val mixins = parameters.getMixins().get()
 
-      parseXml(file)
+      parseXml(file.inputStream())
         .flatMap { doc -> doc.getFormNode() }
         .fold(
           {
