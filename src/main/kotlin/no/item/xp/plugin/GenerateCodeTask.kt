@@ -1,11 +1,18 @@
 package no.item.xp.plugin
 
+import arrow.core.flatMap
+import arrow.core.right
+import no.item.xp.plugin.extensions.getFormNode
+import no.item.xp.plugin.models.ObjectTypeModel
+import no.item.xp.plugin.parser.parseObjectTypeModel
 import no.item.xp.plugin.parser.resolveMixinGraph
 import no.item.xp.plugin.renderers.renderGlobalComponentMap
 import no.item.xp.plugin.renderers.renderGlobalContentTypeMap
 import no.item.xp.plugin.renderers.renderGlobalXDataMap
+import no.item.xp.plugin.renderers.ts.renderTypeModelAsTypeScript
 import no.item.xp.plugin.util.*
 import org.gradle.api.DefaultTask
+import org.gradle.api.artifacts.Dependency
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.model.ObjectFactory
@@ -19,7 +26,12 @@ import org.gradle.work.Incremental
 import org.gradle.work.InputChanges
 import org.gradle.workers.WorkerExecutor
 import java.io.File
+import java.net.URI
+import java.nio.file.Paths
+import java.util.zip.ZipFile
 import javax.inject.Inject
+import kotlin.io.path.createDirectories
+import kotlin.io.path.nameWithoutExtension
 
 open class GenerateCodeTask @Inject constructor(objects: ObjectFactory, private val workerExecutor: WorkerExecutor) : DefaultTask() {
   @Input
@@ -65,6 +77,8 @@ open class GenerateCodeTask @Inject constructor(objects: ObjectFactory, private 
       }
     }
 
+    createJarMagic(rootOutputDir)
+
     createContentTypeIndexFile(rootOutputDir)
 
     createComponentIndexFile(rootOutputDir, "parts", "XpPartMap")
@@ -72,6 +86,77 @@ open class GenerateCodeTask @Inject constructor(objects: ObjectFactory, private 
     createComponentIndexFile(rootOutputDir, "pages", "XpPageMap")
 
     createXDataIndexFile(rootOutputDir)
+  }
+
+  private fun createJarMagic(rootOutputDir: File) {
+    val dependencies = getDependencies()
+    val jarFiles = getDependencyJarFiles(dependencies)
+
+    jarFiles.forEach {
+      val zip = ZipFile(it)
+
+      val enonicZipEntries = zip.entries().asSequence()
+        .filter { it.name.startsWith("site") }
+        .filter { it.name.endsWith(".xml") }
+
+      enonicZipEntries.forEach { zipEntry ->
+        val stream = zip.getInputStream(zipEntry)
+        parseXml(stream)
+          .flatMap { it.getFormNode() }
+          .fold(
+            {
+              ObjectTypeModel(Paths.get(zipEntry.name).fileName.nameWithoutExtension, emptyList()).right()
+            },
+            {
+              parseObjectTypeModel(it, Paths.get(zipEntry.name).fileName.nameWithoutExtension, emptyList())
+            }
+          )
+          .fold(
+            {
+              logger.error("ERROR in: ${zipEntry.name}")
+              logger.error(it.message)
+            },
+            {
+              val fileContent = renderTypeModelAsTypeScript(it)
+              println(fileContent)
+
+              var targetFilePath = Paths.get(rootOutputDir.absolutePath, "tmp", zipEntry.name)
+              targetFilePath = Paths.get(targetFilePath.parent.toString(), "index.d.ts")
+              val targetFile = File(targetFilePath.toUri())
+              targetFile.parentFile.mkdirs()
+              targetFile.createNewFile()
+              targetFile.writeText(fileContent, Charsets.UTF_8)
+            })
+      }
+    }
+  }
+
+  private fun getDependencies(): List<Dependency> {
+    return project.configurations
+      .flatMap { it.allDependencies }
+      .distinct()
+      .sortedBy { it.name }
+  }
+
+  private fun getDependencyJarFiles(dependencies: List<Dependency>): List<File> {
+    return dependencies
+      .map {
+        Paths.get(
+          project.gradle.gradleUserHomeDir.path,
+          "caches",
+          "modules-2",
+          "files-2.1",
+          it.group,
+          it.name,
+          it.version
+        )
+      }
+      .flatMap { File(it.toUri()).listFiles()?.asList() ?: listOf() }
+      .filterNotNull()
+      .flatMap { it.listFiles()?.asList() ?: listOf() }
+      .filterNotNull()
+      .filter { it.extension == "jar" }
+      .toList()
   }
 
   private fun createContentTypeIndexFile(rootOutputDir: File) {
