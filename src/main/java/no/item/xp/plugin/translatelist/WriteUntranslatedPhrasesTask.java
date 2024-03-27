@@ -15,6 +15,8 @@ import org.gradle.api.tasks.TaskAction;
 import org.gradle.workers.WorkQueue;
 import org.gradle.workers.WorkerExecutor;
 
+import static no.item.xp.plugin.util.TargetFileKt.concatFileName;
+
 abstract public class WriteUntranslatedPhrasesTask extends SourceTask {
 
   private Logger logger = Logging.getLogger("WriteUntranslatedPhrases");
@@ -24,8 +26,8 @@ abstract public class WriteUntranslatedPhrasesTask extends SourceTask {
 
   @TaskAction
   public void WriteUntranslatedPhrases() {
-    String propertyDirectory = System.getProperty("user.dir") + "\\src\\main\\resources\\i18n\\";
-    String destinationFile = propertyDirectory + "phrases.tmp.properties";
+    String propertyDirectory = concatFileName(System.getProperty("user.dir"), "src", "main", "resources", "i18n");
+    String destinationFile = concatFileName(propertyDirectory, "phrases.tmp.properties");
     File destFile = new File(destinationFile);
     try {
       destFile.delete();
@@ -36,13 +38,13 @@ abstract public class WriteUntranslatedPhrasesTask extends SourceTask {
 
       // load the properties file that contains the translated phrases, do it only once for the task
     Properties prop = new Properties();
-    try (InputStream input = Files.newInputStream(Path.of(propertyDirectory + "phrases.properties"))) {
+    try (InputStream input = Files.newInputStream(Path.of(concatFileName(propertyDirectory, "phrases.properties")))) {
       // load a properties file
       prop.load(input);
     }
 
     catch (IOException ex) {
-      logger.error("Error loading translated phrases from \\src\\main\\resources\\i18n\\", ex);
+      logger.error("Error loading translated phrases from " + propertyDirectory, ex);
     }
 
     WorkQueue workQueue = getWorkerExecutor().noIsolation();
