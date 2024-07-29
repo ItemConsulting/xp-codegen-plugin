@@ -14,7 +14,7 @@ fun escapeName(name: String): String =
   }
 
 fun joinOptionList(optionList: List<String>, prefix: CharSequence = "", postfix: CharSequence = "") =
-  optionList.joinToString(" | ", prefix, postfix) { "\"$it\"" }
+  optionList.distinct().joinToString(" | ", prefix, postfix) { "\"$it\"" }
 
 fun renderComment(comment: String?, indentLevel: Int): String {
   val indentation = createIndentation(indentLevel)
