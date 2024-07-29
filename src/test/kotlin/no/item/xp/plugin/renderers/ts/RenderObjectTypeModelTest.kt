@@ -15,7 +15,7 @@ class RenderObjectTypeModelTest {
           StringField("emails", "Emails", true, true),
           BooleanField("isManager", "Is manager", false, false),
           NumberField("age", "Age", true, false),
-          UnionOfStringLiteralField("favouriteColor", "Favourite color", false, false, listOf("red", "green", "blue"))
+          UnionOfStringLiteralField("favouriteColor", "Favourite color", false, false, listOf("red", "green", "blue", "red"))
         )
       )
     )
