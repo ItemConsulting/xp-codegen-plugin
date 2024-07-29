@@ -19,28 +19,34 @@ import kotlin.io.path.nameWithoutExtension
 val LOGGER: Logger = Logging.getLogger("GenerateTypeScript")
 
 fun resolveMixinGraph(mixinFiles: List<Either<File, XmlFileInJar>>): List<ObjectTypeModel> {
-  val mixinDependencies = mixinFiles
-    .mapNotNull { entry ->
-      val inputStream = entry.fold(
-        { left -> left.inputStream() },
-        { right -> right.jarFile.getInputStream(right.entry) }
-      )
+  val mixinDependencies =
+    mixinFiles
+      .mapNotNull { entry ->
+        val inputStream =
+          entry.fold(
+            { left -> left.inputStream() },
+            { right -> right.jarFile.getInputStream(right.entry) },
+          )
 
-      val name = entry.fold(
-        { left -> left.nameWithoutExtension },
-        { right -> Paths.get(right.entry.name).fileName.nameWithoutExtension }
-      )
+        val name =
+          entry.fold(
+            { left -> left.nameWithoutExtension },
+            { right -> Paths.get(right.entry.name).fileName.nameWithoutExtension },
+          )
 
-      parseXml(inputStream)
-        .flatMap { doc -> doc.getFormNode() }
-        .map { formNode -> parseMixinDependencyModel(formNode, name) }
-        .getOrNull()
-    }
+        parseXml(inputStream)
+          .flatMap { doc -> doc.getFormNode() }
+          .map { formNode -> parseMixinDependencyModel(formNode, name) }
+          .getOrNull()
+      }
 
   return mixinDependencies.mapNotNull { parseMixin(it, mixinDependencies) }
 }
 
-fun parseMixin(mixin: MixinDependencyModel, otherMixins: List<MixinDependencyModel>): ObjectTypeModel? {
+fun parseMixin(
+  mixin: MixinDependencyModel,
+  otherMixins: List<MixinDependencyModel>,
+): ObjectTypeModel? {
   try {
     return walkMixinGraph(mixin, otherMixins)
   } catch (e: StackOverflowError) {
@@ -48,35 +54,43 @@ fun parseMixin(mixin: MixinDependencyModel, otherMixins: List<MixinDependencyMod
   }
 }
 
-private fun walkMixinGraph(mixin: MixinDependencyModel, otherMixins: List<MixinDependencyModel>): ObjectTypeModel? {
-  val dependentOnMixins = mixin.dependencies
-    .mapNotNull { name ->
-      val dependencyModel = otherMixins.find { it.name == name }
+private fun walkMixinGraph(
+  mixin: MixinDependencyModel,
+  otherMixins: List<MixinDependencyModel>,
+): ObjectTypeModel? {
+  val dependentOnMixins =
+    mixin.dependencies
+      .mapNotNull { name ->
+        val dependencyModel = otherMixins.find { it.name == name }
 
-      if (dependencyModel == null) {
-        LOGGER.warn("Missing mixin with name=\"${name}\" that mixin with name=\"${mixin.name}\" depends on")
+        if (dependencyModel == null) {
+          LOGGER.warn("Missing mixin with name=\"${name}\" that mixin with name=\"${mixin.name}\" depends on")
+        }
+
+        dependencyModel
       }
+      .mapNotNull {
+        val interfaceModel = walkMixinGraph(it, otherMixins)
 
-      dependencyModel
-    }
-    .mapNotNull {
-      val interfaceModel = walkMixinGraph(it, otherMixins)
+        if (interfaceModel == null) {
+          LOGGER.warn("Mixin with name=\"${it.name}\" that mixin with name=\"${mixin.name}\" depends on can't be parsed")
+        }
 
-      if (interfaceModel == null) {
-        LOGGER.warn("Mixin with name=\"${it.name}\" that mixin with name=\"${mixin.name}\" depends on can't be parsed")
+        interfaceModel
       }
-
-      interfaceModel
-    }
 
   return parseObjectTypeModel(mixin.node, mixin.name, dependentOnMixins).getOrNull()
 }
 
-fun parseMixinDependencyModel(formNode: Node, name: String): MixinDependencyModel {
-  val dependencies = formNode
-    .getChildNodesAtXPath("//mixin/@name")
-    .map { it.nodeValue }
-    .distinct()
+fun parseMixinDependencyModel(
+  formNode: Node,
+  name: String,
+): MixinDependencyModel {
+  val dependencies =
+    formNode
+      .getChildNodesAtXPath("//mixin/@name")
+      .map { it.nodeValue }
+      .distinct()
 
   return MixinDependencyModel(name, dependencies, formNode)
 }

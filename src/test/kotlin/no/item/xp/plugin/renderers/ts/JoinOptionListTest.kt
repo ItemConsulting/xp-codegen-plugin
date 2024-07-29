@@ -1,6 +1,5 @@
 package no.item.xp.plugin.renderers.ts
 
-import no.item.xp.plugin.models.*
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
@@ -12,7 +11,7 @@ class JoinOptionListTest {
     assertEquals(
       result,
       //language=TypeScript
-      """"option1" | "option2" | "option3""""
+      """"option1" | "option2" | "option3"""",
     )
   }
 
@@ -23,7 +22,7 @@ class JoinOptionListTest {
     assertEquals(
       result,
       //language=TypeScript
-      """"option1" | "option2" | "option3""""
+      """"option1" | "option2" | "option3"""",
     )
   }
 }

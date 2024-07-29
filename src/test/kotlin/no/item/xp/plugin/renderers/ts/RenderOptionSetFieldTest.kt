@@ -7,38 +7,39 @@ import kotlin.test.assertEquals
 class RenderOptionSetFieldTest {
   @Test
   fun `render option set field`() {
-    val result = renderTypeModelAsTypeScript(
-      ObjectTypeModel(
-        "my-type",
-        listOf(
-          OptionSetField(
-            "myOptionSet",
-            "Select content manually?",
-            false,
-            false,
-            false,
-            listOf(
-              ObjectField(
-                "no",
-                "No",
-                true,
-                false,
-                emptyList()
+    val result =
+      renderTypeModelAsTypeScript(
+        ObjectTypeModel(
+          "my-type",
+          listOf(
+            OptionSetField(
+              "myOptionSet",
+              "Select content manually?",
+              false,
+              false,
+              false,
+              listOf(
+                ObjectField(
+                  "no",
+                  "No",
+                  true,
+                  false,
+                  emptyList(),
+                ),
+                ObjectField(
+                  "yes",
+                  "Yes",
+                  true,
+                  false,
+                  listOf(
+                    StringField("articleList", "Select articles for the list", true, true),
+                  ),
+                ),
               ),
-              ObjectField(
-                "yes",
-                "Yes",
-                true,
-                false,
-                listOf(
-                  StringField("articleList", "Select articles for the list", true, true)
-                )
-              )
-            )
-          )
-        )
+            ),
+          ),
+        ),
       )
-    )
 
     assertEquals(
       //language=TypeScript
@@ -78,46 +79,47 @@ class RenderOptionSetFieldTest {
       #}
       #""".trimMargin(
         //language=
-        "#"
+        "#",
       ),
-      result
+      result,
     )
   }
 
   @Test
   fun `render multiselect option set field`() {
-    val result = renderTypeModelAsTypeScript(
-      ObjectTypeModel(
-        "my-type",
-        listOf(
-          OptionSetField(
-            "myOptionSet",
-            "Select content manually?",
-            false,
-            false,
-            true,
-            listOf(
-              ObjectField(
-                "no",
-                "No",
-                true,
-                false,
-                emptyList()
+    val result =
+      renderTypeModelAsTypeScript(
+        ObjectTypeModel(
+          "my-type",
+          listOf(
+            OptionSetField(
+              "myOptionSet",
+              "Select content manually?",
+              false,
+              false,
+              true,
+              listOf(
+                ObjectField(
+                  "no",
+                  "No",
+                  true,
+                  false,
+                  emptyList(),
+                ),
+                ObjectField(
+                  "yes",
+                  "Yes",
+                  true,
+                  false,
+                  listOf(
+                    StringField("articleList", "Select articles for the list", true, true),
+                  ),
+                ),
               ),
-              ObjectField(
-                "yes",
-                "Yes",
-                true,
-                false,
-                listOf(
-                  StringField("articleList", "Select articles for the list", true, true)
-                )
-              )
-            )
-          )
-        )
+            ),
+          ),
+        ),
       )
-    )
 
     assertEquals(
       //language=TypeScript
@@ -150,46 +152,47 @@ class RenderOptionSetFieldTest {
       #}
       #""".trimMargin(
         //language=
-        "#"
+        "#",
       ),
-      result
+      result,
     )
   }
 
   @Test
   fun `render Array of option set entries`() {
-    val result = renderTypeModelAsTypeScript(
-      ObjectTypeModel(
-        "my-type",
-        listOf(
-          OptionSetField(
-            "myOptionSet",
-            "Select content manually?",
-            true,
-            true,
-            false,
-            listOf(
-              ObjectField(
-                "no",
-                "No",
-                true,
-                false,
-                emptyList()
+    val result =
+      renderTypeModelAsTypeScript(
+        ObjectTypeModel(
+          "my-type",
+          listOf(
+            OptionSetField(
+              "myOptionSet",
+              "Select content manually?",
+              true,
+              true,
+              false,
+              listOf(
+                ObjectField(
+                  "no",
+                  "No",
+                  true,
+                  false,
+                  emptyList(),
+                ),
+                ObjectField(
+                  "yes",
+                  "Yes",
+                  true,
+                  false,
+                  listOf(
+                    StringField("articleList", "Select articles for the list", true, true),
+                  ),
+                ),
               ),
-              ObjectField(
-                "yes",
-                "Yes",
-                true,
-                false,
-                listOf(
-                  StringField("articleList", "Select articles for the list", true, true)
-                )
-              )
-            )
-          )
-        )
+            ),
+          ),
+        ),
       )
-    )
 
     assertEquals(
       //language=TypeScript
@@ -230,9 +233,9 @@ class RenderOptionSetFieldTest {
       #}
       #""".trimMargin(
         //language=
-        "#"
+        "#",
       ),
-      result
+      result,
     )
   }
 }

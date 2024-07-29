@@ -5,11 +5,15 @@ import no.item.xp.plugin.models.ObjectField
 import no.item.xp.plugin.models.ObjectTypeModel
 import org.w3c.dom.Node
 
-fun parseItemSet(itemSetNode: Node, mixins: List<ObjectTypeModel>): ObjectField? {
+fun parseItemSet(
+  itemSetNode: Node,
+  mixins: List<ObjectTypeModel>,
+): ObjectField? {
   val unknownField = parseUnknownField(itemSetNode)
 
-  val subFields = itemSetNode.getChildNodeAtXPath("items")
-    ?.let { parseFields(it, mixins).getOrNull() } ?: emptyList()
+  val subFields =
+    itemSetNode.getChildNodeAtXPath("items")
+      ?.let { parseFields(it, mixins).getOrNull() } ?: emptyList()
 
   return unknownField?.let { ObjectField(it, subFields) }
 }

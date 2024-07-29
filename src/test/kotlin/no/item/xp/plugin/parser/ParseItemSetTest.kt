@@ -42,9 +42,9 @@ class ParseItemSetTest {
         true,
         listOf(
           StringField("label", "Label", true, false),
-          StringField("phoneNumber", "Phone Number", true, false)
-        )
-      )
+          StringField("phoneNumber", "Phone Number", true, false),
+        ),
+      ),
     )
   }
 }

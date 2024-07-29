@@ -20,16 +20,17 @@ class ParseInputTest {
   inner class TextLine {
     @Test
     fun `parse TextLine without occurrences`() {
-      val result = parseInput(
-        getInputNode(
-          // language=XML
-          """
+      val result =
+        parseInput(
+          getInputNode(
+            // language=XML
+            """
           <input type="TextLine" name="firstTextLine">
             <label>The First Text Line</label>
           </input>
-          """
+          """,
+          ),
         )
-      )
 
       assertEquals(
         result,
@@ -37,24 +38,25 @@ class ParseInputTest {
           "firstTextLine",
           "The First Text Line",
           true,
-          false
-        )
+          false,
+        ),
       )
     }
 
     @Test
     fun `parse single nullable TextLine`() {
-      val result = parseInput(
-        getInputNode(
-          // language=XML
-          """
+      val result =
+        parseInput(
+          getInputNode(
+            // language=XML
+            """
             <input type="TextLine" name="secondTextLine">
               <label>The Second Text Line</label>
               <occurrences minimum="0" maximum="1"/>
             </input>
-            """
+            """,
+          ),
         )
-      )
 
       assertEquals(
         result,
@@ -62,24 +64,25 @@ class ParseInputTest {
           "secondTextLine",
           "The Second Text Line",
           true,
-          false
-        )
+          false,
+        ),
       )
     }
 
     @Test
     fun `parse multiple non-nullable TextLine`() {
-      val result = parseInput(
-        getInputNode(
-          // language=XML
-          """
+      val result =
+        parseInput(
+          getInputNode(
+            // language=XML
+            """
             <input type="TextLine" name="secondTextLine">
               <label>The Second Text Line</label>
               <occurrences minimum="1" maximum="0"/>
             </input>
-            """
+            """,
+          ),
         )
-      )
 
       assertEquals(
         result,
@@ -87,42 +90,44 @@ class ParseInputTest {
           "secondTextLine",
           "The Second Text Line",
           false,
-          true
-        )
+          true,
+        ),
       )
     }
 
     @Test
     fun `parse single required TextLine`() {
-      val result = parseInput(
-        getInputNode(
-          // language=XML
-          """
+      val result =
+        parseInput(
+          getInputNode(
+            // language=XML
+            """
             <input type="TextLine" name="thirdTextLine">
               <label>The Third Text Line</label>
               <occurrences minimum="1" maximum="1"/>
             </input>
-            """
+            """,
+          ),
         )
-      )
 
       assertEquals(result, StringField("thirdTextLine", "The Third Text Line", false, false))
     }
 
     @Test
     fun `parse TextLine in wrong order`() {
-      val result = parseInput(
-        getInputNode(
-          // language=XML
-          """
+      val result =
+        parseInput(
+          getInputNode(
+            // language=XML
+            """
               <input type="TextLine" name="forthTextLine">
                 <occurrences minimum="1" maximum="1"/>
                 <label>The Forth Text Line</label>
                 whatever
               </input>
-              """
+              """,
+          ),
         )
-      )
 
       assertEquals(
         result,
@@ -130,8 +135,8 @@ class ParseInputTest {
           "forthTextLine",
           "The Forth Text Line",
           false,
-          false
-        )
+          false,
+        ),
       )
     }
   }
@@ -141,16 +146,17 @@ class ParseInputTest {
   inner class Checkbox {
     @Test
     fun `parse checkbox`() {
-      val result = parseInput(
-        getInputNode(
-          // language=XML
-          """
+      val result =
+        parseInput(
+          getInputNode(
+            // language=XML
+            """
               <input type="checkbox" name="checkbox">
                 <label>checkbox test</label>
               </input>
-              """
+              """,
+          ),
         )
-      )
 
       assertEquals(
         result,
@@ -158,8 +164,8 @@ class ParseInputTest {
           "checkbox",
           "checkbox test",
           false,
-          false
-        )
+          false,
+        ),
       )
     }
   }
@@ -169,10 +175,11 @@ class ParseInputTest {
   inner class ComboBox {
     @Test
     fun `parse ComboBox`() {
-      val result = parseInput(
-        getInputNode(
-          // language=XML
-          """
+      val result =
+        parseInput(
+          getInputNode(
+            // language=XML
+            """
           <input name="invite" type="ComboBox">
             <label>Invited</label>
             <occurrences minimum="0" maximum="1"/>
@@ -182,9 +189,9 @@ class ParseInputTest {
               <option value="what">Maybe</option>
             </config>
           </input>
-          """
+          """,
+          ),
         )
-      )
       assertEquals(
         result,
         UnionOfStringLiteralField(
@@ -192,8 +199,8 @@ class ParseInputTest {
           "Invited",
           true,
           false,
-          listOf("Yes", "No", "what")
-        )
+          listOf("Yes", "No", "what"),
+        ),
       )
     }
   }
@@ -203,25 +210,26 @@ class ParseInputTest {
   inner class Long {
     @Test
     fun `parse ComboBox`() {
-      val result = parseInput(
-        getInputNode(
-          // language=XML
-          """
+      val result =
+        parseInput(
+          getInputNode(
+            // language=XML
+            """
           <input name="year" type="Long">
             <label>Year</label>
             <occurrences minimum="0" maximum="1"/>
           </input>
-          """
+          """,
+          ),
         )
-      )
       assertEquals(
         result,
         NumberField(
           "year",
           "Year",
           true,
-          false
-        )
+          false,
+        ),
       )
     }
   }

@@ -14,17 +14,14 @@ import javax.xml.xpath.XPathExpression
 
 val xpathFormElement: XPathExpression = XPATH_FACTORY.newXPath().compile("//form")
 
-fun Node.getChildNodeAtXPath(xpath: XPathExpression): Node? =
-  xpath.evaluate(this, XPathConstants.NODE) as Node?
+fun Node.getChildNodeAtXPath(xpath: XPathExpression): Node? = xpath.evaluate(this, XPathConstants.NODE) as Node?
 
-fun Node.getChildNodeAtXPath(xpath: String): Node? =
-  getChildNodeAtXPath(getXpathExpressionFromString(xpath))
+fun Node.getChildNodeAtXPath(xpath: String): Node? = getChildNodeAtXPath(getXpathExpressionFromString(xpath))
 
 fun Node.getChildNodesAtXPath(xpath: XPathExpression): Collection<Node> =
   (xpath.evaluate(this, XPathConstants.NODESET) as NodeList).toCollection()
 
-fun Node.getChildNodesAtXPath(xpath: String): Collection<Node> =
-  getChildNodesAtXPath(getXpathExpressionFromString(xpath))
+fun Node.getChildNodesAtXPath(xpath: String): Collection<Node> = getChildNodesAtXPath(getXpathExpressionFromString(xpath))
 
 fun Node.getFormNode(): Either<Throwable, Node> =
   try {

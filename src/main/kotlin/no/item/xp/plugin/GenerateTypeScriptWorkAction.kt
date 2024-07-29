@@ -20,10 +20,15 @@ import java.nio.file.Path
 
 interface CodegenWorkParameters : WorkParameters {
   fun getXmlFile(): RegularFileProperty
+
   fun getTargetFile(): RegularFileProperty
+
   fun getMixins(): ListProperty<ObjectTypeModel>
+
   fun getPrependText(): Property<String>
+
   fun getSingleQuote(): Property<Boolean>
+
   fun getAppName(): Property<String>
 }
 
@@ -44,7 +49,7 @@ abstract class GenerateTypeScriptWorkAction : WorkAction<CodegenWorkParameters> 
           },
           {
             parseObjectTypeModel(it, file.nameWithoutExtension, mixins)
-          }
+          },
         )
         .fold(
           {
@@ -72,7 +77,7 @@ abstract class GenerateTypeScriptWorkAction : WorkAction<CodegenWorkParameters> 
             targetFile.createNewFile()
             targetFile.writeText(fileContent, Charsets.UTF_8)
             logger.lifecycle("Updated file: ${Path.of(targetFile.absoluteFile.toURI()).toUri()}")
-          }
+          },
         )
     } catch (e: Exception) {
       logger.error("Can't parse file", e)

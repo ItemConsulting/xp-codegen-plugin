@@ -7,18 +7,19 @@ import kotlin.test.assertEquals
 class RenderObjectTypeModelTest {
   @Test
   fun `render mixed`() {
-    val result = renderTypeModelAsTypeScript(
-      ObjectTypeModel(
-        "my-type",
-        listOf(
-          StringField("name", "Name", false, false),
-          StringField("emails", "Emails", true, true),
-          BooleanField("isManager", "Is manager", false, false),
-          NumberField("age", "Age", true, false),
-          UnionOfStringLiteralField("favouriteColor", "Favourite color", false, false, listOf("red", "green", "blue"))
-        )
+    val result =
+      renderTypeModelAsTypeScript(
+        ObjectTypeModel(
+          "my-type",
+          listOf(
+            StringField("name", "Name", false, false),
+            StringField("emails", "Emails", true, true),
+            BooleanField("isManager", "Is manager", false, false),
+            NumberField("age", "Age", true, false),
+            UnionOfStringLiteralField("favouriteColor", "Favourite color", false, false, listOf("red", "green", "blue")),
+          ),
+        ),
       )
-    )
 
     assertEquals(
       result,
@@ -53,8 +54,8 @@ class RenderObjectTypeModelTest {
       #
       """.trimMargin(
         //language=
-        "#"
-      )
+        "#",
+      ),
     )
   }
 }

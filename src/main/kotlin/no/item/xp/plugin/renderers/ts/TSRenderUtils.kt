@@ -1,6 +1,6 @@
 package no.item.xp.plugin.renderers.ts
 
-import java.util.*
+import java.util.Locale
 
 const val INDENTATION_TO_SPACES = "  "
 
@@ -13,18 +13,25 @@ fun escapeName(name: String): String =
     name
   }
 
-fun joinOptionList(optionList: List<String>, prefix: CharSequence = "", postfix: CharSequence = "") =
-  optionList.distinct().joinToString(" | ", prefix, postfix) { "\"$it\"" }
+fun joinOptionList(
+  optionList: List<String>,
+  prefix: CharSequence = "",
+  postfix: CharSequence = "",
+) = optionList.distinct().joinToString(" | ", prefix, postfix) { "\"$it\"" }
 
-fun renderComment(comment: String?, indentLevel: Int): String {
+fun renderComment(
+  comment: String?,
+  indentLevel: Int,
+): String {
   val indentation = createIndentation(indentLevel)
 
   return if (comment != null) {
-    val commentLines = comment
-      .split("\n")
-      .map { it.trim() }
-      .filter { it.isNotEmpty() }
-      .joinToString("\n$indentation * ")
+    val commentLines =
+      comment
+        .split("\n")
+        .map { it.trim() }
+        .filter { it.isNotEmpty() }
+        .joinToString("\n$indentation * ")
 
     """
     #$indentation/**
@@ -43,5 +50,7 @@ fun getInterfaceName(nameWithoutExtension: String): String {
     .joinToString("") { it.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() } }
 }
 
-fun getTypeName(nameWithoutExtension: String, appName: String): String =
-  """${appName.replace(".", "_")}_${getInterfaceName(nameWithoutExtension)}_Data"""
+fun getTypeName(
+  nameWithoutExtension: String,
+  appName: String,
+): String = """${appName.replace(".", "_")}_${getInterfaceName(nameWithoutExtension)}_Data"""

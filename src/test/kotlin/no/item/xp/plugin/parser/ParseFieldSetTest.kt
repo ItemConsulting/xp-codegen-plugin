@@ -35,8 +35,8 @@ class ParseFieldSetTest {
       result,
       listOf(
         StringField("email", "Email", false, false),
-        StringField("phoneNumber", "Phone", false, false)
-      )
+        StringField("phoneNumber", "Phone", false, false),
+      ),
     )
   }
 }

@@ -9,11 +9,12 @@ import java.io.File
 class GenerateCodePlugin : Plugin<Project> {
   override fun apply(project: Project) {
     val javaExt = project.extensions.getByType(JavaPluginExtension::class.java)
-    val files = javaExt.sourceSets
-      .getAt("main")
-      .resources
-      .filter { it.extension == "xml" && it.name != "application.xml" && it.name != "styles.xml" }
-      .files
+    val files =
+      javaExt.sourceSets
+        .getAt("main")
+        .resources
+        .filter { it.extension == "xml" && it.name != "application.xml" && it.name != "styles.xml" }
+        .files
 
     val targetDir = File(project.rootDir.absolutePath + File.separator + ".xp-codegen")
 

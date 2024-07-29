@@ -60,15 +60,17 @@ class ParseMixinTest {
       </mixin>
       """
 
-    val mixinDependencies = mapOf("aa" to xml1, "bb" to xml2, "cc" to xml3)
-      .map { (name, xml) ->
-        val doc = stringToXMLDocument(xml)
-        val node = doc.getChildNodeAtXPath("mixin/form")!!
-        parseMixinDependencyModel(node, name)
-      }
+    val mixinDependencies =
+      mapOf("aa" to xml1, "bb" to xml2, "cc" to xml3)
+        .map { (name, xml) ->
+          val doc = stringToXMLDocument(xml)
+          val node = doc.getChildNodeAtXPath("mixin/form")!!
+          parseMixinDependencyModel(node, name)
+        }
 
-    val result = mixinDependencies
-      .mapNotNull { parseMixin(it, mixinDependencies) }
+    val result =
+      mixinDependencies
+        .mapNotNull { parseMixin(it, mixinDependencies) }
 
     assertEquals(
       result,
@@ -78,23 +80,23 @@ class ParseMixinTest {
           listOf(
             StringField("isA", "Is A", true, false),
             StringField("isC", "Is C", true, false),
-            StringField("isB", "Is B", true, false)
-          )
+            StringField("isB", "Is B", true, false),
+          ),
         ),
         ObjectTypeModel(
           "bb",
           listOf(
-            StringField("isB", "Is B", true, false)
-          )
+            StringField("isB", "Is B", true, false),
+          ),
         ),
         ObjectTypeModel(
           "cc",
           listOf(
             StringField("isC", "Is C", true, false),
-            StringField("isB", "Is B", true, false)
-          )
-        )
-      )
+            StringField("isB", "Is B", true, false),
+          ),
+        ),
+      ),
     )
   }
 }

@@ -55,7 +55,7 @@ class ParseOptionSetTest {
             "No",
             true,
             false,
-            listOf()
+            listOf(),
           ),
           ObjectField(
             "yes",
@@ -67,12 +67,12 @@ class ParseOptionSetTest {
                 "articleList",
                 "Select articles for the list",
                 true,
-                true
-              )
-            )
-          )
-        )
-      )
+                true,
+              ),
+            ),
+          ),
+        ),
+      ),
     )
   }
 }
