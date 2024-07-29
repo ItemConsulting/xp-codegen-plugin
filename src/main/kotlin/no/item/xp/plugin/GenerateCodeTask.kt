@@ -93,9 +93,10 @@ open class GenerateCodeTask
 
       createContentTypeIndexFile(rootOutputDir)
 
-      createComponentIndexFile(rootOutputDir, "parts", "XpPartMap", xmlFilesInJars)
-      createComponentIndexFile(rootOutputDir, "layouts", "XpLayoutMap", xmlFilesInJars)
-      createComponentIndexFile(rootOutputDir, "pages", "XpPageMap", xmlFilesInJars)
+      createComponentIndexFile(rootOutputDir, "parts", xmlFilesInJars, "XpPartMap")
+      createComponentIndexFile(rootOutputDir, "layouts", xmlFilesInJars, "XpLayoutMap")
+      createComponentIndexFile(rootOutputDir, "pages", xmlFilesInJars, "XpPageMap")
+      createComponentIndexFile(rootOutputDir, "mixins", xmlFilesInJars)
 
       createXDataIndexFile(rootOutputDir, xmlFilesInJars)
     }
@@ -155,8 +156,8 @@ open class GenerateCodeTask
     private fun createComponentIndexFile(
       rootOutputDir: File,
       componentTypeName: String,
-      interfaceName: String,
       xmlFilesInJars: List<XmlFileInJar>,
+      interfaceName: String? = null,
     ) {
       val appName = project.property("appName") as String
       val xmlFiles =

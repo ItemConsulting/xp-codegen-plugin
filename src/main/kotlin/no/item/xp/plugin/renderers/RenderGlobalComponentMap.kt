@@ -5,18 +5,22 @@ import no.item.xp.plugin.renderers.ts.getInterfaceName
 fun renderGlobalComponentMap(
   filesNames: List<String>,
   appName: String,
-  interfaceName: String,
+  interfaceName: String?,
 ): String {
   val importList =
     filesNames.joinToString("\n") { fileName ->
       """export type ${getInterfaceName(fileName)} = import("./$fileName").${getInterfaceName(fileName)};"""
     }
-  val fieldList =
-    filesNames.joinToString("\n") { fileName ->
-      """    "$appName:$fileName": ${getInterfaceName(fileName)};"""
-    }
 
-  return """
+  return if (interfaceName == null) {
+    importList
+  } else {
+    val fieldList =
+      filesNames.joinToString("\n") { fileName ->
+        """    "$appName:$fileName": ${getInterfaceName(fileName)};"""
+      }
+
+    """
     #$importList
     #
     #declare global {
@@ -25,4 +29,5 @@ fun renderGlobalComponentMap(
     #  }
     #}
     #""".trimMargin("#")
+  }
 }
