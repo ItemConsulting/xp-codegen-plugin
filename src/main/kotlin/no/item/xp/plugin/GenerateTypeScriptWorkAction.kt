@@ -28,8 +28,6 @@ interface CodegenWorkParameters : WorkParameters {
   fun getPrependText(): Property<String>
 
   fun getSingleQuote(): Property<Boolean>
-
-  fun getAppName(): Property<String>
 }
 
 abstract class GenerateTypeScriptWorkAction : WorkAction<CodegenWorkParameters> {

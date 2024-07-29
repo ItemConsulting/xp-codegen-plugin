@@ -5,7 +5,7 @@ import java.io.File
 
 fun renderGlobalContentTypeMap(
   files: List<File>,
-  appName: String,
+  appName: String?,
 ): String {
   val importList =
     files.joinToString("\n") {
@@ -18,7 +18,10 @@ fun renderGlobalContentTypeMap(
       """      "$appName:${it.nameWithoutExtension}": ${getInterfaceName(it.nameWithoutExtension)};"""
     }
 
-  return """
+  return if (appName == null) {
+    importList
+  } else {
+    """
     #$importList
     #
     #declare global {
@@ -29,4 +32,5 @@ fun renderGlobalContentTypeMap(
     #  }
     #}
     #""".trimMargin("#")
+  }
 }
