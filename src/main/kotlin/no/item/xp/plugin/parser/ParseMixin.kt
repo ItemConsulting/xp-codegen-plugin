@@ -5,8 +5,8 @@ import arrow.core.flatMap
 import no.item.xp.plugin.CyclicDependenciesException
 import no.item.xp.plugin.extensions.getChildNodesAtXPath
 import no.item.xp.plugin.extensions.getFormNode
-import no.item.xp.plugin.models.ObjectTypeModel
 import no.item.xp.plugin.models.MixinDependencyModel
+import no.item.xp.plugin.models.ObjectTypeModel
 import no.item.xp.plugin.util.XmlFileInJar
 import no.item.xp.plugin.util.parseXml
 import org.gradle.api.logging.Logger

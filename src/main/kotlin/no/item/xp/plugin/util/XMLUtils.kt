@@ -5,7 +5,6 @@ import arrow.core.left
 import arrow.core.nonFatalOrThrow
 import arrow.core.right
 import org.w3c.dom.Document
-import java.io.File
 import java.io.InputStream
 import javax.xml.parsers.DocumentBuilderFactory
 import javax.xml.xpath.XPathExpression

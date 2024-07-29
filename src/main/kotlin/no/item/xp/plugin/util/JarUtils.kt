@@ -15,11 +15,10 @@ fun getXmlFilesInJars(config: Configuration): List<XmlFileInJar> {
 }
 
 fun getDependencyJarFiles(config: Configuration): List<File> =
-   if (config.isCanBeResolved) {
+  if (config.isCanBeResolved) {
     config.files
       .filter { it.exists() }
       .distinctBy { it.name }
   } else {
     emptyList()
   }
-

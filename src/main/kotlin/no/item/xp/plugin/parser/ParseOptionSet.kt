@@ -3,9 +3,9 @@ package no.item.xp.plugin.parser
 import no.item.xp.plugin.extensions.getChildNodeAtXPath
 import no.item.xp.plugin.extensions.getChildNodesAtXPath
 import no.item.xp.plugin.extensions.getNodeAttribute
+import no.item.xp.plugin.models.ObjectField
 import no.item.xp.plugin.models.ObjectTypeModel
 import no.item.xp.plugin.models.ObjectTypeModelField
-import no.item.xp.plugin.models.ObjectField
 import no.item.xp.plugin.models.OptionSetField
 import org.w3c.dom.Node
 

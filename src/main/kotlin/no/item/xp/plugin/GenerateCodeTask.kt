@@ -152,7 +152,7 @@ open class GenerateCodeTask @Inject constructor(objects: ObjectFactory, private 
 
     if (files.isNotEmpty()) {
       val fileContent = renderGlobalComponentMap(files, appName, interfaceName)
-      val targetFile = File( concatFileName(rootOutputDir.absolutePath, "site", componentTypeName, "index.d.ts"))
+      val targetFile = File(concatFileName(rootOutputDir.absolutePath, "site", componentTypeName, "index.d.ts"))
       targetFile.parentFile.mkdirs()
       targetFile.createNewFile()
       targetFile.writeText(prependText + "\n" + fileContent, Charsets.UTF_8)

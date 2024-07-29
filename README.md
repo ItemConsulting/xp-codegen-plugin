@@ -113,11 +113,6 @@ export interface Article {
    * Main text body 
    */
   body?: string;
-
-  /**
-   * GraphQL name. Also used for separating unions in TypeScript
-   */
-  __typename?: "com_mysite_Article_Data";
 }
 ```
 
@@ -154,14 +149,19 @@ import type { ArticleView } from ".";
 // imports from XP libraries:
 import { getContent, getComponent } from "/lib/xp/portal";
 import { render } from "/lib/thymeleaf";
-
+import type { PartComponent } from "@enonic-types/core";
 
 const view = resolve("article-view.html");
 
-export function get(): XP.Response {
-  const content = getContent<Article>();
-  const part = getComponent<ArticleView>();
+type PartArticleView =  PartComponent<"com.myproject:article-view", ArticleView>;
 
+export function get(): XP.Response {
+  const content = getContent<Content<Article, "com.myproject:article">>();
+  const part = getComponent<PartArticleView>();
+
+  assertIsDefined(content);
+  assertIsDefined(part);
+  
   return {
     status: 200,
     body: render<ThymeleafParams>(view, {
@@ -176,6 +176,12 @@ interface ThymeleafParams {
   title: string;
   preface: string | undefined;
   backgroundColor: string;  
+}
+
+function assertIsDefined<T>(value: T): asserts value is NonNullable<T> {
+  if (value === undefined || value === null) {
+    throw new Error(`${value} is not defined`);
+  }
 }
 ```
 
