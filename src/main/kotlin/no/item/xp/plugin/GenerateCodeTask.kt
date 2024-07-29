@@ -1,6 +1,7 @@
 package no.item.xp.plugin
 
 import arrow.core.flatMap
+import arrow.core.left
 import arrow.core.right
 import no.item.xp.plugin.extensions.getFormNode
 import no.item.xp.plugin.models.ObjectTypeModel
@@ -52,17 +53,16 @@ open class GenerateCodeTask @Inject constructor(objects: ObjectFactory, private 
     val workQueue = workerExecutor.noIsolation()
     val rootOutputDir = outputDir.get().asFile
     val gradleConfigInclude = project.configurations.getByName("include")
+    val xmlFilesInJars = getXmlFilesInJars(gradleConfigInclude)
 
     val mixinFileStreams = inputFiles
       .filter { file -> IS_MIXIN.matches(normalizeFilePath(file)) }
       .toList()
-      .map { FilePathAndStream(it.name, it.nameWithoutExtension, it.inputStream()) }
-
-    val xmlFilesInJars = getXmlFilesInJars(gradleConfigInclude)
+      .map { it.left() }
 
     val mixinJarStreams = xmlFilesInJars
       .filter { fileInJar -> IS_MIXIN.matches(normalizeFilePath(File(fileInJar.entry.name))) }
-      .map { fileInJar -> FilePathAndStream(fileInJar) }
+      .map { it.right() }
 
     val mixins = resolveMixinGraph(mixinJarStreams + mixinFileStreams)
 

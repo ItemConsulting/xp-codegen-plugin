@@ -1,25 +1,39 @@
 package no.item.xp.plugin.parser
 
+import arrow.core.Either
 import arrow.core.flatMap
 import no.item.xp.plugin.CyclicDependenciesException
 import no.item.xp.plugin.extensions.getChildNodesAtXPath
 import no.item.xp.plugin.extensions.getFormNode
 import no.item.xp.plugin.models.ObjectTypeModel
 import no.item.xp.plugin.models.MixinDependencyModel
-import no.item.xp.plugin.util.FilePathAndStream
+import no.item.xp.plugin.util.XmlFileInJar
 import no.item.xp.plugin.util.parseXml
 import org.gradle.api.logging.Logger
 import org.gradle.api.logging.Logging
 import org.w3c.dom.Node
+import java.io.File
+import java.nio.file.Paths
+import kotlin.io.path.nameWithoutExtension
 
 val LOGGER: Logger = Logging.getLogger("GenerateTypeScript")
 
-fun resolveMixinGraph(mixinFiles: List<FilePathAndStream>): List<ObjectTypeModel> {
+fun resolveMixinGraph(mixinFiles: List<Either<File, XmlFileInJar>>): List<ObjectTypeModel> {
   val mixinDependencies = mixinFiles
     .mapNotNull { entry ->
-      parseXml(entry.inputStream)
+      val inputStream = entry.fold(
+        { left -> left.inputStream() },
+        { right -> right.jarFile.getInputStream(right.entry) }
+      )
+
+      val name = entry.fold(
+        { left -> left.nameWithoutExtension },
+        { right -> Paths.get(right.entry.name).fileName.nameWithoutExtension }
+      )
+
+      parseXml(inputStream)
         .flatMap { doc -> doc.getFormNode() }
-        .map { formNode -> parseMixinDependencyModel(formNode, entry.nameWithoutExtension) }
+        .map { formNode -> parseMixinDependencyModel(formNode, name) }
         .getOrNull()
     }
 
