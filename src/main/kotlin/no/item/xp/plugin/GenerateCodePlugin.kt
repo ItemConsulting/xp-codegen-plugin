@@ -12,7 +12,7 @@ class GenerateCodePlugin : Plugin<Project> {
     val files = javaExt.sourceSets
       .getAt("main")
       .resources
-      .filter { it.extension == "xml" && it.name != "application.xml" }
+      .filter { it.extension == "xml" && it.name != "application.xml" && it.name != "styles.xml" }
       .files
 
     val targetDir = File(project.rootDir.absolutePath + File.separator + ".xp-codegen")
