@@ -6,20 +6,20 @@ import no.item.xp.plugin.extensions.getChildNodesAtXPath
 import no.item.xp.plugin.extensions.getFormNode
 import no.item.xp.plugin.models.ObjectTypeModel
 import no.item.xp.plugin.models.MixinDependencyModel
+import no.item.xp.plugin.util.FilePathAndStream
 import no.item.xp.plugin.util.parseXml
-import org.gradle.api.file.FileCollection
 import org.gradle.api.logging.Logger
 import org.gradle.api.logging.Logging
 import org.w3c.dom.Node
 
 val LOGGER: Logger = Logging.getLogger("GenerateTypeScript")
 
-fun resolveMixinGraph(mixinFiles: FileCollection): List<ObjectTypeModel> {
+fun resolveMixinGraph(mixinFiles: List<FilePathAndStream>): List<ObjectTypeModel> {
   val mixinDependencies = mixinFiles
-    .mapNotNull { file ->
-      parseXml(file.inputStream())
+    .mapNotNull { entry ->
+      parseXml(entry.inputStream)
         .flatMap { doc -> doc.getFormNode() }
-        .map { formNode -> parseMixinDependencyModel(formNode, file.nameWithoutExtension) }
+        .map { formNode -> parseMixinDependencyModel(formNode, entry.nameWithoutExtension) }
         .getOrNull()
     }
 

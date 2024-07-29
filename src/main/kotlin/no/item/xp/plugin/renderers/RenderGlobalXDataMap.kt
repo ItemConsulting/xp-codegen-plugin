@@ -3,12 +3,12 @@ package no.item.xp.plugin.renderers
 import no.item.xp.plugin.renderers.ts.getInterfaceName
 import java.io.File
 
-fun renderGlobalXDataMap(files: List<File>, appName: String): String {
-  val importList = files.joinToString("\n") {
-    """export type ${getInterfaceName(it.nameWithoutExtension)} = import("./${it.nameWithoutExtension}").${getInterfaceName(it.nameWithoutExtension)}"""
+fun renderGlobalXDataMap(fileNames: List<String>, appName: String): String {
+  val importList = fileNames.joinToString("\n") { fileName ->
+    """export type ${getInterfaceName(fileName)} = import("./${fileName}").${getInterfaceName(fileName)}"""
   }
-  val fieldList = files.joinToString("\n") {
-    """      ${escapeFieldName(it.nameWithoutExtension)}?: ${getInterfaceName(it.nameWithoutExtension)};"""
+  val fieldList = fileNames.joinToString("\n") { fileName ->
+    """      ${escapeFieldName(fileName)}?: ${getInterfaceName(fileName)};"""
   }
 
   return """

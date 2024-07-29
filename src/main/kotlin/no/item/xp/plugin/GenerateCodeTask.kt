@@ -12,7 +12,6 @@ import no.item.xp.plugin.renderers.renderGlobalXDataMap
 import no.item.xp.plugin.renderers.ts.renderTypeModelAsTypeScript
 import no.item.xp.plugin.util.*
 import org.gradle.api.DefaultTask
-import org.gradle.api.artifacts.Dependency
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.model.ObjectFactory
@@ -26,11 +25,9 @@ import org.gradle.work.Incremental
 import org.gradle.work.InputChanges
 import org.gradle.workers.WorkerExecutor
 import java.io.File
-import java.net.URI
+import java.nio.file.Path
 import java.nio.file.Paths
-import java.util.zip.ZipFile
 import javax.inject.Inject
-import kotlin.io.path.createDirectories
 import kotlin.io.path.nameWithoutExtension
 
 open class GenerateCodeTask @Inject constructor(objects: ObjectFactory, private val workerExecutor: WorkerExecutor) : DefaultTask() {
@@ -53,12 +50,24 @@ open class GenerateCodeTask @Inject constructor(objects: ObjectFactory, private 
   @TaskAction
   private fun execute(inputChanges: InputChanges) {
     val workQueue = workerExecutor.noIsolation()
-
-    val mixins = resolveMixinGraph(
-      inputFiles.filter { file -> IS_MIXIN.matches(normalizeFilePath(file)) }
-    )
-
     val rootOutputDir = outputDir.get().asFile
+    val gradleConfigInclude = project.configurations.getByName("include")
+
+    val mixinFileStreams = inputFiles
+      .filter { file -> IS_MIXIN.matches(normalizeFilePath(file)) }
+      .toList()
+      .map { FilePathAndStream(it.name, it.nameWithoutExtension, it.inputStream()) }
+
+    val xmlFilesInJars = getXmlFilesInJars(gradleConfigInclude)
+
+    val mixinJarStreams = xmlFilesInJars
+      .filter { fileInJar -> IS_MIXIN.matches(normalizeFilePath(File(fileInJar.entry.name))) }
+      .map { fileInJar -> FilePathAndStream(fileInJar) }
+
+    val mixins = resolveMixinGraph(mixinJarStreams + mixinFileStreams)
+
+    // Iterate over and import from jars
+    xmlFilesInJars.forEach { importModelFromJarStream(it, mixins, rootOutputDir) }
 
     inputChanges.getFileChanges(inputFiles).forEach { change ->
       val targetFile = getTargetFile(change.file, rootOutputDir)
@@ -77,86 +86,42 @@ open class GenerateCodeTask @Inject constructor(objects: ObjectFactory, private 
       }
     }
 
-    createJarMagic(rootOutputDir)
-
     createContentTypeIndexFile(rootOutputDir)
 
-    createComponentIndexFile(rootOutputDir, "parts", "XpPartMap")
-    createComponentIndexFile(rootOutputDir, "layouts", "XpLayoutMap")
-    createComponentIndexFile(rootOutputDir, "pages", "XpPageMap")
+    createComponentIndexFile(rootOutputDir, "parts", "XpPartMap", xmlFilesInJars)
+    createComponentIndexFile(rootOutputDir, "layouts", "XpLayoutMap", xmlFilesInJars)
+    createComponentIndexFile(rootOutputDir, "pages", "XpPageMap", xmlFilesInJars)
 
-    createXDataIndexFile(rootOutputDir)
+    createXDataIndexFile(rootOutputDir, xmlFilesInJars)
   }
 
-  private fun createJarMagic(rootOutputDir: File) {
-    val dependencies = getDependencies()
-    val jarFiles = getDependencyJarFiles(dependencies)
+  private fun importModelFromJarStream(fileInJar: XmlFileInJar, mixins: List<ObjectTypeModel>, rootOutputDir: File) {
+    return parseXml(fileInJar.jarFile.getInputStream(fileInJar.entry))
+      .flatMap { it.getFormNode() }
+      .fold(
+        {
+          ObjectTypeModel(Paths.get(fileInJar.entry.name).fileName.nameWithoutExtension, emptyList()).right()
+        },
+        {
+          parseObjectTypeModel(it, Paths.get(fileInJar.entry.name).fileName.nameWithoutExtension, mixins)
+        }
+      ).fold(
+        { left ->
+          logger.error("ERROR in: ${fileInJar.entry.name}")
+          logger.error(left.message)
+        },
+        { right ->
+          val fileContent = renderTypeModelAsTypeScript(right)
 
-    jarFiles.forEach {
-      val zip = ZipFile(it)
-
-      val enonicZipEntries = zip.entries().asSequence()
-        .filter { it.name.startsWith("site") }
-        .filter { it.name.endsWith(".xml") }
-
-      enonicZipEntries.forEach { zipEntry ->
-        val stream = zip.getInputStream(zipEntry)
-        parseXml(stream)
-          .flatMap { it.getFormNode() }
-          .fold(
-            {
-              ObjectTypeModel(Paths.get(zipEntry.name).fileName.nameWithoutExtension, emptyList()).right()
-            },
-            {
-              parseObjectTypeModel(it, Paths.get(zipEntry.name).fileName.nameWithoutExtension, emptyList())
-            }
-          )
-          .fold(
-            {
-              logger.error("ERROR in: ${zipEntry.name}")
-              logger.error(it.message)
-            },
-            {
-              val fileContent = renderTypeModelAsTypeScript(it)
-              println(fileContent)
-
-              var targetFilePath = Paths.get(rootOutputDir.absolutePath, "tmp", zipEntry.name)
-              targetFilePath = Paths.get(targetFilePath.parent.toString(), "index.d.ts")
-              val targetFile = File(targetFilePath.toUri())
-              targetFile.parentFile.mkdirs()
-              targetFile.createNewFile()
-              targetFile.writeText(fileContent, Charsets.UTF_8)
-            })
-      }
-    }
-  }
-
-  private fun getDependencies(): List<Dependency> {
-    return project.configurations
-      .flatMap { it.allDependencies }
-      .distinct()
-      .sortedBy { it.name }
-  }
-
-  private fun getDependencyJarFiles(dependencies: List<Dependency>): List<File> {
-    return dependencies
-      .map {
-        Paths.get(
-          project.gradle.gradleUserHomeDir.path,
-          "caches",
-          "modules-2",
-          "files-2.1",
-          it.group,
-          it.name,
-          it.version
-        )
-      }
-      .flatMap { File(it.toUri()).listFiles()?.asList() ?: listOf() }
-      .filterNotNull()
-      .flatMap { it.listFiles()?.asList() ?: listOf() }
-      .filterNotNull()
-      .filter { it.extension == "jar" }
-      .toList()
+          var targetFilePath = Paths.get(rootOutputDir.absolutePath, fileInJar.entry.name)
+          targetFilePath = Paths.get(targetFilePath.parent.toString(), "index.d.ts")
+          logger.lifecycle("Updated file: ${targetFilePath.toUri()}")
+          val targetFile = File(targetFilePath.toUri())
+          targetFile.parentFile.mkdirs()
+          targetFile.createNewFile()
+          targetFile.writeText(fileContent, Charsets.UTF_8)
+        }
+      )
   }
 
   private fun createContentTypeIndexFile(rootOutputDir: File) {
@@ -169,13 +134,21 @@ open class GenerateCodeTask @Inject constructor(objects: ObjectFactory, private 
       targetFile.parentFile.mkdirs()
       targetFile.createNewFile()
       targetFile.writeText(prependText + "\n" + fileContent, Charsets.UTF_8)
-      logger.lifecycle("Updated file: ${simpleFilePath(targetFile)}")
+      logger.lifecycle("Updated file: ${Path.of(targetFile.toURI()).toUri()}")
     }
   }
 
-  private fun createComponentIndexFile(rootOutputDir: File, componentTypeName: String, interfaceName: String) {
+  private fun createComponentIndexFile(rootOutputDir: File, componentTypeName: String, interfaceName: String, xmlFilesInJars: List<XmlFileInJar>) {
     val appName = project.property("appName") as String
-    val files = inputFiles.files.filter { it.absolutePath.contains(concatFileName("resources", "site", componentTypeName)) }.sortedBy { it.name }
+    val xmlFiles = inputFiles.files
+      .filter { it.absolutePath.contains(concatFileName("resources", "site", componentTypeName)) }
+      .map { it.nameWithoutExtension }
+
+    val filesInJar = xmlFilesInJars
+      .filter { it.entry.name.contains(concatFileName("site", componentTypeName)) }
+      .map { File(it.entry.name).nameWithoutExtension }
+
+    val files = (xmlFiles + filesInJar).sorted().distinct()
 
     if (files.isNotEmpty()) {
       val fileContent = renderGlobalComponentMap(files, appName, interfaceName)
@@ -183,13 +156,21 @@ open class GenerateCodeTask @Inject constructor(objects: ObjectFactory, private 
       targetFile.parentFile.mkdirs()
       targetFile.createNewFile()
       targetFile.writeText(prependText + "\n" + fileContent, Charsets.UTF_8)
-      logger.lifecycle("Updated file: ${simpleFilePath(targetFile)}")
-      }
+      logger.lifecycle("Updated file: ${Path.of(targetFile.toURI()).toUri()}")
+    }
   }
 
-  private fun createXDataIndexFile(rootOutputDir: File) {
+  private fun createXDataIndexFile(rootOutputDir: File, xmlFilesInJars: List<XmlFileInJar>) {
     val appName = project.property("appName") as String
-    val files = inputFiles.files.filter { it.absolutePath.contains("x-data") }.sortedBy { it.name }
+    val xmlFiles = inputFiles.files
+      .filter { it.absolutePath.contains("x-data") }
+      .map { it.nameWithoutExtension }
+
+    val filesInJar = xmlFilesInJars
+      .filter { it.entry.name.contains("x-data") }
+      .map { File(it.entry.name).nameWithoutExtension }
+
+    val files = (xmlFiles + filesInJar).sorted().distinct()
 
     if (files.isNotEmpty()) {
       val fileContent = renderGlobalXDataMap(files, appName)
@@ -197,7 +178,7 @@ open class GenerateCodeTask @Inject constructor(objects: ObjectFactory, private 
       targetFile.parentFile.mkdirs()
       targetFile.createNewFile()
       targetFile.writeText(prependText + "\n" + fileContent, Charsets.UTF_8)
-      logger.lifecycle("Updated file: ${simpleFilePath(targetFile)}")
+      logger.lifecycle("Updated file: ${Path.of(targetFile.toURI()).toUri()}")
     }
   }
 }
