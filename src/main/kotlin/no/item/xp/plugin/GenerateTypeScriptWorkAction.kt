@@ -16,6 +16,7 @@ import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.workers.WorkAction
 import org.gradle.workers.WorkParameters
+import java.nio.file.Path
 
 interface CodegenWorkParameters : WorkParameters {
   fun getXmlFile(): RegularFileProperty
@@ -35,7 +36,7 @@ abstract class GenerateTypeScriptWorkAction : WorkAction<CodegenWorkParameters> 
       val targetFile = parameters.getTargetFile().get().asFile
       val mixins = parameters.getMixins().get()
 
-      parseXml(file)
+      parseXml(file.inputStream())
         .flatMap { doc -> doc.getFormNode() }
         .fold(
           {
@@ -70,7 +71,7 @@ abstract class GenerateTypeScriptWorkAction : WorkAction<CodegenWorkParameters> 
             targetFile.parentFile.mkdirs()
             targetFile.createNewFile()
             targetFile.writeText(fileContent, Charsets.UTF_8)
-            logger.lifecycle("Updated file: ${simpleFilePath(targetFile)}")
+            logger.lifecycle("Updated file: ${Path.of(targetFile.absoluteFile.toURI()).toUri()}")
           }
         )
     } catch (e: Exception) {
