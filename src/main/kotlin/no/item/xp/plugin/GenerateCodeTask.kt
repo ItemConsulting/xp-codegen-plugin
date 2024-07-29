@@ -55,8 +55,8 @@ open class GenerateCodeTask
     private fun execute(inputChanges: InputChanges) {
       val workQueue = workerExecutor.noIsolation()
       val rootOutputDir = outputDir.get().asFile
-      val gradleConfigInclude = project.configurations.getByName("include")
-      val xmlFilesInJars = getXmlFilesInJars(gradleConfigInclude)
+      val gradleConfigInclude = project.configurations.findByName("include")
+      val xmlFilesInJars = gradleConfigInclude?.let { getXmlFilesInJars(it) } ?: emptyList()
 
       val mixinFileStreams =
         inputFiles
