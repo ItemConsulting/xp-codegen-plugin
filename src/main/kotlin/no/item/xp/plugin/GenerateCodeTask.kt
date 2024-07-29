@@ -56,6 +56,7 @@ open class GenerateCodeTask
       val workQueue = workerExecutor.noIsolation()
       val rootOutputDir = outputDir.get().asFile
       val gradleConfigInclude = project.configurations.findByName("include")
+      val appName = project.findProperty("appName") as String?
       val xmlFilesInJars = gradleConfigInclude?.let { getXmlFilesInJars(it) } ?: emptyList()
 
       val mixinFileStreams =
@@ -86,19 +87,18 @@ open class GenerateCodeTask
             it.getMixins().value(mixins)
             it.getSingleQuote().value(singleQuote)
             it.getPrependText().value(prependText)
-            it.getAppName().value(project.property("appName") as String)
           }
         }
       }
 
-      createContentTypeIndexFile(rootOutputDir)
+      createContentTypeIndexFile(rootOutputDir, appName)
 
-      createComponentIndexFile(rootOutputDir, "parts", xmlFilesInJars, "XpPartMap")
-      createComponentIndexFile(rootOutputDir, "layouts", xmlFilesInJars, "XpLayoutMap")
-      createComponentIndexFile(rootOutputDir, "pages", xmlFilesInJars, "XpPageMap")
-      createComponentIndexFile(rootOutputDir, "mixins", xmlFilesInJars)
+      createComponentIndexFile(rootOutputDir, appName, "parts", xmlFilesInJars, "XpPartMap")
+      createComponentIndexFile(rootOutputDir, appName, "layouts", xmlFilesInJars, "XpLayoutMap")
+      createComponentIndexFile(rootOutputDir, appName, "pages", xmlFilesInJars, "XpPageMap")
+      createComponentIndexFile(rootOutputDir, appName, "mixins", xmlFilesInJars)
 
-      createXDataIndexFile(rootOutputDir, xmlFilesInJars)
+      createXDataIndexFile(rootOutputDir, appName, xmlFilesInJars)
     }
 
     private fun importModelFromJarStream(
@@ -134,8 +134,10 @@ open class GenerateCodeTask
         )
     }
 
-    private fun createContentTypeIndexFile(rootOutputDir: File) {
-      val appName = project.property("appName") as String
+    private fun createContentTypeIndexFile(
+      rootOutputDir: File,
+      appName: String?,
+    ) {
       val files =
         inputFiles.files.filter {
           it.absolutePath.contains(
@@ -155,11 +157,11 @@ open class GenerateCodeTask
 
     private fun createComponentIndexFile(
       rootOutputDir: File,
+      appName: String?,
       componentTypeName: String,
       xmlFilesInJars: List<XmlFileInJar>,
       interfaceName: String? = null,
     ) {
-      val appName = project.property("appName") as String
       val xmlFiles =
         inputFiles.files
           .filter { it.absolutePath.contains(concatFileName("resources", "site", componentTypeName)) }
@@ -184,9 +186,9 @@ open class GenerateCodeTask
 
     private fun createXDataIndexFile(
       rootOutputDir: File,
+      appName: String?,
       xmlFilesInJars: List<XmlFileInJar>,
     ) {
-      val appName = project.property("appName") as String
       val xmlFiles =
         inputFiles.files
           .filter { it.absolutePath.contains("x-data") }

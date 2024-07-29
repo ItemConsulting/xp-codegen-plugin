@@ -4,7 +4,7 @@ import no.item.xp.plugin.renderers.ts.getInterfaceName
 
 fun renderGlobalXDataMap(
   fileNames: List<String>,
-  appName: String,
+  appName: String?,
 ): String {
   val importList =
     fileNames.joinToString("\n") { fileName ->
@@ -15,7 +15,10 @@ fun renderGlobalXDataMap(
       """      ${escapeFieldName(fileName)}?: ${getInterfaceName(fileName)};"""
     }
 
-  return """
+  return if (appName == null) {
+    importList
+  } else {
+    """
     #$importList
     #
     #declare global {
@@ -26,6 +29,7 @@ fun renderGlobalXDataMap(
     #  }
     #}
     #""".trimMargin("#")
+  }
 }
 
 fun snakeCase(str: String) = str.replace(".", "-")

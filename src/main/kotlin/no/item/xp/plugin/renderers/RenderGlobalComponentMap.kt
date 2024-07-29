@@ -4,7 +4,7 @@ import no.item.xp.plugin.renderers.ts.getInterfaceName
 
 fun renderGlobalComponentMap(
   filesNames: List<String>,
-  appName: String,
+  appName: String?,
   interfaceName: String?,
 ): String {
   val importList =
@@ -12,7 +12,7 @@ fun renderGlobalComponentMap(
       """export type ${getInterfaceName(fileName)} = import("./$fileName").${getInterfaceName(fileName)};"""
     }
 
-  return if (interfaceName == null) {
+  return if (interfaceName == null || appName == null) {
     importList
   } else {
     val fieldList =
