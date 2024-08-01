@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "no.item.xp.plugin"
-version = "2.4.1"
+version = "2.5.0-SNAPSHOT"
 
 kotlin {
   jvmToolchain(11)
@@ -44,6 +44,10 @@ gradlePlugin {
 
 tasks.withType<Test>().configureEach {
   useJUnitPlatform()
+}
+
+tasks.withType<Javadoc>().all {
+  enabled = false
 }
 
 ktlint {

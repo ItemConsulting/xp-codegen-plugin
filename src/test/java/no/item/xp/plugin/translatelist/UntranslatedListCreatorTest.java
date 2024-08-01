@@ -1,5 +1,6 @@
 package no.item.xp.plugin.translatelist;
 
+import no.item.xp.plugin.phrases.UntranslatedListCreator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
