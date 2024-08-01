@@ -1,84 +1,52 @@
-package no.item.xp.plugin.translatelist;
+package no.item.xp.plugin.phrases
 
-import no.item.xp.plugin.phrases.UntranslatedListCreator;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
+import java.io.StringReader
+import javax.xml.stream.XMLInputFactory
+import javax.xml.stream.XMLStreamException
+import kotlin.test.assertEquals
 
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-import java.io.StringReader;
-import java.util.List;
-import java.util.Map;
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+class GetAllI18nKeyValuesTest {
+  private val reader: StringReader = StringReader(
+      /*language=xml*/
+    """
+      <part xmlns="urn:enonic:xp:model:1.0">
+        <display-name i18n="articleHeader.displayName">Article header</display-name>
+        <description i18n="articleHeader.description">Detailed view of an articles</description>
 
-class UntranslatedListCreatorTest {
+        <form>
+          <input name="showParentLink" type="Checkbox">
+            <label i18n="articleHeader.showParentLink">Show parent link</label>
+            <default>checked</default>
+          </input>
 
-  final StringReader reader = new StringReader("<part xmlns=\"urn:enonic:xp:model:1.0\">\n" +
-    "    <display-name i18n=\"articleHeader.displayName\">Article header</display-name>\n" +
-    "    <description i18n=\"articleHeader.description\">Detailed view of an articles</description>\n" +
-    "\n" +
-    "    <form>\n" +
-    "        <input name=\"showParentLink\" type=\"Checkbox\">\n" +
-    "            <label i18n=\"articleHeader.showParentLink\">Show parent link</label>\n" +
-    "            <default>checked</default>\n" +
-    "        </input>\n" +
-    "\n" +
-    "        <input name=\"showPublished\" type=\"Checkbox\">\n" +
-    "            <label i18n=\"articleHeader.showPublished\">Show published date</label>\n" +
-    "            <default>checked</default>\n" +
-    "        </input>\n" +
-    "    </form>\n" +
-    "</part>");
+          <input name="showPublished" type="Checkbox">
+            <label i18n="articleHeader.showPublished">Show published date</label>
+            <default>checked</default>
+          </input>
+        </form>
+      </part>
+      """
+  )
 
+  @Throws(XMLStreamException::class)
   @Test
-  void getUntranslatedPhrases_withNothingTranslated() throws XMLStreamException {
+  fun `parse xml for i18n keys and values`() {
     // Arrange
-    final XMLInputFactory inputFactory = XMLInputFactory.newInstance();
-    XMLStreamReader xmlReader = inputFactory.createXMLStreamReader(reader);
-    List<String> translatedPhrases = List.of("Translated Phrase 1", "Translated Phrase 2");
-    UntranslatedListCreator untranslatedListCreator = new UntranslatedListCreator(xmlReader, translatedPhrases);
+    val inputFactory = XMLInputFactory.newInstance()
+    val xmlReader = inputFactory.createXMLStreamReader(reader)
 
-    // Act
-    Map<String, String> untranslatedPhrases = untranslatedListCreator.getUntranslatedPhrases();
+    val result = getAllI18nKeyValues(xmlReader)
 
-    // Assert
-    Assertions.assertEquals(4, untranslatedPhrases.size());
-    Assertions.assertTrue(untranslatedPhrases.containsKey("articleHeader.displayName"));
-    Assertions.assertTrue(untranslatedPhrases.containsKey("articleHeader.description"));
-    Assertions.assertTrue(untranslatedPhrases.containsKey("articleHeader.showPublished"));
-    Assertions.assertTrue(untranslatedPhrases.containsKey("articleHeader.showParentLink"));
-    Assertions.assertEquals("Show published date", untranslatedPhrases.get("articleHeader.showPublished"));
-  }
+    val expected = mapOf(
+      "articleHeader.showParentLink" to "Show parent link",
+      "articleHeader.description" to "Detailed view of an articles",
+      "articleHeader.showPublished" to "Show published date",
+      "articleHeader.displayName" to "Article header"
+    )
 
-  @Test
-  void getUntranslatedPhrases_withAllTranslated() throws XMLStreamException {
-    // Arrange
-    final XMLInputFactory inputFactory = XMLInputFactory.newInstance();
-    XMLStreamReader xmlReader = inputFactory.createXMLStreamReader(reader);
-    List<String> translatedPhrases = List.of("articleHeader.displayName", "articleHeader.description", "articleHeader.showPublished", "articleHeader.showParentLink");
-    UntranslatedListCreator untranslatedListCreator = new UntranslatedListCreator(xmlReader, translatedPhrases);
-
-    // Act
-    Map<String, String> untranslatedPhrases = untranslatedListCreator.getUntranslatedPhrases();
-
-    // Assert
-    Assertions.assertEquals(0, untranslatedPhrases.size());
-  }
-
-  @Test
-  void getUntranslatedPhrases_withPartialTranslated() throws XMLStreamException {
-    // Arrange
-    final XMLInputFactory inputFactory = XMLInputFactory.newInstance();
-    XMLStreamReader xmlReader = inputFactory.createXMLStreamReader(reader);
-    List<String> translatedPhrases = List.of("articleHeader.displayName", "articleHeader.showParentLink");
-    UntranslatedListCreator untranslatedListCreator = new UntranslatedListCreator(xmlReader, translatedPhrases);
-
-    // Act
-    Map<String, String> untranslatedPhrases = untranslatedListCreator.getUntranslatedPhrases();
-
-    // Assert
-    Assertions.assertEquals(2, untranslatedPhrases.size());
-    Assertions.assertTrue(untranslatedPhrases.containsKey("articleHeader.description"));
-    Assertions.assertTrue(untranslatedPhrases.containsKey("articleHeader.showPublished"));
+    assertEquals(expected, result)
   }
 }
