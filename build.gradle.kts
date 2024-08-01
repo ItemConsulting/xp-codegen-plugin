@@ -46,6 +46,10 @@ tasks.withType<Test>().configureEach {
   useJUnitPlatform()
 }
 
+tasks.withType<Javadoc>().all {
+  enabled = false
+}
+
 ktlint {
   debug.set(false)
   verbose.set(true)

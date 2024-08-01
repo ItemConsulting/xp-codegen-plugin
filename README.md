@@ -22,6 +22,8 @@ This plugin can create interfaces for:
  - Id-provider
  - Mixins
  - X-data
+
+The pluging includes in addition a feature to check that the xml elements marked with the attribute "i18n" have been translated in the file \src\main\resources\i18n\phrases.properties. Any element marked with "i18n" missing in the phrases.properties will be written in a temporory file in the same directory as phrases.properties named phrases.tmp.properties. The purpose is to make it easy for you to copy and paste entries from phrases.tmp.properties to phrases.properties and translate them. This feature is implemented as a gradle task called "checkTranslation" that is built-in this plugin.
  
  ## Usage
 
@@ -184,6 +186,10 @@ function assertIsDefined<T>(value: T): asserts value is NonNullable<T> {
   }
 }
 ```
+
+### Generating phases to be translated
+We can then run the `./gradlew checkTranslation` task, it will generate the file \src\main\resources\i18n\phrases.tmp.properties which contains the phrases that are missing from the phrases.properties. It is then easy to translate and then copy and past those entries in the phrases.properties. 
+
 
 ## Development
 

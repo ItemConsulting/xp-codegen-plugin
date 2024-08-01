@@ -1,5 +1,6 @@
 package no.item.xp.plugin
 
+import no.item.xp.plugin.phrases.GenerateI18nPhrasesTask
 import no.item.xp.plugin.util.getTargetFile
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -23,6 +24,12 @@ class GenerateCodePlugin : Plugin<Project> {
       outputFiles.from(files.map { getTargetFile(it, targetDir) })
       outputDir.fileValue(targetDir)
       group = "xp"
+    }
+
+    project.tasks.create("generateI18nPhrases", GenerateI18nPhrasesTask::class.java).apply {
+      source(files)
+      group = "xp"
+      description = "Find all untranslated keys in XMl files and writes them into phrases.tmp.properties"
     }
   }
 }
