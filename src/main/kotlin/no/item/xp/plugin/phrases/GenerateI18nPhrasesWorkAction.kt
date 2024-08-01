@@ -31,7 +31,7 @@ abstract class GenerateI18nPhrasesWorkAction : WorkAction<WriteUntranslatedPhras
       val factory = XMLInputFactory.newInstance()
 
       val reader = factory.createXMLStreamReader(FileReader(sourceFile.absolutePath))
-      val allPhrases = getAllI18nKeyValues(reader);
+      val allPhrases = getAllI18nKeyValues(reader)
       reader.close()
 
       val untranslatedPhrases = allPhrases.filterKeys { it!in translatedPhrases }

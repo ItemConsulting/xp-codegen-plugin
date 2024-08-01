@@ -9,9 +9,10 @@ import kotlin.test.assertEquals
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class GetAllI18nKeyValuesTest {
-  private val reader: StringReader = StringReader(
-      /*language=xml*/
-    """
+  private val reader: StringReader =
+    StringReader(
+      // language=xml
+      """
       <part xmlns="urn:enonic:xp:model:1.0">
         <display-name i18n="articleHeader.displayName">Article header</display-name>
         <description i18n="articleHeader.description">Detailed view of an articles</description>
@@ -28,8 +29,8 @@ class GetAllI18nKeyValuesTest {
           </input>
         </form>
       </part>
-      """
-  )
+      """,
+    )
 
   @Throws(XMLStreamException::class)
   @Test
@@ -40,12 +41,13 @@ class GetAllI18nKeyValuesTest {
 
     val result = getAllI18nKeyValues(xmlReader)
 
-    val expected = mapOf(
-      "articleHeader.showParentLink" to "Show parent link",
-      "articleHeader.description" to "Detailed view of an articles",
-      "articleHeader.showPublished" to "Show published date",
-      "articleHeader.displayName" to "Article header"
-    )
+    val expected =
+      mapOf(
+        "articleHeader.showParentLink" to "Show parent link",
+        "articleHeader.description" to "Detailed view of an articles",
+        "articleHeader.showPublished" to "Show published date",
+        "articleHeader.displayName" to "Article header",
+      )
 
     assertEquals(expected, result)
   }
