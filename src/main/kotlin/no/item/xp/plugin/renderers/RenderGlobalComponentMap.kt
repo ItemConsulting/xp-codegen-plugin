@@ -10,7 +10,7 @@ fun renderGlobalComponentMap(
   val importList =
     filesNames.joinToString("\n") { fileName ->
       """export type ${getInterfaceName(fileName)} = import("./$fileName").${getInterfaceName(fileName)};"""
-    }
+    } + "\n"
 
   return if (interfaceName == null || appName == null) {
     importList
@@ -22,7 +22,6 @@ fun renderGlobalComponentMap(
 
     """
     #$importList
-    #
     #declare global {
     #  interface $interfaceName {
     #$fieldList

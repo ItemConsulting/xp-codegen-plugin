@@ -8,6 +8,36 @@ val IS_MIXIN = "^.*site/mixins.*\$".toRegex(RegexOption.IGNORE_CASE)
 val IS_PART = "^.*site/parts.*\$".toRegex(RegexOption.IGNORE_CASE)
 val IS_PAGE = "^.*site/pages.*\$".toRegex(RegexOption.IGNORE_CASE)
 
+fun writeTargetFile(
+  targetFile: File,
+  fileContent: String,
+  prependText: String,
+  singleQuote: Boolean,
+) {
+  val content = prependWithText(replaceWithSingleQuotes(fileContent, singleQuote), prependText)
+  targetFile.parentFile.mkdirs()
+  targetFile.createNewFile()
+  targetFile.writeText(content, Charsets.UTF_8)
+}
+
+private fun replaceWithSingleQuotes(
+  content: String,
+  singleQuote: Boolean,
+): String =
+  if (singleQuote) {
+    content.replace(
+      "\"",
+      "'",
+    )
+  } else {
+    content
+  }
+
+private fun prependWithText(
+  content: String,
+  prependText: String,
+): String = if (prependText.isEmpty()) content else prependText + "\n" + content
+
 fun getTargetDirectory(
   inputFile: File,
   rootDir: File,

@@ -50,7 +50,7 @@ class RenderObjectTypeModelTest {
       #   * Favourite color
       #   */
       #  favouriteColor: "red" | "green" | "blue";
-      #}
+      #};
       #
       """.trimMargin(
         //language=
