@@ -13,8 +13,7 @@ import org.gradle.api.logging.Logger
 import org.gradle.api.logging.Logging
 import org.w3c.dom.Node
 import java.io.File
-import java.nio.file.Paths
-import kotlin.io.path.nameWithoutExtension
+import java.io.InputStream
 
 val LOGGER: Logger = Logging.getLogger("GenerateTypeScript")
 
@@ -22,25 +21,29 @@ fun resolveMixinGraph(mixinFiles: List<Either<File, XmlFileInJar>>): List<Object
   val mixinDependencies =
     mixinFiles
       .mapNotNull { entry ->
-        val inputStream =
-          entry.fold(
-            { left -> left.inputStream() },
-            { right -> right.jarFile.getInputStream(right.entry) },
-          )
-
-        val name =
-          entry.fold(
-            { left -> left.nameWithoutExtension },
-            { right -> Paths.get(right.entry.name).fileName.nameWithoutExtension },
-          )
-
-        parseXml(inputStream)
+        parseXml(getInputStream(entry))
           .flatMap { doc -> doc.getFormNode() }
-          .map { formNode -> parseMixinDependencyModel(formNode, name) }
+          .map { formNode ->
+            parseMixinDependencyModel(formNode, getNameWithoutExtension(entry))
+          }
           .getOrNull()
       }
 
   return mixinDependencies.mapNotNull { parseMixin(it, mixinDependencies) }
+}
+
+fun getNameWithoutExtension(entry: Either<File, XmlFileInJar>): String {
+  return entry.fold(
+    { left -> left.nameWithoutExtension },
+    { right -> right.nameWithoutExtension },
+  )
+}
+
+fun getInputStream(entry: Either<File, XmlFileInJar>): InputStream {
+  return entry.fold(
+    { left -> left.inputStream() },
+    { right -> right.inputStream() },
+  )
 }
 
 fun parseMixin(

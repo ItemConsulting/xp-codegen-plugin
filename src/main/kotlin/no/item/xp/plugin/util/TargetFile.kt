@@ -24,6 +24,8 @@ fun getTargetFile(
 
 fun simpleFilePath(file: File): String = file.canonicalPath.substringAfter("""resources${File.separatorChar}""")
 
-fun normalizeFilePath(file: File) = file.absolutePath.replace(File.separatorChar, '/')
+fun normalizeFilePath(filePath: String): String = filePath.replace(File.separatorChar, '/')
+
+fun normalizeFilePath(file: File): String = normalizeFilePath(file.absolutePath)
 
 fun concatFileName(vararg parts: String): String = parts.joinToString(File.separator) { it }
