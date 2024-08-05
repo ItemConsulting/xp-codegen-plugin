@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "no.item.xp.plugin"
-version = "2.5.0"
+version = "2.6.0"
 
 kotlin {
   jvmToolchain(11)
