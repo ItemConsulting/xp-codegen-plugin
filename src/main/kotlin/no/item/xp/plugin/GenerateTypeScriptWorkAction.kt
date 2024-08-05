@@ -10,6 +10,7 @@ import no.item.xp.plugin.renderers.ts.renderTypeModelAsTypeScript
 import no.item.xp.plugin.util.concatFileName
 import no.item.xp.plugin.util.parseXml
 import no.item.xp.plugin.util.simpleFilePath
+import no.item.xp.plugin.util.writeTargetFile
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.logging.Logging
 import org.gradle.api.provider.ListProperty
@@ -55,25 +56,15 @@ abstract class GenerateTypeScriptWorkAction : WorkAction<CodegenWorkParameters> 
             logger.error(it.message)
           },
           {
-            var fileContent =
+            val fileContent =
               if (file.absolutePath.endsWith(concatFileName("resources", "site", "site.xml"))) {
                 renderSiteConfig(it)
               } else {
                 renderTypeModelAsTypeScript(it)
               }
 
-            if (parameters.getSingleQuote().get()) {
-              fileContent = fileContent.replace("\"", "'")
-            }
+            writeTargetFile(targetFile, fileContent, parameters.getPrependText().get(), parameters.getSingleQuote().get())
 
-            val prependText = parameters.getPrependText().get()
-            if (prependText.isNotEmpty()) {
-              fileContent = prependText + "\n" + fileContent
-            }
-
-            targetFile.parentFile.mkdirs()
-            targetFile.createNewFile()
-            targetFile.writeText(fileContent, Charsets.UTF_8)
             logger.lifecycle("Updated file: ${Path.of(targetFile.absoluteFile.toURI()).toUri()}")
           },
         )

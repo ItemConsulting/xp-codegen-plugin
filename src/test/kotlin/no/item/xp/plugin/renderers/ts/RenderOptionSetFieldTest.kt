@@ -76,7 +76,7 @@ class RenderOptionSetFieldTest {
       #          articleList?: Array<string> | string;
       #        };
       #      };
-      #}
+      #};
       #""".trimMargin(
         //language=
         "#",
@@ -149,7 +149,7 @@ class RenderOptionSetFieldTest {
       #      articleList?: Array<string> | string;
       #    };
       #  };
-      #}
+      #};
       #""".trimMargin(
         //language=
         "#",
@@ -230,7 +230,7 @@ class RenderOptionSetFieldTest {
       #        };
       #      }
       #  >;
-      #}
+      #};
       #""".trimMargin(
         //language=
         "#",

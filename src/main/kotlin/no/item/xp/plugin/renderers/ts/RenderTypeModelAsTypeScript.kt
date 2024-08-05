@@ -8,6 +8,6 @@ fun renderTypeModelAsTypeScript(model: ObjectTypeModel): String {
   return """
     #export type ${getInterfaceName(model.nameWithoutExtension)} = {
     #$fieldList
-    #}
+    #};
     #""".trimMargin("#")
 }

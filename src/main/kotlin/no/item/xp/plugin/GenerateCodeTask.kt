@@ -101,10 +101,10 @@ open class GenerateCodeTask
 
       createContentTypeIndexFile(rootOutputDir, appName)
 
-      createComponentIndexFile(rootOutputDir, appName, "parts", xmlFilesInJars, "XpPartMap")
-      createComponentIndexFile(rootOutputDir, appName, "layouts", xmlFilesInJars, "XpLayoutMap")
-      createComponentIndexFile(rootOutputDir, appName, "pages", xmlFilesInJars, "XpPageMap")
-      createComponentIndexFile(rootOutputDir, appName, "mixins", xmlFilesInJars)
+      createComponentIndexFile(rootOutputDir, appName, "parts", xmlFilesInJars, singleQuote, "XpPartMap")
+      createComponentIndexFile(rootOutputDir, appName, "layouts", xmlFilesInJars, singleQuote, "XpLayoutMap")
+      createComponentIndexFile(rootOutputDir, appName, "pages", xmlFilesInJars, singleQuote, "XpPageMap")
+      createComponentIndexFile(rootOutputDir, appName, "mixins", xmlFilesInJars, singleQuote)
 
       createXDataIndexFile(rootOutputDir, appName, xmlFilesInJars)
     }
@@ -131,13 +131,12 @@ open class GenerateCodeTask
           { right ->
             val fileContent = renderTypeModelAsTypeScript(right)
 
-            var targetFilePath = Paths.get(rootOutputDir.absolutePath, fileInJar.entry.name)
-            targetFilePath = Paths.get(targetFilePath.parent.toString(), "index.d.ts")
+            val targetFilePath = Paths.get(rootOutputDir.absolutePath, fileInJar.entry.name)
+            val indexFilePath = Paths.get(targetFilePath.parent.toString(), "index.d.ts")
+            val targetFile = File(indexFilePath.toUri())
+
+            writeTargetFile(targetFile, fileContent, prependText, singleQuote)
             logger.lifecycle("Updated file: ${targetFilePath.toUri()}")
-            val targetFile = File(targetFilePath.toUri())
-            targetFile.parentFile.mkdirs()
-            targetFile.createNewFile()
-            targetFile.writeText(fileContent, Charsets.UTF_8)
           },
         )
     }
@@ -156,9 +155,7 @@ open class GenerateCodeTask
       if (files.isNotEmpty()) {
         val fileContent = renderGlobalContentTypeMap(files, appName)
         val targetFile = File(rootOutputDir.absolutePath + "/site/content-types/index.d.ts")
-        targetFile.parentFile.mkdirs()
-        targetFile.createNewFile()
-        targetFile.writeText(prependText + "\n" + fileContent, Charsets.UTF_8)
+        writeTargetFile(targetFile, fileContent, prependText, singleQuote)
         logger.lifecycle("Updated file: ${Path.of(targetFile.toURI()).toUri()}")
       }
     }
@@ -168,6 +165,7 @@ open class GenerateCodeTask
       appName: String?,
       componentTypeName: String,
       xmlFilesInJars: List<XmlFileInJar>,
+      singleQuote: Boolean,
       interfaceName: String? = null,
     ) {
       val xmlFiles =
@@ -185,10 +183,8 @@ open class GenerateCodeTask
       if (files.isNotEmpty()) {
         val fileContent = renderGlobalComponentMap(files, appName, interfaceName)
         val targetFile = File(concatFileName(rootOutputDir.absolutePath, "site", componentTypeName, "index.d.ts"))
-        targetFile.parentFile.mkdirs()
-        targetFile.createNewFile()
-        targetFile.writeText(prependText + "\n" + fileContent, Charsets.UTF_8)
-        logger.lifecycle("Updated file: ${Path.of(targetFile.toURI()).toUri()}")
+        writeTargetFile(targetFile, fileContent, prependText, singleQuote)
+        logger.lifecycle("Updated file: ${Path.of(targetFile.toURI()).toUri()} singleQuote = $singleQuote")
       }
     }
 
@@ -212,9 +208,7 @@ open class GenerateCodeTask
       if (files.isNotEmpty()) {
         val fileContent = renderGlobalXDataMap(files, appName)
         val targetFile = File(rootOutputDir.absolutePath + "/site/x-data/index.d.ts")
-        targetFile.parentFile.mkdirs()
-        targetFile.createNewFile()
-        targetFile.writeText(prependText + "\n" + fileContent, Charsets.UTF_8)
+        writeTargetFile(targetFile, fileContent, prependText, singleQuote)
         logger.lifecycle("Updated file: ${Path.of(targetFile.toURI()).toUri()}")
       }
     }
