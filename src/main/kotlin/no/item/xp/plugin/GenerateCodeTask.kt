@@ -184,7 +184,7 @@ open class GenerateCodeTask
         val fileContent = renderGlobalComponentMap(files, appName, interfaceName)
         val targetFile = File(concatFileName(rootOutputDir.absolutePath, "site", componentTypeName, "index.d.ts"))
         writeTargetFile(targetFile, fileContent, prependText, singleQuote)
-        logger.lifecycle("Updated file: ${Path.of(targetFile.toURI()).toUri()} singleQuote = $singleQuote")
+        logger.lifecycle("Updated file: ${Path.of(targetFile.toURI()).toUri()}")
       }
     }
 
