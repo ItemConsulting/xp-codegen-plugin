@@ -43,7 +43,11 @@ fun renderComment(
   }
 }
 
-fun getInterfaceName(nameWithoutExtension: String): String {
+fun getTypeName(nameWithoutExtension: String): String {
+  if (nameWithoutExtension.first().isDigit()) {
+    return getTypeName("_$nameWithoutExtension")
+  }
+
   return nameWithoutExtension
     .split(".")[0]
     .split("-")
@@ -53,4 +57,4 @@ fun getInterfaceName(nameWithoutExtension: String): String {
 fun getTypeName(
   nameWithoutExtension: String,
   appName: String,
-): String = """${appName.replace(".", "_")}_${getInterfaceName(nameWithoutExtension)}_Data"""
+): String = """${appName.replace(".", "_")}_${getTypeName(nameWithoutExtension)}_Data"""
