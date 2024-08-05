@@ -53,8 +53,3 @@ fun getTypeName(nameWithoutExtension: String): String {
     .split("-")
     .joinToString("") { it.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() } }
 }
-
-fun getTypeName(
-  nameWithoutExtension: String,
-  appName: String,
-): String = """${appName.replace(".", "_")}_${getTypeName(nameWithoutExtension)}_Data"""
