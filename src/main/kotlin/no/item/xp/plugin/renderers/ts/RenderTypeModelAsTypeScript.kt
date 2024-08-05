@@ -6,7 +6,7 @@ fun renderTypeModelAsTypeScript(model: ObjectTypeModel): String {
   val fieldList = model.fields.joinToString("\n\n") { renderInterfaceModelField(it, 1) }
 
   return """
-    #export type ${getInterfaceName(model.nameWithoutExtension)} = {
+    #export type ${getTypeName(model.nameWithoutExtension)} = {
     #$fieldList
     #};
     #""".trimMargin("#")

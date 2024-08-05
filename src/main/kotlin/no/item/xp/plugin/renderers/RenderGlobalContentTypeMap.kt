@@ -1,6 +1,6 @@
 package no.item.xp.plugin.renderers
 
-import no.item.xp.plugin.renderers.ts.getInterfaceName
+import no.item.xp.plugin.renderers.ts.getTypeName
 import java.io.File
 
 fun renderGlobalContentTypeMap(
@@ -9,13 +9,13 @@ fun renderGlobalContentTypeMap(
 ): String {
   val importList =
     files.joinToString("\n") {
-      """export type ${getInterfaceName(
+      """export type ${getTypeName(
         it.nameWithoutExtension,
-      )} = import("./${it.nameWithoutExtension}").${getInterfaceName(it.nameWithoutExtension)};"""
+      )} = import("./${it.nameWithoutExtension}").${getTypeName(it.nameWithoutExtension)};"""
     }
   val fieldList =
     files.joinToString("\n") {
-      """      "$appName:${it.nameWithoutExtension}": ${getInterfaceName(it.nameWithoutExtension)};"""
+      """      "$appName:${it.nameWithoutExtension}": ${getTypeName(it.nameWithoutExtension)};"""
     }
 
   return if (appName == null) {
