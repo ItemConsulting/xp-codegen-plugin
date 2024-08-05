@@ -57,20 +57,28 @@ open class GenerateCodeTask
       val rootOutputDir = outputDir.get().asFile
       val gradleConfigInclude = project.configurations.findByName("include")
       val appName = project.findProperty("appName") as String?
-      val xmlFilesInJars = gradleConfigInclude?.let { getXmlFilesInJars(it) } ?: emptyList()
 
-      val mixinFileStreams =
+      val xmlFilesInJars =
+        (gradleConfigInclude?.let { getXmlFilesInJars(it) } ?: emptyList())
+          // Remove files from jars with same path relative to "resources" as a filesystem-files
+          .filter { fileInJar ->
+            !inputFiles.files.any { fileInFileSystem ->
+              normalizeFilePath(fileInJar.entry.name) == normalizeFilePath(simpleFilePath(fileInFileSystem))
+            }
+          }
+
+      val mixinFiles =
         inputFiles
           .filter { file -> IS_MIXIN.matches(normalizeFilePath(file)) }
           .toList()
           .map { it.left() }
 
-      val mixinJarStreams =
+      val mixinFilesInJars =
         xmlFilesInJars
           .filter { fileInJar -> IS_MIXIN.matches(normalizeFilePath(File(fileInJar.entry.name))) }
           .map { it.right() }
 
-      val mixins = resolveMixinGraph(mixinJarStreams + mixinFileStreams)
+      val mixins = resolveMixinGraph(mixinFilesInJars + mixinFiles)
 
       // Iterate over and import from jars
       xmlFilesInJars.forEach { importModelFromJarStream(it, mixins, rootOutputDir) }
