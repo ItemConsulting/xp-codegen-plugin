@@ -8,7 +8,7 @@ fun renderGlobalXDataMap(
 ): String {
   val importList =
     fileNames.joinToString("\n") { fileName ->
-      """export type ${getTypeName(fileName)} = import("./$fileName").${getTypeName(fileName)}"""
+      """export type ${getTypeName(fileName)} = import("./$fileName").${getTypeName(fileName)};"""
     }
   val fieldList =
     fileNames.joinToString("\n") { fileName ->
@@ -25,7 +25,7 @@ fun renderGlobalXDataMap(
     #  interface XpXData {
     #    "${snakeCase(appName)}"?: {
     #$fieldList
-    #    }
+    #    };
     #  }
     #}
     #""".trimMargin("#")
