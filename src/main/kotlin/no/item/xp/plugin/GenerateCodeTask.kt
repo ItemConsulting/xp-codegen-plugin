@@ -136,7 +136,7 @@ open class GenerateCodeTask
             val targetFile = File(indexFilePath.toUri())
 
             writeTargetFile(targetFile, fileContent, prependText, singleQuote)
-            logger.lifecycle("Updated file: ${targetFilePath.toUri()}")
+            logger.lifecycle("Updated file: ${Path.of(targetFile.toURI()).toUri()}")
           },
         )
     }
