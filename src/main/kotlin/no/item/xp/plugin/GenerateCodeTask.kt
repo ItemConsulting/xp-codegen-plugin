@@ -154,7 +154,7 @@ open class GenerateCodeTask
 
       if (files.isNotEmpty()) {
         val fileContent = renderGlobalContentTypeMap(files, appName)
-        val targetFile = File(rootOutputDir.absolutePath + "/site/content-types/index.d.ts")
+        val targetFile = File(concatFileName(rootOutputDir.absolutePath, "site", "content-types", "index.d.ts"))
         writeTargetFile(targetFile, fileContent, prependText, singleQuote)
         logger.lifecycle("Updated file: ${Path.of(targetFile.toURI()).toUri()}")
       }
@@ -207,7 +207,7 @@ open class GenerateCodeTask
 
       if (files.isNotEmpty()) {
         val fileContent = renderGlobalXDataMap(files, appName)
-        val targetFile = File(rootOutputDir.absolutePath + "/site/x-data/index.d.ts")
+        val targetFile = File(concatFileName(rootOutputDir.absolutePath, "site", "x-data", "index.d.ts"))
         writeTargetFile(targetFile, fileContent, prependText, singleQuote)
         logger.lifecycle("Updated file: ${Path.of(targetFile.toURI()).toUri()}")
       }
