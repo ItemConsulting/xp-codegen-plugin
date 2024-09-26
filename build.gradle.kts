@@ -9,10 +9,16 @@ plugins {
 }
 
 group = "no.item.xp.plugin"
-version = "2.6.1"
+version = "2.6.2"
 
 kotlin {
   jvmToolchain(11)
+}
+
+java {
+  toolchain {
+    languageVersion.set(JavaLanguageVersion.of(11))
+  }
 }
 
 repositories {
