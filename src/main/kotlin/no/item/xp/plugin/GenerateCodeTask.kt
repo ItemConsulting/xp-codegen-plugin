@@ -175,7 +175,8 @@ open class GenerateCodeTask
 
       val filesInJar =
         xmlFilesInJars
-          .filter { it.entry.name.contains(concatFileName("site", componentTypeName)) }
+          // ZipEntry.name has UNIX style path. See 4.4.17.1 of the zip file spec.
+          .filter { it.entry.name.contains("site/$componentTypeName") }
           .map { File(it.entry.name).nameWithoutExtension }
 
       val files = (xmlFiles + filesInJar).sorted().distinct()
