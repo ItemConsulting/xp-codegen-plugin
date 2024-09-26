@@ -154,7 +154,7 @@ open class GenerateCodeTask
 
       if (files.isNotEmpty()) {
         val fileContent = renderGlobalContentTypeMap(files, appName)
-        val targetFile = File(rootOutputDir.absolutePath + "/site/content-types/index.d.ts")
+        val targetFile = File(concatFileName(rootOutputDir.absolutePath, "site", "content-types", "index.d.ts"))
         writeTargetFile(targetFile, fileContent, prependText, singleQuote)
         logger.lifecycle("Updated file: ${Path.of(targetFile.toURI()).toUri()}")
       }
@@ -175,7 +175,8 @@ open class GenerateCodeTask
 
       val filesInJar =
         xmlFilesInJars
-          .filter { it.entry.name.contains(concatFileName("site", componentTypeName)) }
+          // ZipEntry.name has UNIX style path. See 4.4.17.1 of the zip file spec.
+          .filter { it.entry.name.contains("site/$componentTypeName") }
           .map { File(it.entry.name).nameWithoutExtension }
 
       val files = (xmlFiles + filesInJar).sorted().distinct()
@@ -207,7 +208,7 @@ open class GenerateCodeTask
 
       if (files.isNotEmpty()) {
         val fileContent = renderGlobalXDataMap(files, appName)
-        val targetFile = File(rootOutputDir.absolutePath + "/site/x-data/index.d.ts")
+        val targetFile = File(concatFileName(rootOutputDir.absolutePath, "site", "x-data", "index.d.ts"))
         writeTargetFile(targetFile, fileContent, prependText, singleQuote)
         logger.lifecycle("Updated file: ${Path.of(targetFile.toURI()).toUri()}")
       }
