@@ -22,7 +22,7 @@ fun getAllI18nKeyValues(reader: XMLStreamReader): Map<String, String> {
 
       XMLStreamConstants.CHARACTERS ->
         if (i18nKey != null) {
-          untranslatedPhrases[i18nKey] = reader.text
+          untranslatedPhrases[i18nKey] = reader.text.trim()
           i18nKey = null
         }
 
