@@ -7,7 +7,7 @@ import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginExtension
 import java.io.File
 
-class GenerateCodePlugin : Plugin<Project> {
+abstract class GenerateCodePlugin : Plugin<Project> {
   override fun apply(project: Project) {
     val javaExt = project.extensions.getByType(JavaPluginExtension::class.java)
     val files =
@@ -19,17 +19,17 @@ class GenerateCodePlugin : Plugin<Project> {
 
     val targetDir = File(project.rootDir.absolutePath + File.separator + ".xp-codegen")
 
-    project.tasks.create("generateTypeScript", GenerateCodeTask::class.java).apply {
-      inputFiles.from(files)
-      outputFiles.from(files.map { getTargetFile(it, targetDir) })
-      outputDir.fileValue(targetDir)
-      group = "xp"
+    project.tasks.register("generateTypeScript", GenerateCodeTask::class.java) {
+      it.group = "xp"
+      it.inputFiles.from(files)
+      it.outputFiles.from(files.map { file -> getTargetFile(file, targetDir) })
+      it.outputDir.fileValue(targetDir)
     }
 
-    project.tasks.create("generateI18nPhrases", GenerateI18nPhrasesTask::class.java).apply {
-      source(files)
-      group = "xp"
-      description = "Find all untranslated keys in XMl files and writes them into phrases.tmp.properties"
+    project.tasks.register("generateI18nPhrases", GenerateI18nPhrasesTask::class.java) {
+      it.source(files)
+      it.group = "xp"
+      it.description = "Find all untranslated keys in XMl files and writes them into phrases.tmp.properties"
     }
   }
 }

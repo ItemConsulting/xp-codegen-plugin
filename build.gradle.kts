@@ -1,11 +1,13 @@
 import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
 
+val kotlinVersion: String = "2.1.20"
+
 plugins {
   `java-gradle-plugin`
   `maven-publish`
-  id("com.gradle.plugin-publish") version "1.2.1"
-  id("org.jetbrains.kotlin.jvm") version "1.9.25"
-  id("org.jlleitschuh.gradle.ktlint") version "12.1.1"
+  id("com.gradle.plugin-publish") version "1.3.1"
+  id("org.jetbrains.kotlin.jvm") version "2.1.20"
+  id("org.jlleitschuh.gradle.ktlint") version "12.2.0"
 }
 
 group = "no.item.xp.plugin"
@@ -26,10 +28,10 @@ repositories {
 }
 
 dependencies {
-  implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
-  implementation("org.jetbrains.kotlin:kotlin-stdlib")
-  implementation("io.arrow-kt:arrow-core:1.2.4")
-  testImplementation("org.junit.jupiter:junit-jupiter:5.10.3")
+  implementation(platform("org.jetbrains.kotlin:kotlin-bom:${kotlinVersion}"))
+  implementation("org.jetbrains.kotlin:kotlin-stdlib:${kotlinVersion}")
+  implementation("io.arrow-kt:arrow-core:2.0.1")
+  testImplementation("org.junit.jupiter:junit-jupiter:5.12.1")
   testImplementation("org.jetbrains.kotlin:kotlin-test")
   testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 }

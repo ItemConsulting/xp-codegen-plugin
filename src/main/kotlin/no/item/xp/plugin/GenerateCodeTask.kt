@@ -52,7 +52,7 @@ open class GenerateCodeTask
     val outputDir: RegularFileProperty = objects.fileProperty()
 
     @TaskAction
-    private fun execute(inputChanges: InputChanges) {
+    fun execute(inputChanges: InputChanges) {
       val workQueue = workerExecutor.noIsolation()
       val rootOutputDir = outputDir.get().asFile
       val gradleConfigInclude = project.configurations.findByName("include")
