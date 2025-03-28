@@ -11,7 +11,7 @@ plugins {
 }
 
 group = "no.item.xp.plugin"
-version = "2.6.3"
+version = "2.7.0"
 
 kotlin {
   jvmToolchain(11)
@@ -28,8 +28,8 @@ repositories {
 }
 
 dependencies {
-  implementation(platform("org.jetbrains.kotlin:kotlin-bom:${kotlinVersion}"))
-  implementation("org.jetbrains.kotlin:kotlin-stdlib:${kotlinVersion}")
+  implementation(platform("org.jetbrains.kotlin:kotlin-bom:$kotlinVersion"))
+  implementation("org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion")
   implementation("io.arrow-kt:arrow-core:2.0.1")
   testImplementation("org.junit.jupiter:junit-jupiter:5.12.1")
   testImplementation("org.jetbrains.kotlin:kotlin-test")
