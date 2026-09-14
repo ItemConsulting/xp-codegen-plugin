@@ -9,7 +9,7 @@ fun getXmlFilesInJars(config: Configuration): List<XmlFileInJar> {
     val zipFile = JarFile(jarFile)
 
     zipFile.entries().asSequence()
-      .filter { jarEntry -> jarEntry.name.startsWith("site") && jarEntry.name.endsWith(".xml") }
+      .filter { jarEntry -> !jarEntry.isDirectory && isDescriptorInJar(jarEntry.name) }
       .map { XmlFileInJar(zipFile, it) }
   }
 }
