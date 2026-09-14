@@ -2,6 +2,7 @@ package no.item.xp.codegen
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.plugins.BasePlugin
 import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.tasks.SourceSetContainer
 import java.io.File
@@ -17,7 +18,7 @@ abstract class CodegenPlugin : Plugin<Project> {
       val outputDirectory = projectDirectory.dir(".xp-codegen")
 
       project.tasks.register("generateTypeScript", GenerateTypeScriptTask::class.java) { task ->
-        task.group = "xp"
+        task.group = BasePlugin.BUILD_GROUP
         task.description = "Generates TypeScript types based on the YAML descriptors of the application"
         task.resourceDirectories.from(sourceSets.named("main").map { it.resources.sourceDirectories })
         task.includedJars.from(project.configurations.matching { it.name == "include" && it.isCanBeResolved })
