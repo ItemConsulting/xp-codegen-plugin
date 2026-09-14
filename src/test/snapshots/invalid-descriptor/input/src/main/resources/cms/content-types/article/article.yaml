@@ -1,0 +1,7 @@
+# Invalid, since content types must have a title
+kind: "ContentType"
+superType: "base:structured"
+form:
+  - type: "TextLine"
+    name: "title"
+    label: "Title"

@@ -1,0 +1,3 @@
+kind: "ContentType"
+title: "No form"
+superType: "base:folder"

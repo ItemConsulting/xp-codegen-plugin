@@ -1,0 +1,6 @@
+kind: "Mixin"
+title: "Jar mixin"
+form:
+  - type: "CheckBox"
+    name: "hidden"
+    label: "Hidden"

@@ -1,0 +1,172 @@
+kind: "ContentType"
+title:
+  text: "All inputs"
+  i18n: "allInputs.displayName"
+superType: "base:structured"
+form:
+  - type: "TextLine"
+    name: "textLine"
+    label:
+      text: "Text line"
+      i18n: "allInputs.textLine"
+
+  - type: "TextLine"
+    name: "requiredTextLine"
+    label:
+      text: "Required text line"
+      i18n: "allInputs.requiredTextLine"
+    occurrences:
+      min: 1
+      max: 1
+
+  - type: "TextLine"
+    name: "textLines"
+    label: "Text lines"
+    occurrences:
+      min: 0
+      max: 0
+
+  - type: "TextLine"
+    name: "requiredTextLines"
+    label: "Required text lines"
+    occurrences:
+      min: 2
+      max: 5
+
+  - type: "TextLine"
+    name: "textLineWithRegexp"
+    label: "Text line with regexp"
+    regexp: '^[a-z]+$'
+
+  - type: "TextLine"
+    name: "textLineWithMaxLength"
+    label: "Text line with max length"
+    maxLength: 10
+
+  - type: "TextArea"
+    name: "textArea"
+    label: "Text area"
+
+  - type: "HtmlArea"
+    name: "htmlArea"
+    label: "Html area"
+
+  - type: "Long"
+    name: "long"
+    label: "Long"
+
+  - type: "Long"
+    name: "longWithMinAndMax"
+    label: "Long with min and max"
+    min: 1
+    max: 10
+
+  - type: "Double"
+    name: "doubles"
+    label: "Doubles"
+    occurrences:
+      min: 1
+      max: 0
+
+  - type: "Date"
+    name: "date"
+    label: "Date"
+
+  - type: "Time"
+    name: "time"
+    label: "Time"
+
+  - type: "DateTime"
+    name: "dateTime"
+    label: "Date time"
+
+  - type: "Instant"
+    name: "instant"
+    label: "Instant"
+
+  - type: "CheckBox"
+    name: "checkBox"
+    label: "Check box"
+    occurrences:
+      min: 0
+      max: 0
+
+  - type: "ComboBox"
+    name: "comboBox"
+    label: "Combo box"
+    occurrences:
+      min: 0
+      max: 0
+    options:
+      - value: "one"
+        label: "One"
+      - value: "two"
+        label: "Two"
+      - value: "one"
+        label: "One again"
+
+  - type: "RadioButton"
+    name: "radioButton"
+    label: "Radio button"
+    occurrences:
+      min: 1
+      max: 0
+    options:
+      - value: "yes"
+        label: "Yes"
+      - value: "no"
+        label: "No"
+
+  - type: "ContentSelector"
+    name: "contentSelector"
+    label: "Content selector"
+    occurrences:
+      min: 0
+      max: 0
+
+  - type: "ImageSelector"
+    name: "imageSelector"
+    label: "Image selector"
+
+  - type: "MediaSelector"
+    name: "mediaSelector"
+    label: "Media selector"
+
+  - type: "AttachmentUploader"
+    name: "attachmentUploader"
+    label: "Attachment uploader"
+
+  - type: "CustomSelector"
+    name: "customSelector"
+    label: "Custom selector"
+    extension: "my-extension"
+
+  - type: "Tag"
+    name: "tag"
+    label: "Tag"
+    occurrences:
+      min: 0
+      max: 0
+
+  - type: "GeoPoint"
+    name: "geoPoint"
+    label: "Geo point"
+
+  - type: "ContentTypeFilter"
+    name: "contentTypeFilter"
+    label: "Content type filter"
+
+  - type: "PrincipalSelector"
+    name: "principalSelector"
+    label: "Principal selector"
+    principalType: "USER"
+
+  - type: "TextLine"
+    name: "my-hyphenated-field"
+    label: "Hyphenated field"
+
+  - type: "TextLine"
+    name: "multiLineLabel"
+    label: |
+      First line
+        Second line

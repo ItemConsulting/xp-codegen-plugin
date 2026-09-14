@@ -1,0 +1,4 @@
+kind: "Page"
+title: "Jar page"
+regions:
+  - "main"

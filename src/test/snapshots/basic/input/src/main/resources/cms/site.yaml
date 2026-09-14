@@ -1,0 +1,5 @@
+# Site descriptors have no form, and are ignored
+kind: "Site"
+processors:
+  - name: "tracking"
+    order: 10

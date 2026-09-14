@@ -1,0 +1,9 @@
+kind: "ContentType"
+title: "Jar article"
+superType: "base:structured"
+form:
+  - type: "TextArea"
+    name: "intro"
+    label: "Intro"
+
+  - include: "jar-link"

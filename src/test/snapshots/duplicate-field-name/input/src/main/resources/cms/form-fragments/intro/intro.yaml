@@ -1,0 +1,6 @@
+kind: "FormFragment"
+title: "Intro"
+form:
+  - type: "TextArea"
+    name: "intro"
+    label: "Intro"

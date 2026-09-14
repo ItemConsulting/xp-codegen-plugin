@@ -1,0 +1,26 @@
+kind: "Macro"
+title: "YouTube"
+form:
+  - type: "TextLine"
+    name: "url"
+    label: "Url"
+    occurrences:
+      min: 1
+      max: 1
+
+  - type: "Long"
+    name: "width"
+    label: "Width"
+
+  - type: "CheckBox"
+    name: "autoplay"
+    label: "Autoplay"
+
+  - type: "ComboBox"
+    name: "size"
+    label: "Size"
+    options:
+      - value: "small"
+        label: "Small"
+      - value: "large"
+        label: "Large"

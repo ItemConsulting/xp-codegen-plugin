@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<content-type xmlns="urn:enonic:xp:model:1.0">
-  <display-name>No form</display-name>
-  <super-type>base:folder</super-type>
-</content-type>

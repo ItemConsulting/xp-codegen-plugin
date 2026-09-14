@@ -1,0 +1,9 @@
+kind: "FormFragment"
+title: "Jar link"
+form:
+  - type: "TextLine"
+    name: "url"
+    label: "Url"
+    occurrences:
+      min: 1
+      max: 1

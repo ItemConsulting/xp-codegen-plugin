@@ -1,0 +1,19 @@
+kind: "Part"
+title:
+  text: "Article view"
+  i18n: "articleView.displayName"
+description:
+  text: "Shows an article"
+  i18n: "articleView.description"
+form:
+  - type: "CheckBox"
+    name: "showDate"
+    label:
+      text: "Show date"
+      i18n: "articleView.showDate"
+
+  - type: "TextLine"
+    name: "heading"
+    label:
+      text: "Heading"
+      i18n: "articleView.heading"

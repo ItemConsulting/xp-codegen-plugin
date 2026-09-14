@@ -1,0 +1,9 @@
+# Invalid, since "config" is not nested in XP 8
+kind: "Part"
+title: "Article view"
+form:
+  - type: "TextLine"
+    name: "heading"
+    label: "Heading"
+    config:
+      maxLength: 10

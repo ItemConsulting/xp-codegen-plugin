@@ -1,0 +1,9 @@
+kind: "Macro"
+title: "Jar macro"
+form:
+  - type: "Double"
+    name: "count"
+    label: "Count"
+    occurrences:
+      min: 1
+      max: 1

@@ -1,0 +1,7 @@
+kind: "ContentType"
+title: "Article in jar (should be ignored, since the project has a file with the same path)"
+superType: "base:structured"
+form:
+  - type: "TextLine"
+    name: "fieldFromJar"
+    label: "Field from jar"

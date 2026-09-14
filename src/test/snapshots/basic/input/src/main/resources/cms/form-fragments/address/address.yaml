@@ -1,0 +1,13 @@
+kind: "FormFragment"
+title: "Address"
+form:
+  - type: "TextLine"
+    name: "street"
+    label: "Street"
+
+  - type: "TextLine"
+    name: "postalCode"
+    label: "Postal code"
+    regexp: '^\d{4}$'
+
+  - include: "link"

@@ -1,0 +1,11 @@
+kind: "FormFragment"
+title: "Link list"
+form:
+  - type: "ItemSet"
+    name: "links"
+    label: "Links"
+    occurrences:
+      min: 0
+      max: 0
+    items:
+      - include: "link"

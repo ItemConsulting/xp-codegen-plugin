@@ -1,0 +1,68 @@
+kind: "ContentType"
+title: "Form fragment usage"
+superType: "base:structured"
+form:
+  - type: "TextLine"
+    name: "title"
+    label: "Title"
+
+  # The fields are added to this object
+  - include: "address"
+
+  # Missing form fragments are ignored
+  - type: "FormFragment"
+    name: "missing-fragment"
+
+  # The type is imported, since the form fragment is the only item
+  - type: "ItemSet"
+    name: "links"
+    label: "Links"
+    occurrences:
+      min: 0
+      max: 0
+    items:
+      - include: "link"
+
+  # The fields are inlined, since there are other items
+  - type: "ItemSet"
+    name: "titledLink"
+    label: "Titled link"
+    items:
+      - type: "TextLine"
+        name: "linkTitle"
+        label: "Link title"
+      - include: "link"
+
+  - type: "ItemSet"
+    name: "missingFragmentOnly"
+    label: "Missing form fragment only"
+    items:
+      - include: "missing-fragment"
+
+  - type: "OptionSet"
+    name: "linkType"
+    label: "Link type"
+    selection:
+      min: 1
+      max: 1
+    options:
+      - name: "internal"
+        label: "Internal"
+        items:
+          - include: "link"
+      - name: "list"
+        label: "List"
+        items:
+          - include: "link-list"
+
+  - type: "OptionSet"
+    name: "linkTypes"
+    label: "Link types"
+    selection:
+      min: 0
+      max: 2
+    options:
+      - name: "internal"
+        label: "Internal"
+        items:
+          - include: "link"

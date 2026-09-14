@@ -1,0 +1,6 @@
+kind: "Task"
+description: "Jar task"
+form:
+  - type: "CheckBox"
+    name: "dryRun"
+    label: "Dry run"

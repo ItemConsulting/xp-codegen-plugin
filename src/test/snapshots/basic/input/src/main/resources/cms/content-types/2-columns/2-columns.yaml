@@ -1,0 +1,4 @@
+kind: "ContentType"
+title: "Name starting with a digit"
+superType: "base:structured"
+form: []

@@ -1,0 +1,17 @@
+kind: "ContentType"
+title: "Article (local file is used instead of the file in the jar)"
+superType: "base:structured"
+form:
+  - type: "TextLine"
+    name: "title"
+    label: "Title"
+
+  # Form fragment from the jar
+  - type: "ItemSet"
+    name: "links"
+    label: "Links"
+    occurrences:
+      min: 0
+      max: 0
+    items:
+      - include: "jar-link"

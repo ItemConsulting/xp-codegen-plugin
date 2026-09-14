@@ -1,0 +1,9 @@
+kind: "Task"
+description: "Cleanup"
+form:
+  - type: "Long"
+    name: "olderThanDays"
+    label: "Older than days"
+    occurrences:
+      min: 1
+      max: 1

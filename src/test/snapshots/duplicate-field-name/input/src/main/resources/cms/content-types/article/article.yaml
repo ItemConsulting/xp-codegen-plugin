@@ -1,0 +1,9 @@
+kind: "ContentType"
+title: "Article"
+superType: "base:structured"
+form:
+  - type: "TextArea"
+    name: "intro"
+    label: "Intro"
+
+  - include: "intro"

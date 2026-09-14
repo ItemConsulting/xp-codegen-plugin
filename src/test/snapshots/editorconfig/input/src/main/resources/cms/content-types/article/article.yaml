@@ -1,0 +1,34 @@
+kind: "ContentType"
+title: "Article"
+superType: "base:structured"
+form:
+  - type: "TextLine"
+    name: "title"
+    label: "Title"
+    occurrences:
+      min: 1
+      max: 1
+
+  - type: "ItemSet"
+    name: "author"
+    label: "Author"
+    items:
+      - type: "TextLine"
+        name: "name"
+        label: "Name"
+
+  - type: "OptionSet"
+    name: "layout"
+    label: "Layout"
+    selection:
+      min: 1
+      max: 1
+    options:
+      - name: "wide"
+        label: "Wide"
+      - name: "columns"
+        label: "Columns"
+        items:
+          - type: "Long"
+            name: "count"
+            label: "Count"

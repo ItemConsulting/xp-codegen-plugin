@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<x-data xmlns="urn:enonic:xp:model:1.0">
-  <display-name>SEO</display-name>
-  <form>
-    <input name="metaDescription" type="TextArea">
-      <label>Meta description</label>
-    </input>
-  </form>
-</x-data>

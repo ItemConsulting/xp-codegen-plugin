@@ -1,0 +1,28 @@
+kind: "CMS"
+mixins:
+  - name: "seo"
+    optional: true
+form:
+  - type: "TextLine"
+    name: "googleAnalyticsId"
+    label:
+      text: "Google Analytics id"
+      i18n: "site.googleAnalyticsId"
+    occurrences:
+      min: 0
+      max: 1
+
+  - type: "OptionSet"
+    name: "footerLink"
+    label: "Footer link"
+    occurrences:
+      min: 0
+      max: 1
+    selection:
+      min: 1
+      max: 1
+    options:
+      - name: "link"
+        label: "Link"
+        items:
+          - include: "link"

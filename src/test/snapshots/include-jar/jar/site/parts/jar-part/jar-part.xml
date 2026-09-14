@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<part xmlns="urn:enonic:xp:model:1.0">
-  <display-name>Jar part</display-name>
-  <form>
-    <input name="count" type="Long">
-      <label>Count</label>
-    </input>
-  </form>
-</part>

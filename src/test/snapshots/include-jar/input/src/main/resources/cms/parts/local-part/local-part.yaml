@@ -1,0 +1,6 @@
+kind: "Part"
+title: "Local part"
+form:
+  - type: "TextLine"
+    name: "heading"
+    label: "Heading"

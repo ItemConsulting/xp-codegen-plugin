@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<part xmlns="urn:enonic:xp:model:1.0">
-  <display-name>Local part</display-name>
-  <form>
-    <input name="heading" type="TextLine">
-      <label>Heading</label>
-    </input>
-  </form>
-</part>

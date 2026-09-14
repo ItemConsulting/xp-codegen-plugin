@@ -1,0 +1,6 @@
+kind: "Part"
+title: "Jar part"
+form:
+  - type: "Long"
+    name: "count"
+    label: "Count"

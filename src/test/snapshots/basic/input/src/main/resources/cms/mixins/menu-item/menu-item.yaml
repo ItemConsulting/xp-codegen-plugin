@@ -1,0 +1,10 @@
+kind: "Mixin"
+title: "Menu item"
+form:
+  - type: "TextLine"
+    name: "menuName"
+    label: "Menu name"
+
+  - type: "CheckBox"
+    name: "showInMenu"
+    label: "Show in menu"

@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<layout xmlns="urn:enonic:xp:model:1.0">
-  <display-name>Jar layout</display-name>
-  <form/>
-  <regions>
-    <region name="main"/>
-  </regions>
-</layout>

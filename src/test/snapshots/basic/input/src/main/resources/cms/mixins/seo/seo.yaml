@@ -1,0 +1,6 @@
+kind: "Mixin"
+title: "SEO"
+form:
+  - type: "TextArea"
+    name: "metaDescription"
+    label: "Meta description"

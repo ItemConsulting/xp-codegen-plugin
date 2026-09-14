@@ -1,0 +1,8 @@
+kind: "FormFragment"
+title: "First"
+form:
+  - type: "TextLine"
+    name: "first"
+    label: "First"
+
+  - include: "second"

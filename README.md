@@ -2,65 +2,75 @@
 
 ![build-test](https://github.com/ItemConsulting/xp-codegen-plugin/workflows/build-test/badge.svg?branch=main) [![PluginVersion](https://img.shields.io/maven-metadata/v.svg?label=gradle&metadataUrl=https://plugins.gradle.org/m2/no/item/xp/codegen/no.item.xp.codegen.gradle.plugin/maven-metadata.xml)](https://plugins.gradle.org/plugin/no.item.xp.codegen)
 
-This is Gradle plugin for *Enonic XP 7 projects*. It requires at least **Gradle 8.13**.
+This is a Gradle plugin for *Enonic XP 8 projects*. It requires at least **Gradle 9** running on **Java 25**.
 
-The plugin parses the Enonic projects XML-files, and generates **TypeScript interfaces** that can be used in your 
+> **Note**
+> Version 3 of the plugin only supports Enonic XP 8. Use version 2 of the plugin for Enonic XP 7 projects.
+
+The plugin parses the YAML descriptors of the project, and generates **TypeScript types** that can be used in your
 server- or client-side code.
 
-This creates a **tight coupling** between your configuration and your code. If you change an xml-file, the TypeScript
--files will be regenerated, and it will not compile until you have fixed your code.
+This creates a **tight coupling** between your configuration and your code. If you change a YAML file, the TypeScript
+files will be regenerated, and it will not compile until you have fixed your code.
 
-This plugin can create interfaces for:
+This plugin can create types for:
 
- - Content types
- - Pages
- - Parts
- - Site
- - Layout
- - Tasks
- - Macros
- - Id-provider
- - Mixins
- - X-data
+ - Content types (`cms/content-types`)
+ - Form fragments (`cms/form-fragments`)
+ - Mixins (`cms/mixins`)
+ - Pages (`cms/pages`)
+ - Parts (`cms/parts`)
+ - Layouts (`cms/layouts`)
+ - Macros (`cms/macros`)
+ - Site config (`cms/cms.yaml`)
+ - Tasks (`tasks`)
+ - Id provider (`idprovider/idprovider.yaml`)
+ - Admin tools (`admin/tools`)
+ - Admin extensions (`admin/extensions`)
+ - APIs (`apis`)
 
-The pluging includes in addition a feature to check that the xml elements marked with the attribute "i18n" have been translated in the file \src\main\resources\i18n\phrases.properties. Any element marked with "i18n" missing in the phrases.properties will be written in a temporory file in the same directory as phrases.properties named phrases.tmp.properties. The purpose is to make it easy for you to copy and paste entries from phrases.tmp.properties to phrases.properties and translate them. This feature is implemented as a gradle task called "checkTranslation" that is built-in this plugin.
- 
- ## Usage
+Descriptors in jars in the `include` configuration are also used, unless the project has a descriptor with the same
+path.
 
-To get started add the following to your project's *build.gradle* file:  
- 
- ```groovy
+Every descriptor is validated against the official JSON schemas for Enonic XP 8 (from `com.enonic.xp:core-jsonschema`),
+and the build fails if a descriptor is invalid.
+
+## Usage
+
+To get started add the following to your project's *build.gradle* file:
+
+```groovy
 plugins {
-    id 'java'
-    id 'no.item.xp.codegen' version '2.8.0'
+  id 'com.enonic.xp.app'
+  id 'no.item.xp.codegen' version '3.0.0'
 }
 
 jar {
-    // Add this before your TypeScript build task
-    dependsOn += generateTypeScript
+  // Add this before your TypeScript build task
+  dependsOn += generateTypeScript
 }
 
-// Add dependency to webpack tasks too
-task serverWebpack( type: NodeTask, dependsOn: [ npmInstall, generateTypeScript ] ) {
+// Add dependency to npm tasks too
+tasks.register('npmBuild', NpmTask) {
+  dependsOn npmInstall, generateTypeScript
   ...
 }
- ```
+```
 
 ## Update *./tsconfig.json*
 
 By setting the `rootDirs` field in *tsconfig.json*, you can "overlay" the two directory structures over each other, and
-references to generated Types becomes very natural.
+references to generated types becomes very natural.
 
-E.g if you have a content type in 
-"**./resources/site/content-types/article/article.xml**", the generated TypeScript interface for that type can be imported
-from "**./resources/site/content-types/article**" (or alternatively from "**./resources/site/content-types**").
-
+E.g if you have a content type in "**./src/main/resources/cms/content-types/article/article.yaml**", the generated
+TypeScript type for that content type can be imported from "**./cms/content-types/article**" (or alternatively from
+"**./cms/content-types**").
 
 ```json
 {
   "compilerOptions": {
     ...
-      
+
     "rootDirs": [
       "./src/main/resources",
       "./.xp-codegen"
@@ -75,62 +85,62 @@ from "**./resources/site/content-types/article**" (or alternatively from "**./re
 
 ## Examples
 
-### Generating TypeScript interfaces
+### Generating TypeScript types
 
-Here is an example of how an xml-file can be parsed to create a TypeScript interface.
+Here is an example of how a YAML file is used to create a TypeScript type.
 
-We have created a content type for `Article` in the file **content-types/article/article.xml**:
+We have created a content type for `Article` in the file **cms/content-types/article/article.yaml**:
 
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<content-type>
-  <display-name>Article</display-name>
-  <super-type>base:structured</super-type>
-  <form>
-    <input name="title" type="TextLine">
-      <label>Title of the article</label>
-      <occurrences minimum="1" maximum="1"/>
-    </input>
+```yaml
+kind: "ContentType"
+title: "Article"
+superType: "base:structured"
+form:
+  - type: "TextLine"
+    name: "title"
+    label: "Title of the article"
+    occurrences:
+      min: 1
+      max: 1
 
-    <input name="body" type="HtmlArea">
-      <label>Main text body</label>
-      <occurrences minimum="0" maximum="1"/>
-    </input>
-  </form>
-</content-type>
+  - type: "HtmlArea"
+    name: "body"
+    label: "Main text body"
 ```
 
-We can then run the `./gradlew generateTypeScript` task, which will generate a new file in 
-**content-types/article/article.ts** with the following content:
+We can then run the `./gradlew generateTypeScript` task, which will generate a new file in
+**.xp-codegen/cms/content-types/article/index.d.ts** with the following content:
 
 ```typescript
 // WARNING: This file was automatically generated by "no.item.xp.codegen". You may lose your changes if you edit it.
-export interface Article {
-  /** 
+export type Article = {
+  /**
    * Title of the article
    */
   title: string;
- 
+
   /**
-   * Main text body 
+   * Main text body
    */
   body?: string;
-}
+};
 ```
 
 ### Configuration options
 
 The following configuration options can be used:
- 
+
   * *singleQuote* (`boolean`) – If `true` all `"` in output will be replaced with `'`.
   * *prependText* (`string`) – Code to prepend to all the generated code files. By default this is the WARNING-text.
+  * *declareGlobals* (`boolean`) – If `true` the parts, pages, layouts and mixins are added to the global interfaces
+    `XpPartMap`, `XpPageMap`, `XpLayoutMap` and `XpMixin`. The default is `false`, since `@enonic-types/core` 8 declares
+    these as type aliases that can't be extended.
 
 ```groovy
-jar {
-    dependsOn += generateTypeScript {
-      singleQuote = true
-      prependText = "// This is a different message"
-    }
+generateTypeScript {
+  singleQuote = true
+  prependText = "// This is a different message"
+  declareGlobals = true
 }
 ```
 
@@ -138,46 +148,61 @@ jar {
 > You can use `prependText` to give instructions to the e.g. the linter. If you add
 `/* eslint-disable prettier/prettier */` you can stop [eslint](https://eslint.org/) from processing the generated files.
 
-### Using the generated interfaces
+The `appName` property of the project (usually set in *gradle.properties*) is used as the key in the maps of content
+types, parts, pages, layouts and mixins.
 
-Here we can see an example of using generated interfaces it in a part specified in 
-**"./site/parts/article-view/article-view.xml"**.
+### Indentation
+
+The generated files are indented according to the `indent_style` and `indent_size` in the
+[.editorconfig](https://editorconfig.org/) files of the project. Without an *.editorconfig* file, two spaces are used.
+
+```ini
+[*.ts]
+indent_style = tab
+```
+
+### Maps of descriptors
+
+If the project has an `appName`, the index files of parts, pages, layouts and mixins export a map of the descriptors
+(`PartMap`, `PageMap`, `LayoutMap` and `MixinMap`), and the content types are added to the global
+`XP.ContentTypes` interface.
 
 ```typescript
-// We can import the generated Article interface from "./site/content-types/index.d.ts"
+// .xp-codegen/cms/parts/index.d.ts
+export type ArticleView = import("./article-view").ArticleView;
+
+export type PartMap = {
+  "com.myproject:article-view": ArticleView;
+};
+```
+
+### Using the generated types
+
+Here we can see an example of using the generated types in a part specified in
+**"./cms/parts/article-view/article-view.yaml"**.
+
+```typescript
+// We can import the generated Article type from "./cms/content-types/index.d.ts"
 import type { Article } from "../../content-types";
 // We can import the shape of the part config from "./index.d.ts"
 import type { ArticleView } from ".";
 // imports from XP libraries:
 import { getContent, getComponent } from "/lib/xp/portal";
-import { render } from "/lib/thymeleaf";
-import type { PartComponent } from "@enonic-types/core";
+import type { Content, PartComponent, Request, Response } from "@enonic-types/core";
 
-const view = resolve("article-view.html");
+type PartArticleView = PartComponent<"com.myproject:article-view", ArticleView>;
 
-type PartArticleView =  PartComponent<"com.myproject:article-view", ArticleView>;
-
-export function get(): XP.Response {
+export function GET(req: Request): Response {
   const content = getContent<Content<Article, "com.myproject:article">>();
   const part = getComponent<PartArticleView>();
 
   assertIsDefined(content);
   assertIsDefined(part);
-  
+
   return {
     status: 200,
-    body: render<ThymeleafParams>(view, {
-      title: content.displayName,
-      preface: content.data.preface,
-      backgroundColor: part.config.backgroundColor
-    }),
+    body: `<h1>${content.data.title}</h1>`,
   };
-}
-
-interface ThymeleafParams {
-  title: string;
-  preface: string | undefined;
-  backgroundColor: string;  
 }
 
 function assertIsDefined<T>(value: T): asserts value is NonNullable<T> {
@@ -186,10 +211,6 @@ function assertIsDefined<T>(value: T): asserts value is NonNullable<T> {
   }
 }
 ```
-
-### Generating phases to be translated
-We can then run the `./gradlew checkTranslation` task, it will generate the file \src\main\resources\i18n\phrases.tmp.properties which contains the phrases that are missing from the phrases.properties. It is then easy to translate and then copy and past those entries in the phrases.properties. 
-
 
 ## Development
 
@@ -203,14 +224,14 @@ To test this plugin locally you can run the following task to publish the plugin
 
 Then – in your Enonic-project – you can add the following to the top of your settings.gradle file to use the plugin:
 
- ```groovy
+```groovy
 pluginManagement {
-    repositories {
-        mavenLocal()
-        gradlePluginPortal()
-    }
+  repositories {
+    mavenLocal()
+    gradlePluginPortal()
+  }
 }
- ```
+```
 
 To use the plugin your can just run the following task:
 
@@ -232,10 +253,10 @@ You should always run `./gradlew ktlintFormat` before committing code to git!
 
 ### Snapshot tests
 
-The snapshot tests in *src/test/kotlin/no/item/xp/plugin/snapshots* run the plugin with Gradle TestKit on the projects in
-*src/test/snapshots/&lt;name&gt;/input*, and compare every generated file with the files in
-*src/test/snapshots/&lt;name&gt;/expected*. If *src/test/snapshots/&lt;name&gt;/jar* exists, it is added to the project as a jar in
-the `include` configuration.
+The snapshot tests in *src/test/kotlin/no/item/xp/codegen/snapshots* run the plugin with Gradle TestKit on the projects
+in *src/test/snapshots/&lt;name&gt;/input*, and compare every generated file with the files in
+*src/test/snapshots/&lt;name&gt;/expected*. If *src/test/snapshots/&lt;name&gt;/jar* exists, it is added to the project as a jar
+in the `include` configuration.
 
 When you change the generated code on purpose, you can replace the expected files with the current output, and review
 the changes with `git diff`:
@@ -244,9 +265,14 @@ the changes with `git diff`:
 ./gradlew test -PupdateSnapshots=true
 ```
 
+### JSON schemas
+
+The JSON schemas for the descriptors are extracted from `com.enonic.xp:core-jsonschema` and bundled in the plugin. To
+use the schemas from a newer version of Enonic XP, update `xpVersion` in *build.gradle.kts*.
+
 ### Publishing to plugin portal
 
-To publish to the plugin portal, you first need to set up your local api-keys. Instrunctions can be found in the 
+To publish to the plugin portal, you first need to set up your local api-keys. Instructions can be found in the
 [plugin documentation](https://plugins.gradle.org/docs/submit).
 
 Then you can run the following to submit the plugin to the plugin portal:

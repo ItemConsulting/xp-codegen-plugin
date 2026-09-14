@@ -1,0 +1,17 @@
+kind: "Layout"
+title: "Two columns"
+form:
+  - type: "ComboBox"
+    name: "columnRatio"
+    label: "Column ratio"
+    occurrences:
+      min: 1
+      max: 1
+    options:
+      - value: "50-50"
+        label: "50/50"
+      - value: "30-70"
+        label: "30/70"
+regions:
+  - "left"
+  - "right"

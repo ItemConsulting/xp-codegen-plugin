@@ -1,0 +1,9 @@
+kind: "IdProvider"
+mode: "LOCAL"
+form:
+  - type: "TextLine"
+    name: "clientId"
+    label: "Client id"
+    occurrences:
+      min: 1
+      max: 1
