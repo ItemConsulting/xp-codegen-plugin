@@ -1,6 +1,8 @@
 package no.item.xp.plugin.phrases
 
 import no.item.xp.plugin.util.concatFileName
+import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.SourceTask
 import org.gradle.api.tasks.TaskAction
 import java.io.File
@@ -12,12 +14,15 @@ import java.util.*
 import javax.inject.Inject
 import javax.xml.stream.XMLInputFactory
 
-open class GenerateI18nPhrasesTask
+abstract class GenerateI18nPhrasesTask
   @Inject
   constructor() : SourceTask() {
+    @get:Internal
+    abstract val i18nDirectory: DirectoryProperty
+
     @TaskAction
     fun execute() {
-      val propertyDirectory = concatFileName(System.getProperty("user.dir"), "src", "main", "resources", "i18n")
+      val propertyDirectory = i18nDirectory.get().asFile.absolutePath
       val destinationFilePath = concatFileName(propertyDirectory, "phrases.tmp.properties")
       val destFile = File(destinationFilePath)
 
@@ -37,7 +42,7 @@ open class GenerateI18nPhrasesTask
           existingProps.load(input)
         }
       } catch (ex: IOException) {
-        logger.error("Error loading translated phrases from $propertyDirectory", ex)
+        logger.info("Could not load translated phrases from $propertyDirectory", ex)
       }
 
       val phrases =
@@ -88,15 +93,15 @@ open class GenerateI18nPhrasesTask
 
         // write the properties to the same file with the untranslated phrases appended
         try {
+          Files.createDirectories(Path.of(destinationFilePath).parent)
           Files.newOutputStream(Path.of(destinationFilePath)).use { output ->
             // load a properties file
             prop.store(output, null)
           }
+          logger.lifecycle("Wrote ${prop.size} entries to ${Path.of(destinationFilePath).toUri()}")
         } catch (ex: IOException) {
           logger.error("Error writing phrases.tmp.properties with the untranslated text", ex)
         }
       }
-
-      logger.lifecycle("Wrote ${prop.size} entries to ${Path.of(destinationFilePath).toUri()}")
     }
   }

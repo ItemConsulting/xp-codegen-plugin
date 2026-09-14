@@ -1,13 +1,14 @@
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
 
-val kotlinVersion: String = "2.1.20"
+val kotlinVersion: String = "2.4.20"
 
 plugins {
   `java-gradle-plugin`
   `maven-publish`
-  id("com.gradle.plugin-publish") version "1.3.1"
-  id("org.jetbrains.kotlin.jvm") version "2.1.20"
-  id("org.jlleitschuh.gradle.ktlint") version "12.2.0"
+  id("com.gradle.plugin-publish") version "2.2.1"
+  id("org.jetbrains.kotlin.jvm") version "2.4.20"
+  id("org.jlleitschuh.gradle.ktlint") version "14.2.0"
 }
 
 group = "no.item.xp.plugin"
@@ -15,6 +16,11 @@ version = "2.7.0"
 
 kotlin {
   jvmToolchain(11)
+  compilerOptions {
+    // Gradle 8.13 embeds Kotlin 2.0.21, which can only read metadata up to 2.1
+    languageVersion.set(KotlinVersion.KOTLIN_2_1)
+    apiVersion.set(KotlinVersion.KOTLIN_2_0)
+  }
 }
 
 java {
@@ -30,8 +36,8 @@ repositories {
 dependencies {
   implementation(platform("org.jetbrains.kotlin:kotlin-bom:$kotlinVersion"))
   implementation("org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion")
-  implementation("io.arrow-kt:arrow-core:2.0.1")
-  testImplementation("org.junit.jupiter:junit-jupiter:5.12.1")
+  implementation("io.arrow-kt:arrow-core:2.2.3")
+  testImplementation("org.junit.jupiter:junit-jupiter:5.14.4")
   testImplementation("org.jetbrains.kotlin:kotlin-test")
   testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 }

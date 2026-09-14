@@ -28,6 +28,7 @@ abstract class GenerateCodePlugin : Plugin<Project> {
 
     project.tasks.register("generateI18nPhrases", GenerateI18nPhrasesTask::class.java) {
       it.source(files)
+      it.i18nDirectory.set(project.layout.projectDirectory.dir("src/main/resources/i18n"))
       it.group = "xp"
       it.description = "Find all untranslated keys in XMl files and writes them into phrases.tmp.properties"
     }
