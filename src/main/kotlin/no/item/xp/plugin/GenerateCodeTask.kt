@@ -100,7 +100,7 @@ open class GenerateCodeTask
         }
       }
 
-      createContentTypeIndexFile(rootOutputDir, appName)
+      createContentTypeIndexFile(rootOutputDir, appName, xmlFilesInJars)
 
       createComponentIndexFile(rootOutputDir, appName, "parts", xmlFilesInJars, singleQuote, "XpPartMap")
       createComponentIndexFile(rootOutputDir, appName, "layouts", xmlFilesInJars, singleQuote, "XpLayoutMap")
@@ -149,16 +149,23 @@ open class GenerateCodeTask
     private fun createContentTypeIndexFile(
       rootOutputDir: File,
       appName: String?,
+      xmlFilesInJars: List<XmlFileInJar>,
     ) {
-      val files =
-        inputFiles.files.filter {
-          it.absolutePath.contains(
-            concatFileName("resources", "site", "content-types"),
-          )
-        }.sortedBy { it.name }
+      val xmlFiles =
+        inputFiles.files
+          .filter { it.absolutePath.contains(concatFileName("resources", "site", "content-types")) }
+          .map { it.nameWithoutExtension }
 
-      if (files.isNotEmpty()) {
-        val fileContent = renderGlobalContentTypeMap(files, appName)
+      val filesInJar =
+        xmlFilesInJars
+          // ZipEntry.name has UNIX style path. See 4.4.17.1 of the zip file spec.
+          .filter { it.entry.name.startsWith("site/content-types/") }
+          .map { it.nameWithoutExtension }
+
+      val names = (xmlFiles + filesInJar).sorted().distinct()
+
+      if (names.isNotEmpty()) {
+        val fileContent = renderGlobalContentTypeMap(names, appName)
         val targetFile = File(concatFileName(rootOutputDir.absolutePath, "site", "content-types", "index.d.ts"))
         writeTargetFile(targetFile, fileContent, prependText, singleQuote)
         logger.lifecycle("Updated file: ${Path.of(targetFile.toURI()).toUri()}")

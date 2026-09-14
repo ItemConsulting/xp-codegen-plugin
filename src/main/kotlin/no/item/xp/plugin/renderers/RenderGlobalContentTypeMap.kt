@@ -1,21 +1,18 @@
 package no.item.xp.plugin.renderers
 
 import no.item.xp.plugin.renderers.ts.getTypeName
-import java.io.File
 
 fun renderGlobalContentTypeMap(
-  files: List<File>,
+  names: List<String>,
   appName: String?,
 ): String {
   val importList =
-    files.joinToString("\n") {
-      """export type ${getTypeName(
-        it.nameWithoutExtension,
-      )} = import("./${it.nameWithoutExtension}").${getTypeName(it.nameWithoutExtension)};"""
+    names.joinToString("\n") { name ->
+      """export type ${getTypeName(name)} = import("./$name").${getTypeName(name)};"""
     }
   val fieldList =
-    files.joinToString("\n") {
-      """      "$appName:${it.nameWithoutExtension}": ${getTypeName(it.nameWithoutExtension)};"""
+    names.joinToString("\n") { name ->
+      """      "$appName:$name": ${getTypeName(name)};"""
     }
 
   return if (appName == null) {
