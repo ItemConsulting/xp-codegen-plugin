@@ -5,9 +5,12 @@ import arrow.core.right
 import no.item.xp.plugin.extensions.getFormNode
 import no.item.xp.plugin.models.ObjectTypeModel
 import no.item.xp.plugin.parser.parseObjectTypeModel
+import no.item.xp.plugin.parser.toMacroModel
 import no.item.xp.plugin.renderers.renderSiteConfig
 import no.item.xp.plugin.renderers.ts.renderTypeModelAsTypeScript
+import no.item.xp.plugin.util.IS_MACRO
 import no.item.xp.plugin.util.concatFileName
+import no.item.xp.plugin.util.normalizeFilePath
 import no.item.xp.plugin.util.parseXml
 import no.item.xp.plugin.util.simpleFilePath
 import no.item.xp.plugin.util.writeTargetFile
@@ -60,10 +63,13 @@ abstract class GenerateTypeScriptWorkAction : WorkAction<CodegenWorkParameters> 
           },
           {
             val fileContent =
-              if (file.absolutePath.endsWith(concatFileName("resources", "site", "site.xml"))) {
-                renderSiteConfig(it, mixinsImportPath)
-              } else {
-                renderTypeModelAsTypeScript(it, mixinsImportPath)
+              when {
+                file.absolutePath.endsWith(concatFileName("resources", "site", "site.xml")) ->
+                  renderSiteConfig(it, mixinsImportPath)
+                IS_MACRO.matches(normalizeFilePath(file)) ->
+                  renderTypeModelAsTypeScript(toMacroModel(it), mixinsImportPath)
+                else ->
+                  renderTypeModelAsTypeScript(it, mixinsImportPath)
               }
 
             writeTargetFile(targetFile, fileContent, parameters.getPrependText().get(), parameters.getSingleQuote().get())

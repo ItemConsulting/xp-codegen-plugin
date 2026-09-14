@@ -7,6 +7,7 @@ import no.item.xp.plugin.extensions.getFormNode
 import no.item.xp.plugin.models.ObjectTypeModel
 import no.item.xp.plugin.parser.parseObjectTypeModel
 import no.item.xp.plugin.parser.resolveMixinGraph
+import no.item.xp.plugin.parser.toMacroModel
 import no.item.xp.plugin.renderers.renderGlobalComponentMap
 import no.item.xp.plugin.renderers.renderGlobalContentTypeMap
 import no.item.xp.plugin.renderers.renderGlobalXDataMap
@@ -138,7 +139,8 @@ open class GenerateCodeTask
             val indexFilePath = Paths.get(targetFilePath.parent.toString(), "index.d.ts")
             val targetFile = File(indexFilePath.toUri())
 
-            val fileContent = renderTypeModelAsTypeScript(right, resolveMixinsImportPath(targetFile, rootOutputDir))
+            val model = if (IS_MACRO.matches(fileInJar.entry.name)) toMacroModel(right) else right
+            val fileContent = renderTypeModelAsTypeScript(model, resolveMixinsImportPath(targetFile, rootOutputDir))
 
             writeTargetFile(targetFile, fileContent, prependText, singleQuote)
             logger.lifecycle("Updated file: ${Path.of(targetFile.toURI()).toUri()}")

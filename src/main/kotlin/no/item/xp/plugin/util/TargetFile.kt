@@ -7,6 +7,7 @@ val IS_XDATA = "^.*site/x-data.*\$".toRegex(RegexOption.IGNORE_CASE)
 val IS_MIXIN = "^.*site/mixins.*\$".toRegex(RegexOption.IGNORE_CASE)
 val IS_PART = "^.*site/parts.*\$".toRegex(RegexOption.IGNORE_CASE)
 val IS_PAGE = "^.*site/pages.*\$".toRegex(RegexOption.IGNORE_CASE)
+val IS_MACRO = "^.*site/macros.*\$".toRegex(RegexOption.IGNORE_CASE)
 
 fun writeTargetFile(
   targetFile: File,
