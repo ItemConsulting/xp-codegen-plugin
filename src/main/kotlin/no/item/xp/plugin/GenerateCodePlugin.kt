@@ -1,6 +1,7 @@
 package no.item.xp.plugin
 
 import no.item.xp.plugin.phrases.GenerateI18nPhrasesTask
+import no.item.xp.plugin.util.IGNORED_XML_FILE_NAMES
 import no.item.xp.plugin.util.getTargetFile
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -14,7 +15,7 @@ abstract class GenerateCodePlugin : Plugin<Project> {
       javaExt.sourceSets
         .getAt("main")
         .resources
-        .filter { it.extension == "xml" && it.name != "application.xml" && it.name != "styles.xml" }
+        .filter { it.extension == "xml" && it.name !in IGNORED_XML_FILE_NAMES }
         .files
 
     val targetDir = File(project.rootDir.absolutePath + File.separator + ".xp-codegen")
