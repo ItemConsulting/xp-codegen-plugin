@@ -10,7 +10,7 @@ plugins {
   id("org.jlleitschuh.gradle.ktlint") version "14.2.0"
 }
 
-group = "no.item.xp.plugin"
+group = "no.item.xp.codegen"
 version = "3.0.0-SNAPSHOT"
 
 // The version of Enonic XP that the JSON schemas for the descriptors are taken from
