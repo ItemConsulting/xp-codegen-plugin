@@ -10,10 +10,13 @@ fun parseItemSet(
   mixins: List<ObjectTypeModel>,
 ): ObjectField? {
   val unknownField = parseUnknownField(itemSetNode)
+  val itemsNode = itemSetNode.getChildNodeAtXPath("items")
 
   val subFields =
-    itemSetNode.getChildNodeAtXPath("items")
+    itemsNode
       ?.let { parseFields(it, mixins).getOrNull() } ?: emptyList()
 
-  return unknownField?.let { ObjectField(it, subFields) }
+  val mixinName = itemsNode?.let { findSingleMixinName(it, mixins) }
+
+  return unknownField?.let { ObjectField(it, subFields, mixinName) }
 }

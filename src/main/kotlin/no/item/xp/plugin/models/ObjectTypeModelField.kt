@@ -92,11 +92,14 @@ data class ObjectField(
   override val isNullable: Boolean,
   override val isArray: Boolean,
   val fields: List<ObjectTypeModelField>,
+  // Name of the mixin, if it is the only form field. The type will then be imported instead of inlined.
+  val mixinName: String? = null,
 ) : ObjectTypeModelField() {
   constructor(
     field: ObjectTypeModelField,
     fields: List<ObjectTypeModelField>,
-  ) : this(field.name, field.comment, field.isNullable, field.isArray, fields)
+    mixinName: String? = null,
+  ) : this(field.name, field.comment, field.isNullable, field.isArray, fields, mixinName)
 }
 
 data class UnknownField(

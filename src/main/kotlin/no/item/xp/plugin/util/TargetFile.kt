@@ -52,6 +52,20 @@ fun getTargetFile(
   return File(getTargetDirectory(inputFile, rootDir), "index.d.ts")
 }
 
+/**
+ * Returns the relative import path from the directory of [targetFile] to the generated mixins in [rootDir]
+ */
+fun resolveMixinsImportPath(
+  targetFile: File,
+  rootDir: File,
+): String {
+  val mixinsDir = File(rootDir.absoluteFile, concatFileName("site", "mixins")).toPath()
+  val targetDir = targetFile.absoluteFile.parentFile.toPath()
+  val relativePath = normalizeFilePath(targetDir.relativize(mixinsDir).toString())
+
+  return if (relativePath.startsWith(".")) relativePath else "./$relativePath"
+}
+
 fun simpleFilePath(file: File): String = file.canonicalPath.substringAfter("""resources${File.separatorChar}""")
 
 fun normalizeFilePath(filePath: String): String = filePath.replace(File.separatorChar, '/')

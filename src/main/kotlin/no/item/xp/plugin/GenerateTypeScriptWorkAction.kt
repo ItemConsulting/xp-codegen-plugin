@@ -26,6 +26,8 @@ interface CodegenWorkParameters : WorkParameters {
 
   fun getMixins(): ListProperty<ObjectTypeModel>
 
+  fun getMixinsImportPath(): Property<String>
+
   fun getPrependText(): Property<String>
 
   fun getSingleQuote(): Property<Boolean>
@@ -39,6 +41,7 @@ abstract class GenerateTypeScriptWorkAction : WorkAction<CodegenWorkParameters> 
       val file = parameters.getXmlFile().get().asFile
       val targetFile = parameters.getTargetFile().get().asFile
       val mixins = parameters.getMixins().get()
+      val mixinsImportPath = parameters.getMixinsImportPath().get()
 
       parseXml(file.inputStream())
         .flatMap { doc -> doc.getFormNode() }
@@ -58,9 +61,9 @@ abstract class GenerateTypeScriptWorkAction : WorkAction<CodegenWorkParameters> 
           {
             val fileContent =
               if (file.absolutePath.endsWith(concatFileName("resources", "site", "site.xml"))) {
-                renderSiteConfig(it)
+                renderSiteConfig(it, mixinsImportPath)
               } else {
-                renderTypeModelAsTypeScript(it)
+                renderTypeModelAsTypeScript(it, mixinsImportPath)
               }
 
             writeTargetFile(targetFile, fileContent, parameters.getPrependText().get(), parameters.getSingleQuote().get())

@@ -39,5 +39,7 @@ private fun parseOptionSetFieldOption(
     itemsNode
       ?.let { parseFields(it, mixins).getOrNull() } ?: emptyList()
 
-  return ObjectField(optionNode.getNodeAttribute("name")!!, optionComment, true, false, fields)
+  val mixinName = itemsNode?.let { findSingleMixinName(it, mixins) }
+
+  return ObjectField(optionNode.getNodeAttribute("name")!!, optionComment, true, false, fields, mixinName)
 }
