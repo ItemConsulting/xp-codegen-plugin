@@ -2,7 +2,7 @@
 
 ![build-test](https://github.com/ItemConsulting/xp-codegen-plugin/workflows/build-test/badge.svg?branch=main) [![PluginVersion](https://img.shields.io/maven-metadata/v.svg?label=gradle&metadataUrl=https://plugins.gradle.org/m2/no/item/xp/codegen/no.item.xp.codegen.gradle.plugin/maven-metadata.xml)](https://plugins.gradle.org/plugin/no.item.xp.codegen)
 
-This is Gradle plugin for *Enonic XP 7 projects*. It requires at least **Gradle 8.7**.
+This is Gradle plugin for *Enonic XP 7 projects*. It requires at least **Gradle 8.13**.
 
 The plugin parses the Enonic projects XML-files, and generates **TypeScript interfaces** that can be used in your 
 server- or client-side code.
@@ -32,7 +32,7 @@ To get started add the following to your project's *build.gradle* file:
  ```groovy
 plugins {
     id 'java'
-    id 'no.item.xp.codegen' version '2.7.0'
+    id 'no.item.xp.codegen' version '2.8.0'
 }
 
 jar {
