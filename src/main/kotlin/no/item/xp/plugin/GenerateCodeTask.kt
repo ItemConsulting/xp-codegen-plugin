@@ -93,6 +93,7 @@ open class GenerateCodeTask
             it.getXmlFile().set(change.file)
             it.getTargetFile().set(targetFile)
             it.getMixins().value(mixins)
+            it.getMixinsImportPath().value(resolveMixinsImportPath(targetFile, rootOutputDir))
             it.getSingleQuote().value(singleQuote)
             it.getPrependText().value(prependText)
           }
@@ -129,11 +130,11 @@ open class GenerateCodeTask
             logger.error(left.message)
           },
           { right ->
-            val fileContent = renderTypeModelAsTypeScript(right)
-
             val targetFilePath = Paths.get(rootOutputDir.absolutePath, fileInJar.entry.name)
             val indexFilePath = Paths.get(targetFilePath.parent.toString(), "index.d.ts")
             val targetFile = File(indexFilePath.toUri())
+
+            val fileContent = renderTypeModelAsTypeScript(right, resolveMixinsImportPath(targetFile, rootOutputDir))
 
             writeTargetFile(targetFile, fileContent, prependText, singleQuote)
             logger.lifecycle("Updated file: ${Path.of(targetFile.toURI()).toUri()}")

@@ -39,6 +39,7 @@ class RenderOptionSetFieldTest {
             ),
           ),
         ),
+        "../../mixins",
       )
 
     assertEquals(
@@ -119,6 +120,7 @@ class RenderOptionSetFieldTest {
             ),
           ),
         ),
+        "../../mixins",
       )
 
     assertEquals(
@@ -192,6 +194,7 @@ class RenderOptionSetFieldTest {
             ),
           ),
         ),
+        "../../mixins",
       )
 
     assertEquals(

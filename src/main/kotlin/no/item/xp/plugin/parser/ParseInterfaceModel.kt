@@ -58,6 +58,23 @@ private fun findMixinFields(
   return mixins.find { it.nameWithoutExtension == mixinName }?.fields ?: emptyList()
 }
 
+/**
+ * Returns the name of the mixin if it is the only form field in [itemsNode], and the mixin exists
+ */
+fun findSingleMixinName(
+  itemsNode: Node,
+  mixins: List<ObjectTypeModel>,
+): String? {
+  val mixinName =
+    itemsNode
+      .getChildNodesAtXPath(xpathInputType)
+      .singleOrNull()
+      ?.takeIf { it.nodeName == "mixin" }
+      ?.getNodeAttribute("name")
+
+  return mixinName?.takeIf { name -> mixins.any { it.nameWithoutExtension == name } }
+}
+
 fun parseConfigOptionValue(inputNode: Node): List<String> {
   return inputNode
     .getChildNodesAtXPath(getXpathExpressionFromString("config/option/@value"))

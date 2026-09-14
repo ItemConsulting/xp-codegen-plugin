@@ -14,6 +14,7 @@ import no.item.xp.plugin.models.UnknownField
 fun renderInterfaceModelField(
   field: ObjectTypeModelField,
   indent: Int,
+  mixinsImportPath: String,
 ): String {
   return when (field) {
     is StringField,
@@ -27,13 +28,18 @@ fun renderInterfaceModelField(
     is UnionOfStringLiteralField -> simpleFieldAsString(field, joinOptionList(field.optionList), indent)
     is OptionSetField ->
       if (field.isMultiSelect) {
-        renderOptionSetFieldMultiChoice(field, indent)
+        renderOptionSetFieldMultiChoice(field, indent, mixinsImportPath)
       } else {
-        renderOptionSetField(field, indent)
+        renderOptionSetField(field, indent, mixinsImportPath)
       }
-    is ObjectField -> renderObjectField(field, indent)
+    is ObjectField -> renderObjectField(field, indent, mixinsImportPath)
   }
 }
+
+fun renderMixinTypeReference(
+  mixinName: String,
+  mixinsImportPath: String,
+): String = "import(\"$mixinsImportPath/$mixinName\").${getTypeName(mixinName)}"
 
 private fun simpleFieldAsString(
   field: ObjectTypeModelField,

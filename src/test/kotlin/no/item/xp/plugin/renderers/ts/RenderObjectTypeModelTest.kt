@@ -19,6 +19,7 @@ class RenderObjectTypeModelTest {
             UnionOfStringLiteralField("favouriteColor", "Favourite color", false, false, listOf("red", "green", "blue")),
           ),
         ),
+        "../../mixins",
       )
 
     assertEquals(
