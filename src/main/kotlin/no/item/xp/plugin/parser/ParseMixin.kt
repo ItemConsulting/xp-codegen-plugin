@@ -3,6 +3,7 @@ package no.item.xp.plugin.parser
 import arrow.core.Either
 import arrow.core.flatMap
 import no.item.xp.plugin.CyclicDependenciesException
+import no.item.xp.plugin.DuplicateFieldNameException
 import no.item.xp.plugin.extensions.getChildNodesAtXPath
 import no.item.xp.plugin.extensions.getFormNode
 import no.item.xp.plugin.models.MixinDependencyModel
@@ -82,7 +83,11 @@ private fun walkMixinGraph(
         interfaceModel
       }
 
-  return parseObjectTypeModel(mixin.node, mixin.name, dependentOnMixins).getOrNull()
+  try {
+    return parseObjectTypeModel(mixin.node, mixin.name, dependentOnMixins).getOrNull()
+  } catch (e: DuplicateFieldNameException) {
+    throw e.withSource("site/mixins/${mixin.name}/${mixin.name}.xml")
+  }
 }
 
 fun parseMixinDependencyModel(
