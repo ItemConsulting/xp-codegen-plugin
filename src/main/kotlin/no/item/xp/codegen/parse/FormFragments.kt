@@ -1,9 +1,5 @@
 package no.item.xp.codegen.parse
 
-import arrow.core.Either
-import arrow.core.raise.Raise
-import arrow.core.raise.either
-import arrow.core.raise.ensure
 import no.item.xp.codegen.CodegenError
 import no.item.xp.codegen.CyclicFormFragments
 import no.item.xp.codegen.form.FormItem
@@ -16,44 +12,68 @@ data class FormFragmentDescriptor(
 )
 
 /**
- * Parses all the form fragments. Form fragments can include other form fragments, so they are parsed after the form
- * fragments they depend on. References to missing form fragments are ignored.
+ * The form fragments that could be resolved in [fragments]. [failed] has the names of the form fragments that are
+ * invalid, or include an invalid form fragment. [errors] only has the errors of the invalid form fragments themselves, so
+ * every error is reported once.
  */
-fun resolveFormFragments(descriptors: List<FormFragmentDescriptor>): Either<CodegenError, FormFragments> =
-  either {
-    val descriptorsByName = descriptors.associateBy { it.name }
+data class ResolvedFormFragments(
+  val fragments: FormFragments,
+  val failed: Set<String>,
+  val errors: List<CodegenError>,
+) {
+  internal fun withFailure(
+    name: String,
+    error: CodegenError? = null,
+  ) = copy(failed = failed + name, errors = errors + listOfNotNull(error))
+}
 
-    descriptors.fold(emptyMap()) { resolved, descriptor ->
-      resolveFormFragment(descriptor, descriptorsByName, resolved, emptyList())
-    }
+/**
+ * Parses all the form fragments. Form fragments can include other form fragments, so they are parsed after the form
+ * fragments they depend on. References to missing form fragments are ignored. An invalid form fragment doesn't stop the
+ * other form fragments from being resolved, so all the errors can be reported.
+ */
+fun resolveFormFragments(descriptors: List<FormFragmentDescriptor>): ResolvedFormFragments {
+  val descriptorsByName = descriptors.associateBy { it.name }
+
+  return descriptors.fold(ResolvedFormFragments(emptyMap(), emptySet(), emptyList())) { resolved, descriptor ->
+    resolveFormFragment(descriptor, descriptorsByName, resolved, emptyList())
   }
+}
 
-private fun Raise<CodegenError>.resolveFormFragment(
+private fun resolveFormFragment(
   descriptor: FormFragmentDescriptor,
   descriptorsByName: Map<String, FormFragmentDescriptor>,
-  resolved: FormFragments,
+  resolved: ResolvedFormFragments,
   visiting: List<String>,
-): FormFragments {
-  if (descriptor.name in resolved) {
+): ResolvedFormFragments {
+  if (descriptor.name in resolved.fragments || descriptor.name in resolved.failed) {
     return resolved
   }
 
-  ensure(descriptor.name !in visiting) {
-    CyclicFormFragments(visiting.dropWhile { it != descriptor.name } + descriptor.name)
+  if (descriptor.name in visiting) {
+    return resolved.withFailure(
+      descriptor.name,
+      CyclicFormFragments(visiting.dropWhile { it != descriptor.name } + descriptor.name),
+    )
   }
 
-  val resolvedWithDependencies =
+  val dependencies =
     findFragmentReferences(descriptor.items)
       .distinct()
       .mapNotNull { descriptorsByName[it] }
-      .fold(resolved) { acc, dependency ->
-        resolveFormFragment(dependency, descriptorsByName, acc, visiting + descriptor.name)
-      }
 
-  val model =
-    parseTypeModel(descriptor.name, descriptor.items, resolvedWithDependencies)
-      .mapLeft { it.withSource(descriptor.source) }
-      .bind()
+  val resolvedWithDependencies =
+    dependencies.fold(resolved) { acc, dependency ->
+      resolveFormFragment(dependency, descriptorsByName, acc, visiting + descriptor.name)
+    }
 
-  return resolvedWithDependencies + (descriptor.name to model)
+  // The error is already reported for the invalid dependency
+  if (dependencies.any { it.name in resolvedWithDependencies.failed }) {
+    return resolvedWithDependencies.withFailure(descriptor.name)
+  }
+
+  return parseTypeModel(descriptor.name, descriptor.items, resolvedWithDependencies.fragments).fold(
+    { resolvedWithDependencies.withFailure(descriptor.name, it.withSource(descriptor.source)) },
+    { resolvedWithDependencies.copy(fragments = resolvedWithDependencies.fragments + (descriptor.name to it)) },
+  )
 }

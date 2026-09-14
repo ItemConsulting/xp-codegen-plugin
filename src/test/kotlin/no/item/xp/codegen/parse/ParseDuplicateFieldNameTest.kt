@@ -123,7 +123,7 @@ class ParseDuplicateFieldNameTest {
 
     assertEquals(
       "Duplicate field name \"intro\" in \"cms/form-fragments/aa/aa.yaml\". A field name can only be used once in the same object.",
-      resolveFormFragments(descriptors).leftOrNull()?.message,
+      resolveFormFragments(descriptors).errors.single().message,
     )
   }
 }

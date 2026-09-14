@@ -38,7 +38,8 @@ data class JarDescriptorSource(
 
 /**
  * Returns the descriptors in [resourceFiles] (relative path to file) and [jars], sorted by path. A descriptor in the
- * project replaces a descriptor with the same path in a jar.
+ * project replaces a descriptor with the same path in a jar. If several jars have a descriptor with the same path, the
+ * descriptor in the first of them is used, like on a classpath.
  */
 fun collectDescriptorSources(
   resourceFiles: Map<String, File>,
@@ -54,7 +55,8 @@ fun collectDescriptorSources(
   val jarSources =
     jars
       .filter { it.isFile && it.extension == "jar" }
-      .distinctBy { it.name }
+      // Jars from different modules can have the same file name, so only the same file is removed
+      .distinctBy { it.canonicalFile }
       .flatMap { jar ->
         JarFile(jar).use { jarFile ->
           jarFile
@@ -66,6 +68,7 @@ fun collectDescriptorSources(
             .toList()
         }
       }.filterNot { it.relativePath.substringBeforeLast('.') in localPaths }
+      .distinctBy { it.relativePath.substringBeforeLast('.') }
 
   return (fileSources + jarSources).sortedBy { it.relativePath }
 }

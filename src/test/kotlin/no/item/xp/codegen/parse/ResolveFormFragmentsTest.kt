@@ -1,6 +1,7 @@
 package no.item.xp.codegen.parse
 
 import no.item.xp.codegen.CyclicFormFragments
+import no.item.xp.codegen.DuplicateFieldNames
 import no.item.xp.codegen.formItems
 import no.item.xp.codegen.model.StringField
 import no.item.xp.codegen.model.TypeModel
@@ -88,7 +89,7 @@ class ResolveFormFragmentsTest {
             ),
           ),
       ),
-      resolveFormFragments(descriptors).getOrNull(),
+      resolveFormFragments(descriptors).fragments,
     )
   }
 
@@ -110,7 +111,7 @@ class ResolveFormFragmentsTest {
 
     assertEquals(
       mapOf("aa" to TypeModel("aa", listOf(StringField("title", null, true, false)))),
-      resolveFormFragments(descriptors).getOrNull(),
+      resolveFormFragments(descriptors).fragments,
     )
   }
 
@@ -139,9 +140,72 @@ class ResolveFormFragmentsTest {
         ),
       )
 
-    val error = resolveFormFragments(descriptors).leftOrNull()
+    val resolved = resolveFormFragments(descriptors)
 
-    assertEquals(CyclicFormFragments(listOf("first", "second", "first")), error)
-    assertEquals("Form fragments have cyclic dependencies and cannot be resolved: first -> second -> first", error?.message)
+    // The cycle is only reported once, even if both form fragments are in it
+    assertEquals(listOf(CyclicFormFragments(listOf("first", "second", "first"))), resolved.errors)
+    assertEquals(
+      "Form fragments have cyclic dependencies and cannot be resolved: first -> second -> first",
+      resolved.errors.single().message,
+    )
+    assertEquals(setOf("first", "second"), resolved.failed)
+  }
+
+  @Test
+  fun `report all invalid form fragments and resolve the valid ones`() {
+    val descriptors =
+      listOf(
+        descriptor(
+          "dependent",
+          // language=YAML
+          """
+          form:
+            - include: "invalid-a"
+          """,
+        ),
+        descriptor(
+          "invalid-a",
+          // language=YAML
+          """
+          form:
+            - type: "TextLine"
+              name: "title"
+            - type: "TextArea"
+              name: "title"
+          """,
+        ),
+        descriptor(
+          "invalid-b",
+          // language=YAML
+          """
+          form:
+            - type: "TextLine"
+              name: "name"
+            - type: "TextLine"
+              name: "name"
+          """,
+        ),
+        descriptor(
+          "valid",
+          // language=YAML
+          """
+          form:
+            - type: "TextLine"
+              name: "title"
+          """,
+        ),
+      )
+
+    val resolved = resolveFormFragments(descriptors)
+
+    assertEquals(
+      listOf(
+        DuplicateFieldNames(listOf("title"), "cms/form-fragments/invalid-a/invalid-a.yaml"),
+        DuplicateFieldNames(listOf("name"), "cms/form-fragments/invalid-b/invalid-b.yaml"),
+      ),
+      resolved.errors,
+    )
+    assertEquals(setOf("dependent", "invalid-a", "invalid-b"), resolved.failed)
+    assertEquals(mapOf("valid" to TypeModel("valid", listOf(StringField("title", null, true, false)))), resolved.fragments)
   }
 }

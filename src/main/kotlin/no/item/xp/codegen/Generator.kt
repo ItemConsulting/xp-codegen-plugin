@@ -3,8 +3,8 @@ package no.item.xp.codegen
 import arrow.core.Either
 import arrow.core.NonEmptyList
 import arrow.core.mapOrAccumulate
-import arrow.core.nonEmptyListOf
 import arrow.core.raise.either
+import arrow.core.toNonEmptyListOrNull
 import no.item.xp.codegen.descriptor.DescriptorKind
 import no.item.xp.codegen.descriptor.DescriptorSource
 import no.item.xp.codegen.form.FormItem
@@ -66,15 +66,18 @@ fun generate(
           ParsedDescriptor(source, readForm(node))
         }.bind()
 
-    val fragments =
+    val resolvedFragments =
       resolveFormFragments(
         descriptors
           .filter { it.source.kind == DescriptorKind.FORM_FRAGMENT }
           .map { FormFragmentDescriptor(it.source.name, it.source.relativePath, it.items) },
-      ).mapLeft { nonEmptyListOf(it) }.bind()
+      )
+    val fragments = resolvedFragments.fragments
 
     val typeFiles =
       descriptors
+        // The errors of the invalid form fragments are already in resolvedFragments
+        .filterNot { it.source.kind == DescriptorKind.FORM_FRAGMENT && it.source.name in resolvedFragments.failed }
         .mapOrAccumulate { descriptor ->
           val model =
             parseTypeModel(descriptor.source.name, descriptor.items, fragments)
@@ -88,10 +91,12 @@ fun generate(
             DescriptorKind.MACRO -> GeneratedFile(path) { renderTypeModel(toMacroModel(model), fragmentsImportPath, it) }
             else -> GeneratedFile(path) { renderTypeModel(model, fragmentsImportPath, it) }
           }
-        }.bind()
+        }
+
+    (resolvedFragments.errors + typeFiles.leftOrNull().orEmpty()).toNonEmptyListOrNull()?.let { raise(it) }
 
     Generation(
-      files = typeFiles + createIndexFiles(descriptors, settings),
+      files = typeFiles.getOrNull().orEmpty() + createIndexFiles(descriptors, settings),
       warnings = findMissingFragmentWarnings(descriptors, fragments),
     )
   }
