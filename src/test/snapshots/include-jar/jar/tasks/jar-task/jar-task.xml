@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<task xmlns="urn:enonic:xp:model:1.0">
+  <description>Jar task</description>
+  <form>
+    <input name="dryRun" type="CheckBox">
+      <label>Dry run</label>
+    </input>
+  </form>
+</task>

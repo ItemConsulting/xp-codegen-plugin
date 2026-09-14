@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site xmlns="urn:enonic:xp:model:1.0">
+  <form>
+    <input name="googleAnalyticsId" type="TextLine">
+      <label i18n="site.googleAnalyticsId">Google Analytics id</label>
+      <occurrences minimum="0" maximum="1"/>
+    </input>
+
+    <option-set name="footerLink">
+      <label>Footer link</label>
+      <occurrences minimum="0" maximum="1"/>
+      <options minimum="1" maximum="1">
+        <option name="link">
+          <label>Link</label>
+          <items>
+            <mixin name="link"/>
+          </items>
+        </option>
+      </options>
+    </option-set>
+  </form>
+</site>

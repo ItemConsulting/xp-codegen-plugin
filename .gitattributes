@@ -4,3 +4,6 @@
 # These are explicitly windows files and should use crlf
 *.bat           text eol=crlf
 
+# Expected output of snapshot tests must be kept exactly as generated
+src/test/snapshots/**/expected/** -text
+

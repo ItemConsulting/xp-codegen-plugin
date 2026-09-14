@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mixin xmlns="urn:enonic:xp:model:1.0">
+  <display-name>Intro</display-name>
+  <form>
+    <input name="intro" type="TextArea">
+      <label>Intro</label>
+    </input>
+  </form>
+</mixin>

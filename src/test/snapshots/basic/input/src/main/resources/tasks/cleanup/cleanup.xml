@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<task xmlns="urn:enonic:xp:model:1.0">
+  <description>Cleanup</description>
+  <form>
+    <input name="olderThanDays" type="Long">
+      <label>Older than days</label>
+      <occurrences minimum="1" maximum="1"/>
+    </input>
+  </form>
+</task>

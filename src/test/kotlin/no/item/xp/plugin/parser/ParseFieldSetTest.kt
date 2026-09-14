@@ -32,11 +32,26 @@ class ParseFieldSetTest {
     val result = parseFieldSet(stringToXMLDocument(xml).getChildNodeAtXPath("field-set")!!, emptyList())
 
     assertEquals(
-      result,
       listOf(
         StringField("email", "Email", false, false),
         StringField("phoneNumber", "Phone", false, false),
       ),
+      result,
     )
+  }
+
+  @Test
+  fun `parse FieldSet without items`() {
+    // language=XML
+    val xml =
+      """
+        <field-set>
+          <label>Empty</label>
+        </field-set>
+        """
+
+    val result = parseFieldSet(stringToXMLDocument(xml).getChildNodeAtXPath("field-set")!!, emptyList())
+
+    assertEquals(emptyList(), result)
   }
 }

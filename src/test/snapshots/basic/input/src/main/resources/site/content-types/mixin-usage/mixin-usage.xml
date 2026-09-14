@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content-type xmlns="urn:enonic:xp:model:1.0">
+  <display-name>Mixin usage</display-name>
+  <super-type>base:structured</super-type>
+  <form>
+    <input name="title" type="TextLine">
+      <label>Title</label>
+    </input>
+
+    <!-- The fields are added to this object -->
+    <mixin name="address"/>
+
+    <!-- Missing mixins are ignored -->
+    <mixin name="missing-mixin"/>
+
+    <!-- The type is imported, since the mixin is the only field -->
+    <item-set name="links">
+      <label>Links</label>
+      <occurrences minimum="0" maximum="0"/>
+      <items>
+        <mixin name="link"/>
+      </items>
+    </item-set>
+
+    <!-- The fields are inlined, since there are other fields -->
+    <item-set name="titledLink">
+      <label>Titled link</label>
+      <items>
+        <input name="linkTitle" type="TextLine">
+          <label>Link title</label>
+        </input>
+        <mixin name="link"/>
+      </items>
+    </item-set>
+
+    <item-set name="missingMixinOnly">
+      <label>Missing mixin only</label>
+      <items>
+        <mixin name="missing-mixin"/>
+      </items>
+    </item-set>
+
+    <option-set name="linkType">
+      <label>Link type</label>
+      <options minimum="1" maximum="1">
+        <option name="internal">
+          <label>Internal</label>
+          <items>
+            <mixin name="link"/>
+          </items>
+        </option>
+        <option name="list">
+          <label>List</label>
+          <items>
+            <mixin name="link-list"/>
+          </items>
+        </option>
+      </options>
+    </option-set>
+
+    <option-set name="linkTypes">
+      <label>Link types</label>
+      <options minimum="0" maximum="2">
+        <option name="internal">
+          <label>Internal</label>
+          <items>
+            <mixin name="link"/>
+          </items>
+        </option>
+      </options>
+    </option-set>
+  </form>
+</content-type>

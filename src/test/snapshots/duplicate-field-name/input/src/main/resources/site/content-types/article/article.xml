@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content-type xmlns="urn:enonic:xp:model:1.0">
+  <display-name>Article</display-name>
+  <super-type>base:structured</super-type>
+  <form>
+    <input name="intro" type="TextArea">
+      <label>Intro</label>
+    </input>
+
+    <mixin name="intro"/>
+  </form>
+</content-type>

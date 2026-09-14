@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mixin xmlns="urn:enonic:xp:model:1.0">
+  <display-name>Link list</display-name>
+  <form>
+    <item-set name="links">
+      <label>Links</label>
+      <occurrences minimum="0" maximum="0"/>
+      <items>
+        <mixin name="link"/>
+      </items>
+    </item-set>
+  </form>
+</mixin>

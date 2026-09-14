@@ -73,7 +73,6 @@ class ParseMixinTest {
         .mapNotNull { parseMixin(it, mixinDependencies) }
 
     assertEquals(
-      result,
       listOf(
         ObjectTypeModel(
           "aa",
@@ -97,6 +96,29 @@ class ParseMixinTest {
           ),
         ),
       ),
+      result,
+    )
+  }
+
+  @Test
+  fun `ignore missing mixins`() {
+    // language=XML
+    val xml =
+      """
+      <mixin>
+        <form>
+          <input name="title" type="TextLine"/>
+          <mixin name="missing" />
+        </form>
+      </mixin>
+      """
+
+    val formNode = stringToXMLDocument(xml).getChildNodeAtXPath("mixin/form")!!
+    val mixinDependencies = listOf(parseMixinDependencyModel(formNode, "aa"))
+
+    assertEquals(
+      ObjectTypeModel("aa", listOf(StringField("title", null, true, false))),
+      parseMixin(mixinDependencies.first(), mixinDependencies),
     )
   }
 }

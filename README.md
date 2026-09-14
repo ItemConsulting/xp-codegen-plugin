@@ -230,6 +230,20 @@ To run the unit tests, linting and plugin verification in the project you can ru
 
 You should always run `./gradlew ktlintFormat` before committing code to git!
 
+### Snapshot tests
+
+The snapshot tests in *src/test/kotlin/no/item/xp/plugin/snapshots* run the plugin with Gradle TestKit on the projects in
+*src/test/snapshots/&lt;name&gt;/input*, and compare every generated file with the files in
+*src/test/snapshots/&lt;name&gt;/expected*. If *src/test/snapshots/&lt;name&gt;/jar* exists, it is added to the project as a jar in
+the `include` configuration.
+
+When you change the generated code on purpose, you can replace the expected files with the current output, and review
+the changes with `git diff`:
+
+```bash
+./gradlew test -PupdateSnapshots=true
+```
+
 ### Publishing to plugin portal
 
 To publish to the plugin portal, you first need to set up your local api-keys. Instrunctions can be found in the 

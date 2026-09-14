@@ -58,6 +58,13 @@ gradlePlugin {
 
 tasks.withType<Test>().configureEach {
   useJUnitPlatform()
+
+  // Snapshot tests compare the generated code with the files in this directory
+  val snapshotsDir = layout.projectDirectory.dir("src/test/snapshots")
+  inputs.dir(snapshotsDir).withPropertyName("snapshots")
+  systemProperty("snapshotsDir", snapshotsDir.asFile.absolutePath)
+  // Run "./gradlew test -PupdateSnapshots=true" to replace the expected files with the current output
+  systemProperty("updateSnapshots", providers.gradleProperty("updateSnapshots").getOrElse("false"))
 }
 
 tasks.withType<Javadoc>().all {

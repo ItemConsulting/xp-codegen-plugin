@@ -9,9 +9,9 @@ class JoinOptionListTest {
     val result = joinOptionList(listOf("option1", "option2", "option3"))
 
     assertEquals(
-      result,
       //language=TypeScript
       """"option1" | "option2" | "option3"""",
+      result,
     )
   }
 
@@ -20,9 +20,9 @@ class JoinOptionListTest {
     val result = joinOptionList(listOf("option1", "option1", "option2", "option3"))
 
     assertEquals(
-      result,
       //language=TypeScript
       """"option1" | "option2" | "option3"""",
+      result,
     )
   }
 }

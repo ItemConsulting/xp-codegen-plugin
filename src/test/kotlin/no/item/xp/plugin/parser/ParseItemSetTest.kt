@@ -34,7 +34,6 @@ class ParseItemSetTest {
     val result = parseItemSet(stringToXMLDocument(xml).getChildNodeAtXPath("item-set")!!, emptyList())
 
     assertEquals(
-      result,
       ObjectField(
         "contactInfo",
         "Contact Info",
@@ -45,6 +44,52 @@ class ParseItemSetTest {
           StringField("phoneNumber", "Phone Number", true, false),
         ),
       ),
+      result,
+    )
+  }
+
+  @Test
+  fun `parse nested ItemSet`() {
+    // language=XML
+    val xml =
+      """
+        <item-set name="contact">
+          <label>Contact</label>
+          <occurrences minimum="1" maximum="1"/>
+          <items>
+            <item-set name="phoneNumbers">
+              <label>Phone numbers</label>
+              <occurrences minimum="0" maximum="0"/>
+              <items>
+                <input name="number" type="TextLine">
+                  <label>Number</label>
+                  <occurrences minimum="1" maximum="1"/>
+                </input>
+              </items>
+            </item-set>
+          </items>
+        </item-set>
+        """
+
+    val result = parseItemSet(stringToXMLDocument(xml).getChildNodeAtXPath("item-set")!!, emptyList())
+
+    assertEquals(
+      ObjectField(
+        "contact",
+        "Contact",
+        false,
+        false,
+        listOf(
+          ObjectField(
+            "phoneNumbers",
+            "Phone numbers",
+            true,
+            true,
+            listOf(StringField("number", "Number", false, false)),
+          ),
+        ),
+      ),
+      result,
     )
   }
 }

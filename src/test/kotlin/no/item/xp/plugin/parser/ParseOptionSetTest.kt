@@ -19,13 +19,13 @@ class ParseOptionSetTest {
         <option-set name="myOptionSet">
           <occurrences minimum="1" maximum="1"/>
           <label>Select content manually?</label>
-          
+
           <options minimum="1" maximum="1">
             <option name="no">
               <label>No</label>
               <default>true</default>
             </option>
-    
+
             <option name="yes">
               <label>Yes</label>
               <items>
@@ -42,7 +42,6 @@ class ParseOptionSetTest {
     val result = parseOptionSet(stringToXMLDocument(xml).getChildNodeAtXPath("option-set")!!, emptyList())
 
     assertEquals(
-      result,
       OptionSetField(
         "myOptionSet",
         "Select content manually?",
@@ -73,6 +72,68 @@ class ParseOptionSetTest {
           ),
         ),
       ),
+      result,
+    )
+  }
+
+  @Test
+  fun `parse multi select OptionSet`() {
+    // language=XML
+    val xml =
+      """
+        <option-set name="multiSelect">
+          <label>Multi select</label>
+          <occurrences minimum="0" maximum="0"/>
+          <options minimum="0" maximum="2">
+            <option name="first">
+              <label>First</label>
+            </option>
+          </options>
+        </option-set>
+        """
+
+    val result = parseOptionSet(stringToXMLDocument(xml).getChildNodeAtXPath("option-set")!!, emptyList())
+
+    assertEquals(
+      OptionSetField(
+        "multiSelect",
+        "Multi select",
+        true,
+        true,
+        true,
+        listOf(ObjectField("first", "First", true, false, emptyList())),
+      ),
+      result,
+    )
+  }
+
+  @Test
+  fun `parse OptionSet without maximum as single select`() {
+    // language=XML
+    val xml =
+      """
+        <option-set name="singleSelect">
+          <label>Single select</label>
+          <options>
+            <option name="first">
+              <label>First</label>
+            </option>
+          </options>
+        </option-set>
+        """
+
+    val result = parseOptionSet(stringToXMLDocument(xml).getChildNodeAtXPath("option-set")!!, emptyList())
+
+    assertEquals(
+      OptionSetField(
+        "singleSelect",
+        "Single select",
+        true,
+        false,
+        false,
+        listOf(ObjectField("first", "First", true, false, emptyList())),
+      ),
+      result,
     )
   }
 }

@@ -23,7 +23,6 @@ class RenderObjectTypeModelTest {
       )
 
     assertEquals(
-      result,
       //language=TypeScript
       """
       #export type MyType = {
@@ -57,6 +56,7 @@ class RenderObjectTypeModelTest {
         //language=
         "#",
       ),
+      result,
     )
   }
 }

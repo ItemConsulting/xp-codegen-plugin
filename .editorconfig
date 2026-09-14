@@ -3,5 +3,10 @@ indent_style = space
 indent_size = 2
 insert_final_newline=true
 
+# Expected output of snapshot tests must be kept exactly as generated
+[src/test/snapshots/**/expected/**]
+insert_final_newline = false
+trim_trailing_whitespace = false
+
 [*.{kt,kts}]
 ktlint_standard_no-wildcard-imports = disabled
