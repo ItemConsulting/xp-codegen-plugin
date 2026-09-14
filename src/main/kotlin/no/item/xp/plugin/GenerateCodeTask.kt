@@ -122,7 +122,11 @@ open class GenerateCodeTask
             ObjectTypeModel(Paths.get(fileInJar.entry.name).fileName.nameWithoutExtension, emptyList()).right()
           },
           {
-            parseObjectTypeModel(it, Paths.get(fileInJar.entry.name).fileName.nameWithoutExtension, mixins)
+            try {
+              parseObjectTypeModel(it, Paths.get(fileInJar.entry.name).fileName.nameWithoutExtension, mixins)
+            } catch (e: DuplicateFieldNameException) {
+              throw e.withSource(fileInJar.entry.name)
+            }
           },
         ).fold(
           { left ->

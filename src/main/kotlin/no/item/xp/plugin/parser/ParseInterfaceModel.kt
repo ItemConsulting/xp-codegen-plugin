@@ -1,6 +1,7 @@
 package no.item.xp.plugin.parser
 
 import arrow.core.Either
+import no.item.xp.plugin.DuplicateFieldNameException
 import no.item.xp.plugin.extensions.getChildNodesAtXPath
 import no.item.xp.plugin.extensions.getChildNodesAtXPathAsEither
 import no.item.xp.plugin.extensions.getNodeAttribute
@@ -37,17 +38,33 @@ fun parseInputTypeList(
   nodes: Collection<Node>,
   mixins: List<ObjectTypeModel>,
 ): List<ObjectTypeModelField> {
-  return nodes
-    .flatMap { node ->
-      when (node.nodeName) {
-        "input" -> listOfNotNull(parseInput(node))
-        "option-set" -> listOfNotNull(parseOptionSet(node, mixins))
-        "item-set" -> listOfNotNull(parseItemSet(node, mixins))
-        "field-set" -> parseFieldSet(node, mixins)
-        "mixin" -> findMixinFields(mixins, node)
-        else -> emptyList()
+  val fields =
+    nodes
+      .flatMap { node ->
+        when (node.nodeName) {
+          "input" -> listOfNotNull(parseInput(node))
+          "option-set" -> listOfNotNull(parseOptionSet(node, mixins))
+          "item-set" -> listOfNotNull(parseItemSet(node, mixins))
+          "field-set" -> parseFieldSet(node, mixins)
+          "mixin" -> findMixinFields(mixins, node)
+          else -> emptyList()
+        }
       }
-    }
+
+  // Fields from mixins and field-sets are added to the same object, so their names can collide
+  val duplicateFieldNames =
+    fields
+      .groupingBy { it.name }
+      .eachCount()
+      .filterValues { it > 1 }
+      .keys
+      .toList()
+
+  if (duplicateFieldNames.isNotEmpty()) {
+    throw DuplicateFieldNameException(duplicateFieldNames)
+  }
+
+  return fields
 }
 
 private fun findMixinFields(

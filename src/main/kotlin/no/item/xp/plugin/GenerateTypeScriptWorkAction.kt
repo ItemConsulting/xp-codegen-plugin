@@ -71,6 +71,8 @@ abstract class GenerateTypeScriptWorkAction : WorkAction<CodegenWorkParameters> 
             logger.lifecycle("Updated file: ${Path.of(targetFile.absoluteFile.toURI()).toUri()}")
           },
         )
+    } catch (e: DuplicateFieldNameException) {
+      throw e.withSource(simpleFilePath(parameters.getXmlFile().get().asFile))
     } catch (e: Exception) {
       logger.error("Can't parse file", e)
     }
