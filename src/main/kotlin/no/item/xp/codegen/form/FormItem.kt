@@ -61,7 +61,7 @@ fun readForm(descriptor: JsonNode): List<FormItem> = readFormItems(descriptor.ge
 fun readFormItems(node: JsonNode?): List<FormItem> = node?.filter { it.isObject }?.mapNotNull(::readFormItem).orEmpty()
 
 fun readFormItem(node: JsonNode): FormItem? =
-  if (node.has("include")) {
+  if (node.has("include") && !node.has("type")) {
     node.textAt("include")?.let(::FragmentReference)
   } else {
     when (node.textAt("type")?.lowercase()) {

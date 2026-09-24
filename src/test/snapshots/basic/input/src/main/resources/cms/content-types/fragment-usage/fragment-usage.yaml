@@ -23,6 +23,14 @@ form:
     items:
       - include: "link"
 
+  # The types are imported as an intersection, since there are only form fragments
+  - type: "ItemSet"
+    name: "linkWithList"
+    label: "Link with list"
+    items:
+      - include: "link"
+      - include: "link-list"
+
   # The fields are inlined, since there are other items
   - type: "ItemSet"
     name: "titledLink"

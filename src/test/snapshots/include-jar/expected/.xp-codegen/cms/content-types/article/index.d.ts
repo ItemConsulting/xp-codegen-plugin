@@ -8,5 +8,5 @@ export type Article = {
   /**
    * Links
    */
-  links?: Array<import("../../form-fragments/jar-link").JarLink>;
+  links?: Array<import("../../form-fragments").JarLink>;
 };

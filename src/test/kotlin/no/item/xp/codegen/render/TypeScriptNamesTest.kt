@@ -12,6 +12,10 @@ class TypeScriptNamesTest {
       "2-columns" to "_2Columns",
       "article.yaml" to "Article",
       "alreadyCamelCase" to "AlreadyCamelCase",
+      "_blocks-intro" to "_BlocksIntro",
+      "_intro" to "_Intro",
+      "__private-fragment" to "__PrivateFragment",
+      "_2-columns" to "_2Columns",
     ).forEach { (name, expected) -> assertEquals(expected, getTypeName(name), name) }
   }
 

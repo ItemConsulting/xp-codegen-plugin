@@ -88,11 +88,11 @@ data class ObjectField(
   override val isNullable: Boolean,
   override val isArray: Boolean,
   val fields: List<Field>,
-  // Name of the form fragment, if it is the only form item. The type will then be imported instead of inlined.
-  val fragmentName: String? = null,
+  // Names of the form fragments, if they are the only form items. The types will then be imported instead of inlined.
+  val fragmentNames: List<String> = emptyList(),
 ) : Field {
-  constructor(field: Field, fields: List<Field>, fragmentName: String? = null) :
-    this(field.name, field.comment, field.isNullable, field.isArray, fields, fragmentName)
+  constructor(field: Field, fields: List<Field>, fragmentNames: List<String> = emptyList()) :
+    this(field.name, field.comment, field.isNullable, field.isArray, fields, fragmentNames)
 }
 
 // name?: unknown

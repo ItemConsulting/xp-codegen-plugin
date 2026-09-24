@@ -22,7 +22,7 @@ declare global {
             /**
              * Link
              */
-            link: import("./form-fragments/link").Link;
+            link: import("./form-fragments").Link;
           };
     }
   }

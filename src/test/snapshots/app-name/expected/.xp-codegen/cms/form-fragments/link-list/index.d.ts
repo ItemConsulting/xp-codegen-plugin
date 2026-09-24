@@ -3,5 +3,5 @@ export type LinkList = {
   /**
    * Links
    */
-  links?: Array<import("../link").Link>;
+  links?: Array<import("..").Link>;
 };

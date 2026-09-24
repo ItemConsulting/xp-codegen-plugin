@@ -187,7 +187,7 @@ class RenderTypeModelTest {
               true,
               false,
               false,
-              listOf(ObjectField("link", "Link", true, false, emptyList(), "link")),
+              listOf(ObjectField("link", "Link", true, false, emptyList(), listOf("link"))),
             ),
           ),
         ),
@@ -220,7 +220,7 @@ class RenderTypeModelTest {
       #            /**
       #             * Link
       #             */
-      #            link: import("./form-fragments/link").Link;
+      #            link: import("./form-fragments").Link;
       #          };
       #    }
       #  }

@@ -13,7 +13,7 @@ class RenderFragmentReferenceTest {
   private val options =
     listOf(
       ObjectField("none", "None", true, false, emptyList()),
-      ObjectField("internal", "Internal", true, false, fragmentFields, "link-internal"),
+      ObjectField("internal", "Internal", true, false, fragmentFields, listOf("link-internal")),
     )
 
   @Test
@@ -23,8 +23,8 @@ class RenderFragmentReferenceTest {
         TypeModel(
           "my-type",
           listOf(
-            ObjectField("links", "Links", true, true, fragmentFields, "link"),
-            ObjectField("mainLink", "Main link", false, false, fragmentFields, "link"),
+            ObjectField("links", "Links", true, true, fragmentFields, listOf("link")),
+            ObjectField("mainLink", "Main link", false, false, fragmentFields, listOf("link")),
           ),
         ),
         "../../form-fragments",
@@ -37,12 +37,45 @@ class RenderFragmentReferenceTest {
       #  /**
       #   * Links
       #   */
-      #  links?: Array<import("../../form-fragments/link").Link>;
+      #  links?: Array<import("../../form-fragments").Link>;
       #
       #  /**
       #   * Main link
       #   */
-      #  mainLink: import("../../form-fragments/link").Link;
+      #  mainLink: import("../../form-fragments").Link;
+      #};
+      #""".trimMargin("#"),
+      result,
+    )
+  }
+
+  @Test
+  fun `render item set with only form fragments as an intersection`() {
+    val result =
+      renderTypeModel(
+        TypeModel(
+          "my-type",
+          listOf(
+            ObjectField("blocks", "Blocks", true, true, fragmentFields, listOf("blocks-accordion", "_blocks-color")),
+            ObjectField("block", "Block", false, false, fragmentFields, listOf("blocks-accordion", "_blocks-color")),
+          ),
+        ),
+        "../../form-fragments",
+      )
+
+    assertEquals(
+      //language=TypeScript
+      """
+      #export type MyType = {
+      #  /**
+      #   * Blocks
+      #   */
+      #  blocks?: Array<import("../../form-fragments").BlocksAccordion & import("../../form-fragments")._BlocksColor>;
+      #
+      #  /**
+      #   * Block
+      #   */
+      #  block: import("../../form-fragments").BlocksAccordion & import("../../form-fragments")._BlocksColor;
       #};
       #""".trimMargin("#"),
       result,
@@ -85,7 +118,7 @@ class RenderFragmentReferenceTest {
       #        /**
       #         * Internal
       #         */
-      #        internal: import("../../form-fragments/link-internal").LinkInternal;
+      #        internal: import("../../form-fragments").LinkInternal;
       #      };
       #};
       #""".trimMargin("#"),
@@ -122,7 +155,7 @@ class RenderFragmentReferenceTest {
       #    /**
       #     * Internal
       #     */
-      #    internal: import("../link-internal").LinkInternal;
+      #    internal: import("..").LinkInternal;
       #  };
       #};
       #""".trimMargin("#"),

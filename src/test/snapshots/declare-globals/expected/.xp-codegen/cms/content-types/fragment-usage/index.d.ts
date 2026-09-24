@@ -28,7 +28,12 @@ export type FragmentUsage = {
   /**
    * Links
    */
-  links?: Array<import("../../form-fragments/link").Link>;
+  links?: Array<import("../../form-fragments").Link>;
+
+  /**
+   * Link with list
+   */
+  linkWithList?: import("../../form-fragments").Link & import("../../form-fragments").LinkList;
 
   /**
    * Titled link
@@ -68,7 +73,7 @@ export type FragmentUsage = {
         /**
          * Internal
          */
-        internal: import("../../form-fragments/link").Link;
+        internal: import("../../form-fragments").Link;
       }
     | {
         /**
@@ -79,7 +84,7 @@ export type FragmentUsage = {
         /**
          * List
          */
-        list: import("../../form-fragments/link-list").LinkList;
+        list: import("../../form-fragments").LinkList;
       };
 
   /**
@@ -94,6 +99,6 @@ export type FragmentUsage = {
     /**
      * Internal
      */
-    internal: import("../../form-fragments/link").Link;
+    internal: import("../../form-fragments").Link;
   };
 };

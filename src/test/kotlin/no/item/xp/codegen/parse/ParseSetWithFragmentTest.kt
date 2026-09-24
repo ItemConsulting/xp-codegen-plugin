@@ -11,7 +11,12 @@ import kotlin.test.assertEquals
 
 class ParseSetWithFragmentTest {
   private val urlField = StringField("url", "Url", false, false)
-  private val fragments = mapOf("link" to TypeModel("link", listOf(urlField)))
+  private val titleField = StringField("title", "Title", false, false)
+  private val fragments =
+    mapOf(
+      "link" to TypeModel("link", listOf(urlField)),
+      "_title" to TypeModel("_title", listOf(titleField)),
+    )
 
   @Test
   fun `parse ItemSet with only a form fragment`() {
@@ -33,7 +38,7 @@ class ParseSetWithFragmentTest {
         fragments,
       )
 
-    assertEquals(ObjectField("links", "Links", true, true, listOf(urlField), "link"), result.getOrNull())
+    assertEquals(ObjectField("links", "Links", true, true, listOf(urlField), listOf("link")), result.getOrNull())
   }
 
   @Test
@@ -54,7 +59,53 @@ class ParseSetWithFragmentTest {
         fragments,
       )
 
-    assertEquals(ObjectField("links", "Links", true, false, listOf(urlField), "link"), result.getOrNull())
+    assertEquals(ObjectField("links", "Links", true, false, listOf(urlField), listOf("link")), result.getOrNull())
+  }
+
+  @Test
+  fun `parse ItemSet with only form fragments`() {
+    val result =
+      parseItemSet(
+        itemSet(
+          // language=YAML
+          """
+          type: "ItemSet"
+          name: "links"
+          label: "Links"
+          items:
+            - include: "link"
+            - type: "FormFragment"
+              name: "_title"
+          """,
+        ),
+        fragments,
+      )
+
+    assertEquals(
+      ObjectField("links", "Links", true, false, listOf(urlField, titleField), listOf("link", "_title")),
+      result.getOrNull(),
+    )
+  }
+
+  @Test
+  fun `parse ItemSet with only form fragments where one is unknown`() {
+    val result =
+      parseItemSet(
+        itemSet(
+          // language=YAML
+          """
+          type: "ItemSet"
+          name: "links"
+          label: "Links"
+          items:
+            - include: "link"
+            - include: "missing"
+          """,
+        ),
+        fragments,
+      )
+
+    assertEquals(ObjectField("links", "Links", true, false, listOf(urlField)), result.getOrNull())
   }
 
   @Test
@@ -84,7 +135,7 @@ class ParseSetWithFragmentTest {
       )
 
     assertEquals(
-      ObjectField("links", "Links", true, true, listOf(StringField("title", "Title", true, false), urlField), null),
+      ObjectField("links", "Links", true, true, listOf(StringField("title", "Title", true, false), urlField)),
       result.getOrNull(),
     )
   }
@@ -109,7 +160,7 @@ class ParseSetWithFragmentTest {
         fragments,
       )
 
-    assertEquals(ObjectField("links", "Links", true, true, emptyList(), null), result.getOrNull())
+    assertEquals(ObjectField("links", "Links", true, true, emptyList()), result.getOrNull())
   }
 
   @Test
@@ -148,8 +199,8 @@ class ParseSetWithFragmentTest {
         false,
         false,
         listOf(
-          ObjectField("none", "None", true, false, emptyList(), null),
-          ObjectField("internal", "Internal", true, false, listOf(urlField), "link"),
+          ObjectField("none", "None", true, false, emptyList()),
+          ObjectField("internal", "Internal", true, false, listOf(urlField), listOf("link")),
         ),
       ),
       result.getOrNull(),

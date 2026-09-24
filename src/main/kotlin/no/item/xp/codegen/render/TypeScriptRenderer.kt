@@ -52,7 +52,13 @@ fun renderSiteConfig(
 fun renderFragmentReference(
   fragmentName: String,
   fragmentsImportPath: String,
-): String = "import(\"$fragmentsImportPath/$fragmentName\").${getTypeName(fragmentName)}"
+): String = "import(\"$fragmentsImportPath\").${getTypeName(fragmentName)}"
+
+// E.g. 'import("../../form-fragments").Link & import("../../form-fragments").Seo'
+fun renderFragmentReferences(
+  fragmentNames: List<String>,
+  fragmentsImportPath: String,
+): String = fragmentNames.joinToString(" & ") { renderFragmentReference(it, fragmentsImportPath) }
 
 fun CodeWriter.fields(
   fields: List<Field>,
@@ -116,8 +122,8 @@ private fun CodeWriter.objectField(
   field: ObjectField,
   fragmentsImportPath: String,
 ) {
-  if (field.fragmentName != null) {
-    val type = renderFragmentReference(field.fragmentName, fragmentsImportPath)
+  if (field.fragmentNames.isNotEmpty()) {
+    val type = renderFragmentReferences(field.fragmentNames, fragmentsImportPath)
     line("${declaration(field)} ${if (field.isArray) "Array<$type>" else type};")
   } else if (field.isArray) {
     objectType("${declaration(field)} Array<", ">;", field.fields, fragmentsImportPath)
@@ -188,7 +194,7 @@ private fun CodeWriter.optionValue(
   val name = escapeName(option.name)
 
   when {
-    option.fragmentName != null -> line("$name: ${renderFragmentReference(option.fragmentName, fragmentsImportPath)};")
+    option.fragmentNames.isNotEmpty() -> line("$name: ${renderFragmentReferences(option.fragmentNames, fragmentsImportPath)};")
     option.fields.isNotEmpty() -> objectType("$name: ", ";", option.fields, fragmentsImportPath)
     else -> line("$name: Record<string, unknown>;")
   }

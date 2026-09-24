@@ -83,7 +83,7 @@ fun parseItemSet(
 ): Either<DuplicateFieldNames, ObjectField?> =
   either {
     parseUnknownField(itemSet.name, itemSet.label, itemSet.occurrences)?.let { field ->
-      ObjectField(field, parseFields(itemSet.items, fragments).bind(), findSingleFragmentName(itemSet.items, fragments))
+      ObjectField(field, parseFields(itemSet.items, fragments).bind(), findOnlyFragmentNames(itemSet.items, fragments))
     }
   }
 
@@ -102,7 +102,7 @@ fun parseOptionSet(
               isNullable = true,
               isArray = false,
               fields = parseFields(option.items, fragments).bind(),
-              fragmentName = findSingleFragmentName(option.items, fragments),
+              fragmentNames = findOnlyFragmentNames(option.items, fragments),
             )
           }
         }
@@ -112,12 +112,18 @@ fun parseOptionSet(
   }
 
 /**
- * Returns the name of the form fragment if it is the only item in [items], and the form fragment exists
+ * Returns the names of the form fragments if all items in [items] are references to form fragments that exist.
+ * Otherwise returns an empty list.
  */
-fun findSingleFragmentName(
+fun findOnlyFragmentNames(
   items: List<FormItem>,
   fragments: FormFragments,
-): String? = (items.singleOrNull() as? FragmentReference)?.name?.takeIf { it in fragments }
+): List<String> =
+  items
+    .map { (it as? FragmentReference)?.name?.takeIf { name -> name in fragments } }
+    .takeIf { names -> names.isNotEmpty() && names.all { it != null } }
+    ?.filterNotNull()
+    .orEmpty()
 
 /**
  * Returns the names of all the form fragments that are referenced in [items], including nested items
