@@ -98,6 +98,20 @@ gradlePlugin {
   }
 }
 
+if (version.toString().endsWith("-SNAPSHOT")) {
+  publishing {
+    repositories {
+      maven("https://repo.itemtest.no/snapshots") {
+        name = "itemtestRepository"
+        credentials(PasswordCredentials::class)
+        authentication {
+          create<BasicAuthentication>("basic")
+        }
+      }
+    }
+  }
+}
+
 tasks.validatePlugins {
   enableStricterValidation.set(true)
 }
