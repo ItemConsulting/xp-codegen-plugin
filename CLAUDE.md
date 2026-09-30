@@ -33,7 +33,9 @@ The pipeline is split so that everything except file I/O at the edges is pure an
 
 1. **`CodegenPlugin`** registers `generateTypeScript` when the `java` plugin is applied. Inputs are the `main`
    resources, jars in the `include` configuration and candidate `.editorconfig` files (project dir and its parents,
-   plus `.xp-codegen/.editorconfig`). Output defaults to `.xp-codegen/`.
+   plus `.xp-codegen/.editorconfig`). Output defaults to `.xp-codegen/`. It also applies the `idea` plugin and adds the
+   output directory to the module's `sourceDirs` and `generatedSourceDirs`, so IntelliJ IDEA warns against editing the
+   generated files.
 2. **`GenerateTypeScriptTask`** collects descriptor sources, calls `generate()`, fails the build with all error
    messages, deletes previously generated `.d.ts` files, then writes each file.
 3. **`collectDescriptorSources`** (`descriptor/`) turns resource files and jar entries into `DescriptorSource`s.
